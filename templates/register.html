@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+{% block navigation %}
+{% endblock navigation %}
+{% block content %}
+    <div class="content-section">
+        <!-- <h1 style="text-align: center">Register Navigation</h1> -->
+        <legend class="border-bottom mb-4" style="text-align:center; font-size:35px">Register Navigation</legend>
+        <div class="navbar-nav">
+            <a class="btn btn-outline-info" href="/register_user" style="font-size:25px">User Only</a>
+            <br>
+            <a class="btn btn-outline-info" href="/register_visitor" style="font-size:25px">Visitor Only</a>
+            <br>
+            <a class="btn btn-outline-info" href="/register_employee" style="font-size:25px">Employee Only</a>
+            <br>
+            <a class="btn btn-outline-info" href="/register_employee_visitor" style="font-size:25px">Employee-Visitor</a>
+            <br>
+            <a class="btn btn-outline-info" href="/" style="font-size:25px">Back</a>
+        </div>
+    </div>
+{% endblock content %}
+{% block sidebar %}
+<div class="col-md-4">
+<div class="content-section">
+    <h3>Register</h3>
+    <p class='text-muted'>You can put any information here you'd like.
+    <ul class="list-group">
+        <li class="list-group-item list-group-item-light">Latest Posts</li>
+        <li class="list-group-item list-group-item-light">Announcements</li>
+        <li class="list-group-item list-group-item-light">Calendars</li>
+        <li class="list-group-item list-group-item-light">etc</li>
+    </ul>
+    </p>
+</div>
+</div>
+{% endblock sidebar %}
