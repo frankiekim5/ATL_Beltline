@@ -1,21 +1,29 @@
 {% extends "layout.html" %}
 {% block leftnav %}
     {% if userType == 'User' %}
+        <a class="nav-item nav-link" href="{{ url_for('main', userType=userType, username=username) }}">Home</a>
         <a class="nav-item nav-link" href="/about">User</a>
     {% elif userType == 'Manager' %}
+        <a class="nav-item nav-link" href="{{ url_for('main', userType=userType, username=username) }}">Home</a>    
         <a class="nav-item nav-link" href="/about">Manager</a>
     {% elif userType == 'Staff' %}
+        <a class="nav-item nav-link" href="{{ url_for('main', userType=userType, username=username) }}">Home</a>
         <a class="nav-item nav-link" href="/about">Staff</a>
     {% elif userType == 'Administrator' %}
+        <a class="nav-item nav-link" href="{{ url_for('main', userType=userType, username=username) }}">Home</a>
         <a class="nav-item nav-link" href="/about">Administrator</a>
     {% elif userType == 'Visitor' %}
+        <a class="nav-item nav-link" href="{{ url_for('main', userType=userType, username=username) }}">Home</a>
         <a class="nav-item nav-link" href="/about">Visitor</a>
     {% elif userType == 'Manager-Visitor' %}
+        <a class="nav-item nav-link" href="{{ url_for('main', userType=userType, username=username) }}">Home</a>
         <a class="nav-item nav-link" href="/about">Manager-Visitor</a>
     {% elif userType == 'Staff-Visitor' %}
+        <a class="nav-item nav-link" href="{{ url_for('main', userType=userType, username=username) }}">Home</a>
         <a class="nav-item nav-link" href="/about">Staff-Visitor</a>
     {% elif userType == 'Administrator-Visitor' %}
-        <a class="nav-item nav-link" href="/about">Administrator-Visitor</a>
+        <a class="nav-item nav-link" href="{{ url_for('main', userType=userType, username=username) }}">Home</a>
+        <a class="nav-item nav-link" href="/about">Administrator-Visitor</a>f
     {% endif %}
 {% endblock leftnav %}
 {% block rightnav %}
