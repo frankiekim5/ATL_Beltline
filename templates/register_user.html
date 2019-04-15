@@ -2,7 +2,6 @@
 {% block navigation %}
 {% endblock navigation %}
 {% block content %}
-    <script src="{{ url_for('static', filename='js/email.js') }}"></script>
     <div class="content-section">
         <form method="POST" action="">
             {{ form.hidden_tag() }}
@@ -79,12 +78,11 @@
                         {{ form.email(class="form-control form-control-lg is-invalid") }}
                         <div style="color:red">
                             {% for error in form.email.errors %}
-                                <span style="font-size:13px">{{ error }}</span>
+                            <span style="font-size:13px">{{ error }}</span>
                             {% endfor %}
                         </div>
                     {% else %}
                         {{ form.email(class="form-control form-control-lg") }}
-                        <input type="button" class="btn btn-outline-info" value="Add" onclick="addEmail('emailInput');">
                     {% endif %}
                     <!-- <a class="ml-2" href="{{ url_for('login') }}">Add</a> -->
                 </div>
