@@ -27,12 +27,11 @@
                     <div class="navbar-nav mr-auto">
                     <a class="nav-item nav-link" href="/">Home</a>
                     <a class="nav-item nav-link" href="/about">About</a>
-                    {% block navigation %}{% endblock navigation %}
+                    {% block leftnav %}{% endblock leftnav %}
                     </div>
                     <!-- Navbar Right Side -->
                     <div class="navbar-nav">
-                    <a class="nav-item nav-link" href="/login">Login</a>
-                    <a class="nav-item nav-link" href="/registerNav">Register</a>
+                    {% block rightnav %}{% endblock rightnav %}
                     </div>
                 </div>
                 </div>
