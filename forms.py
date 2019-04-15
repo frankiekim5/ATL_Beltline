@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, IntegerField, DecimalField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, IntegerField, DecimalField, BooleanField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, NumberRange
 
 
@@ -86,4 +86,14 @@ class CreateTransitForm(FlaskForm):
     price = DecimalField('Price', validators=[DataRequired(), NumberRange(min=0.01, max=None, message="Positive Price Only")])
     connectedSites = SelectField('Connected Sites', 
         choices = [('Atlanta Beltline Center', 'Atlanta Beltline Center')], validators=[DataRequired()])
+    submit = SubmitField('Create')
+
+
+class CreateSiteForm(FlaskForm): 
+    siteName = StringField('Name', validators=[DataRequired()])
+    zipcode = IntegerField('Zipcode', validators=[DataRequired()])
+    address = StringField('Address', validators=[DataRequired()])
+    manager = SelectField('Manager', 
+        choices = [('Frankie Kim', 'Frankie Kim')], validators=[DataRequired()])
+    openEveryday = BooleanField('Open Everyday')
     submit = SubmitField('Create')

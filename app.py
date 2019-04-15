@@ -1,6 +1,6 @@
 from flask import Flask, render_template, url_for, flash, redirect, session, request
 from flask_mysqldb import MySQL
-from forms import UserRegistrationForm, LoginForm, VisitorRegistrationForm, EmployeeRegistrationForm, EmployeeVisitorRegistrationForm, CreateTransitForm
+from forms import UserRegistrationForm, LoginForm, VisitorRegistrationForm, EmployeeRegistrationForm, EmployeeVisitorRegistrationForm, CreateTransitForm, CreateSiteForm
 from passlib.hash import sha256_crypt
 
 app = Flask(__name__)
@@ -255,5 +255,17 @@ def create_transit():
         connectedSites = form.connectedSites.data
     return render_template("create_transit.html", title='Create Transit', form=form)
 
+@app.route('/create_site', methods=['GET', 'POST'])
+def create_site(): 
+    form = CreateSiteForm()
+    if form.validate_on_submit() and request.method == 'POST': 
+        siteName = form.siteName.data
+        zipcode = form.zipcode.data
+        address = form.address.data 
+        manager = form.manager.data 
+        openEveryday = form.openEveryday.data
+    return render_template("create_site.html", title="Create Site", form=form)
+
+    
 if __name__ == '__main__':
     app.run(debug=True)
