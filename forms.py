@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, IntegerField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, IntegerField, DecimalField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, NumberRange
 
 
@@ -82,3 +82,12 @@ class LoginForm(FlaskForm): # inherits from FlaskForm
     password = PasswordField('Password', validators=[DataRequired(), Length(min=8)])
     remember= BooleanField('Remember Me')
     submit = SubmitField('Login')
+
+class CreateTransitForm(FlaskForm): 
+    transportType = SelectField('Transport Type', 
+        choices = [('marta','MARTA'), ('bus','Bus'),('bike','Bike')], validators=[DataRequired()])
+    route = StringField('Route', validators=[DataRequired()])
+    price = DecimalField('Price', validators=[DataRequired(), NumberRange(min=0.01, max=None, message="Positive Price Only")])
+    connectedSites = SelectField('Connected Sites', 
+        choices = [('Atlanta Beltline Center', 'Atlanta Beltline Center')], validators=[DataRequired()])
+    submit = SubmitField('Create')
