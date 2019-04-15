@@ -33,7 +33,7 @@ class EmployeeRegistrationForm(FlaskForm): # inherits from FlaskForm
     )
     password = PasswordField('Password', validators=[DataRequired(), Length(min=8)])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
-    phone = IntegerField('Phone', validators=[DataRequired(), NumberRange(min=10, max=10, message="Phone number must be 10 digits.")])
+    phone = IntegerField('Phone', validators=[DataRequired(), NumberRange(min=1000000000, max=9999999999, message="Phone number must be 10 digits.")])
     address = StringField('Address', validators=[DataRequired()])
     city = StringField('City', validators=[DataRequired()])
     STATE_ABBREV = ('AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 
@@ -45,7 +45,7 @@ class EmployeeRegistrationForm(FlaskForm): # inherits from FlaskForm
         'State',
         choices=[(state, state) for state in STATE_ABBREV]
     )
-    zipcode = IntegerField('Zipcode', validators=[DataRequired(), NumberRange(min=5, max=5, message="Zipcode must be 5 digits.")])
+    zipcode = IntegerField('Zipcode', validators=[DataRequired(), NumberRange(min=10000, max=99999, message="Zipcode must be 5 digits.")])
     email = StringField('Email', validators=[DataRequired(), Email()])
     emails = []
     submit = SubmitField('Sign Up')
@@ -60,7 +60,7 @@ class EmployeeVisitorRegistrationForm(FlaskForm): # inherits from FlaskForm
     )
     password = PasswordField('Password', validators=[DataRequired(), Length(min=8)])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
-    phone = IntegerField('Phone', validators=[DataRequired(), NumberRange(min=10, max=10, message="Phone number must be 10 digits.")])
+    phone = IntegerField('Phone', validators=[DataRequired(), NumberRange(min=1000000000, max=9999999999, message="Phone number must be 10 digits.")])
     address = StringField('Address', validators=[DataRequired()])
     city = StringField('City', validators=[DataRequired()])
     STATE_ABBREV = ('AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 
@@ -72,7 +72,7 @@ class EmployeeVisitorRegistrationForm(FlaskForm): # inherits from FlaskForm
         'State',
         choices=[(state, state) for state in STATE_ABBREV]
     )
-    zipcode = IntegerField('Zipcode', validators=[DataRequired(), NumberRange(min=5, max=5, message="Zipcode must be 5 digits.")])
+    zipcode = IntegerField('Zipcode', validators=[DataRequired(), NumberRange(min=10000, max=99999, message="Zipcode must be 5 digits.")])
     email = StringField('Email', validators=[DataRequired(), Email()])
     emails = []
     submit = SubmitField('Sign Up')

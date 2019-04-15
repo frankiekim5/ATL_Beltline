@@ -72,7 +72,25 @@ def registerUser():
 @app.route('/register_visitor', methods=['GET', 'POST'])
 def registerVisitor():
     form = VisitorRegistrationForm()
-    if form.validate_on_submit():
+    if form.validate_on_submit() and request.method == 'POST':
+        username = form.username.data
+        firstname = form.firstName.data
+        lastname = form.lastName.data
+        status = 'Pending'
+        password = sha256_crypt.encrypt(str(form.password.data))
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        # Execute query
+        cur.execute("INSERT INTO user(username, firstname, lastname, status, password) VALUES(%s, %s, %s, %s, %s)", (username, firstname, lastname, status, password))
+        cur.execute("INSERT INTO visitor(username) VALUES(%s)", (username,))
+
+        # Commit to DB
+        mysql.connection.commit()
+
+        # Close connection
+        cur.close()
         flash(f'Account created for {form.username.data}!', 'success')
         return redirect(url_for('main'))
     return render_template('register_visitor.html', title='Register Visitor', form=form)
@@ -80,7 +98,35 @@ def registerVisitor():
 @app.route('/register_employee', methods=['GET', 'POST'])
 def registerEmployee():
     form = EmployeeRegistrationForm()
-    if form.validate_on_submit():
+    if form.validate_on_submit() and request.method == 'POST':
+        username = form.username.data
+        firstname = form.firstName.data
+        lastname = form.lastName.data
+        status = 'Pending'
+        password = sha256_crypt.encrypt(str(form.password.data))
+        phone = form.phone.data
+        address = form.address.data
+        city = form.city.data
+        state = form.state.data
+        zipcode = form.zipcode.data
+        userType = form.userType.data
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        # Execute query
+        cur.execute("INSERT INTO user(username, firstname, lastname, status, password) VALUES(%s, %s, %s, %s, %s)", (username, firstname, lastname, status, password))
+        cur.execute("INSERT INTO employee(username, phone, address, city, state, zipcode) VALUES(%s, %s, %s, %s, %s, %s)", (username, phone, address, city, state, zipcode))
+        if (userType == 'manager'):
+            cur.execute("INSERT INTO manager(username) VALUES(%s)", (username,))
+        elif (userType == 'staff'):
+            cur.execute("INSERT INTO staff(username) VALUES(%s)", (username,))
+
+        # Commit to DB
+        mysql.connection.commit()
+
+        # Close connection
+        cur.close()
         flash(f'Account created for {form.username.data}!', 'success')
         return redirect(url_for('main'))
     return render_template('register_employee.html', title='Register Employee', form=form)
@@ -89,6 +135,35 @@ def registerEmployee():
 def registerEmployeeVisitor():
     form = EmployeeVisitorRegistrationForm()
     if form.validate_on_submit():
+        username = form.username.data
+        firstname = form.firstName.data
+        lastname = form.lastName.data
+        status = 'Pending'
+        password = sha256_crypt.encrypt(str(form.password.data))
+        phone = form.phone.data
+        address = form.address.data
+        city = form.city.data
+        state = form.state.data
+        zipcode = form.zipcode.data
+        userType = form.userType.data
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        # Execute query
+        cur.execute("INSERT INTO user(username, firstname, lastname, status, password) VALUES(%s, %s, %s, %s, %s)", (username, firstname, lastname, status, password))
+        cur.execute("INSERT INTO visitor(username) VALUES(%s)", (username,))
+        cur.execute("INSERT INTO employee(username, phone, address, city, state, zipcode) VALUES(%s, %s, %s, %s, %s, %s)", (username, phone, address, city, state, zipcode))
+        if (userType == 'manager'):
+            cur.execute("INSERT INTO manager(username) VALUES(%s)", (username,))
+        elif (userType == 'staff'):
+            cur.execute("INSERT INTO staff(username) VALUES(%s)", (username,))
+
+        # Commit to DB
+        mysql.connection.commit()
+
+        # Close connection
+        cur.close()
         flash(f'Account created for {form.username.data}!', 'success')
         return redirect(url_for('main'))
     return render_template('register_employee_visitor.html', title='Register Employee-Visitor', form=form)
@@ -97,7 +172,7 @@ def registerEmployeeVisitor():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        if form.email.data == 'frankiekim5@gmail.com' and form.password.data == 'password':
+        if request.method == 'POST':
             flash('You have been logged in', 'success')
             return redirect(url_for('main'))
         else:
