@@ -73,6 +73,9 @@ class EmployeeVisitorRegistrationForm(FlaskForm): # inherits from FlaskForm
     email = StringField('Email', validators=[DataRequired(), Email()])
     submit = SubmitField('Sign Up')
 
+class EmailRegistrationForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+
 class LoginForm(FlaskForm): # inherits from FlaskForm
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired(), Length(min=8)])
