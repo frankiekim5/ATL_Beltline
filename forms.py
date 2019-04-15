@@ -10,7 +10,6 @@ class UserRegistrationForm(FlaskForm): # inherits from FlaskForm
     password = PasswordField('Password', validators=[DataRequired(), Length(min=8)])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     email = StringField('Email', validators=[DataRequired(), Email()])
-    emails = []
     submit = SubmitField('Sign Up')
 
 class VisitorRegistrationForm(FlaskForm): # inherits from FlaskForm
@@ -20,7 +19,6 @@ class VisitorRegistrationForm(FlaskForm): # inherits from FlaskForm
     password = PasswordField('Password', validators=[DataRequired(), Length(min=8)])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     email = StringField('Email', validators=[DataRequired(), Email()])
-    emails = []
     submit = SubmitField('Sign Up')
 
 class EmployeeRegistrationForm(FlaskForm): # inherits from FlaskForm
@@ -47,7 +45,6 @@ class EmployeeRegistrationForm(FlaskForm): # inherits from FlaskForm
     )
     zipcode = IntegerField('Zipcode', validators=[DataRequired(), NumberRange(min=10000, max=99999, message="Zipcode must be 5 digits.")])
     email = StringField('Email', validators=[DataRequired(), Email()])
-    emails = []
     submit = SubmitField('Sign Up')
 
 class EmployeeVisitorRegistrationForm(FlaskForm): # inherits from FlaskForm
@@ -74,7 +71,6 @@ class EmployeeVisitorRegistrationForm(FlaskForm): # inherits from FlaskForm
     )
     zipcode = IntegerField('Zipcode', validators=[DataRequired(), NumberRange(min=10000, max=99999, message="Zipcode must be 5 digits.")])
     email = StringField('Email', validators=[DataRequired(), Email()])
-    emails = []
     submit = SubmitField('Sign Up')
 
 class LoginForm(FlaskForm): # inherits from FlaskForm

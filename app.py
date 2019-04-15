@@ -52,12 +52,14 @@ def registerUser():
         lastname = form.lastName.data
         status = 'Pending'
         password = sha256_crypt.encrypt(str(form.password.data))
+        email = form.email.data
 
         # Create cursor
         cur = mysql.connection.cursor()
 
         # Execute query
         cur.execute("INSERT INTO user(username, firstname, lastname, status, password) VALUES(%s, %s, %s, %s, %s)", (username, firstname, lastname, status, password))
+        cur.execute("INSERT INTO email(username, email) VALUES(%s, %s)", (username, email))
 
         # Commit to DB
         mysql.connection.commit()
@@ -78,6 +80,7 @@ def registerVisitor():
         lastname = form.lastName.data
         status = 'Pending'
         password = sha256_crypt.encrypt(str(form.password.data))
+        email = form.email.data
 
         # Create cursor
         cur = mysql.connection.cursor()
@@ -85,6 +88,7 @@ def registerVisitor():
         # Execute query
         cur.execute("INSERT INTO user(username, firstname, lastname, status, password) VALUES(%s, %s, %s, %s, %s)", (username, firstname, lastname, status, password))
         cur.execute("INSERT INTO visitor(username) VALUES(%s)", (username,))
+        cur.execute("INSERT INTO email(username, email) VALUES(%s, %s)", (username, email))
 
         # Commit to DB
         mysql.connection.commit()
@@ -110,6 +114,7 @@ def registerEmployee():
         state = form.state.data
         zipcode = form.zipcode.data
         userType = form.userType.data
+        email = form.email.data
 
         # Create cursor
         cur = mysql.connection.cursor()
@@ -117,6 +122,7 @@ def registerEmployee():
         # Execute query
         cur.execute("INSERT INTO user(username, firstname, lastname, status, password) VALUES(%s, %s, %s, %s, %s)", (username, firstname, lastname, status, password))
         cur.execute("INSERT INTO employee(username, phone, address, city, state, zipcode) VALUES(%s, %s, %s, %s, %s, %s)", (username, phone, address, city, state, zipcode))
+        cur.execute("INSERT INTO email(username, email) VALUES(%s, %s)", (username, email))
         if (userType == 'manager'):
             cur.execute("INSERT INTO manager(username) VALUES(%s)", (username,))
         elif (userType == 'staff'):
@@ -146,6 +152,7 @@ def registerEmployeeVisitor():
         state = form.state.data
         zipcode = form.zipcode.data
         userType = form.userType.data
+        email = form.email.data
 
         # Create cursor
         cur = mysql.connection.cursor()
@@ -154,6 +161,7 @@ def registerEmployeeVisitor():
         cur.execute("INSERT INTO user(username, firstname, lastname, status, password) VALUES(%s, %s, %s, %s, %s)", (username, firstname, lastname, status, password))
         cur.execute("INSERT INTO visitor(username) VALUES(%s)", (username,))
         cur.execute("INSERT INTO employee(username, phone, address, city, state, zipcode) VALUES(%s, %s, %s, %s, %s, %s)", (username, phone, address, city, state, zipcode))
+        cur.execute("INSERT INTO email(username, email) VALUES(%s, %s)", (username, email))
         if (userType == 'manager'):
             cur.execute("INSERT INTO manager(username) VALUES(%s)", (username,))
         elif (userType == 'staff'):
