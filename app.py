@@ -1,6 +1,6 @@
 from flask import Flask, render_template, url_for, flash, redirect, session, request
 from flask_mysqldb import MySQL
-from forms import UserRegistrationForm, LoginForm, VisitorRegistrationForm, EmployeeRegistrationForm, EmployeeVisitorRegistrationForm
+from forms import UserRegistrationForm, LoginForm, VisitorRegistrationForm, EmployeeRegistrationForm, EmployeeVisitorRegistrationForm, CreateTransitForm
 from passlib.hash import sha256_crypt
 
 app = Flask(__name__)
@@ -245,6 +245,15 @@ def logout():
     session.clear()
     flash('You are now logged out', 'success')
     return redirect(url_for('login'))
+@app.route('/create_transit', methods=['GET','POST'])
+def create_transit(): 
+    form = CreateTransitForm()
+    if form.validate_on_submit() and request.method == 'POST': 
+        transportType = form.transportType.data 
+        route = form.route.data 
+        price = form.price.data
+        connectedSites = form.connectedSites.data
+    return render_template("create_transit.html", title='Create Transit', form=form)
 
 if __name__ == '__main__':
     app.run(debug=True)

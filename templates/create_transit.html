@@ -1,0 +1,70 @@
+{% extends "layout.html" %}
+{% block navigation %}
+{% endblock navigation %}
+{% block content %}
+<div class="content-section">
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4" style="font-size:35px">Create Transit</legend>
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        {{ form.transportType.label(class="form-control-label") }}
+                        {% if form.transportType.errors %}
+                            {{ form.transportType(class="form-control form-control-lg is-invalid") }}
+                            <div style="color:red">
+                                {% for error in form.transportType.errors %}
+                                    <span style="font-size:13px">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.transportType(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group col-md-4">
+                        {{ form.route.label(class="form-control-label") }}
+                        {% if form.route.errors %}
+                            {{ form.route(class="form-control form-control-lg is-invalid") }}
+                            <div style="color:red">
+                                {% for error in form.route.errors %}
+                                    <span style="font-size:13px">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.route(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group col-md-4">
+                        {{ form.price.label(class="form-control-label") }}
+                        {% if form.price.errors %}
+                            {{ form.price(class="form-control form-control-lg is-invalid") }}
+                            <div style="color:red">
+                                {% for error in form.price.errors %}
+                                    <span style="font-size:13px">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.price(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="form-group">
+                    {{ form.connectedSites.label(class="form-control-label") }}
+                    {% if form.connectedSites.errors %}
+                        {{ form.connectedSites(class="form-control form-control-lg is-invalid") }}
+                        <div style="color:red">
+                            {% for error in form.connectedSites.errors %}
+                                <span style="font-size:13px">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.connectedSites(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+            </fieldset>
+            <div class="form-group">
+                {{ form.submit(class="btn btn-outline-info") }}
+            </div>
+        </form>
+    </div>
+{% endblock content %}
