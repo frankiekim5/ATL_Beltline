@@ -264,7 +264,21 @@ def create_site():
         address = form.address.data 
         manager = form.manager.data 
         openEveryday = form.openEveryday.data
-    return render_template("create_site.html", title="Create Site", form=form)
+    return render_template("create_site.html", title="Create Site", form=form, legend="Create Site")
+
+@app.route('/edit_site', methods=['GET', 'POST'])
+def edit_site(): 
+    ## can query from the database to get the specific SiteName as PK 
+    ## site = query using curr
+    form = CreateSiteForm()
+    if form.validate_on_submit(): 
+        ## here is where the site.name etc. should be in order to update 
+        siteName = form.siteName.data
+        zipcode = form.zipcode.data
+        address = form.address.data 
+        manager = form.manager.data 
+        openEveryday = form.openEveryday.data
+    return render_template("create_site.html", title="Edit Site", form=form, legend="Edit Site")
 
     
 if __name__ == '__main__':

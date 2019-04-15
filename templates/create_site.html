@@ -4,7 +4,7 @@
         <form method="POST" action="">
             {{ form.hidden_tag() }}
             <fieldset class="form-group">
-                <legend class="border-bottom mb-4" style="font-size:35px">Create Site</legend>
+                <legend class="border-bottom mb-4" style="font-size:35px">{{ legend }}</legend>
                 <div class="row">
                     <div class="form-group col-md-6">
                         {{ form.siteName.label(class="form-control-label") }}

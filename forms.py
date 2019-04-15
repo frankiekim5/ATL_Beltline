@@ -96,4 +96,4 @@ class CreateSiteForm(FlaskForm):
     manager = SelectField('Manager', 
         choices = [('Frankie Kim', 'Frankie Kim')], validators=[DataRequired()])
     openEveryday = BooleanField('Open Everyday')
-    submit = SubmitField('Create')
+    submit = SubmitField('Submit')
