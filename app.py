@@ -172,7 +172,7 @@ def registerEmployeeVisitor():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        if form.email.data == 'frankiekim5@gmail.com' and form.password.data == 'password':
+        if request.method == 'POST':
             flash('You have been logged in', 'success')
             return redirect(url_for('main'))
         else:

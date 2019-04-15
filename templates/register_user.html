@@ -2,6 +2,7 @@
 {% block navigation %}
 {% endblock navigation %}
 {% block content %}
+    <script src="{{ url_for('static', filename='js/email.js') }}"></script>
     <div class="content-section">
         <form method="POST" action="">
             {{ form.hidden_tag() }}
@@ -72,7 +73,7 @@
                         {{ form.confirm_password(class="form-control form-control-lg") }}
                     {% endif %}              
                 </div>
-                <div class="form-group">
+                <div class="form-group" id="emailInput">
                     {{ form.email.label(class="form-control-label") }}
                     {% if form.email.errors %}
                         {{ form.email(class="form-control form-control-lg is-invalid") }}
@@ -83,8 +84,9 @@
                         </div>
                     {% else %}
                         {{ form.email(class="form-control form-control-lg") }}
+                        <input type="button" class="btn btn-outline-info" value="Add" onclick="addEmail('emailInput');">
                     {% endif %}
-                    <a class="ml-2" href="{{ url_for('login') }}">Add</a>
+                    <!-- <a class="ml-2" href="{{ url_for('login') }}">Add</a> -->
                 </div>
             </fieldset>
             <div class="form-group">
