@@ -20,10 +20,6 @@ app.config['SECRET_KEY'] = '9a5abb1bd779b72b6a20aeb3cc1d9731'
 def main():
     return render_template('index.html', userType=request.args.get('userType'), username=request.args.get('username'))
 
-@app.route('/about')
-def about():
-    return render_template('about.html', title='About')
-
 @app.route('/registerNav')
 def registerNav():
     return render_template('register.html', title='Register Navigation')
