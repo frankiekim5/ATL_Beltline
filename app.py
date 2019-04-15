@@ -1,6 +1,6 @@
 from flask import Flask, render_template, url_for, flash, redirect, session, request
 from flask_mysqldb import MySQL
-from forms import UserRegistrationForm, LoginForm, VisitorRegistrationForm, EmployeeRegistrationForm, EmployeeVisitorRegistrationForm, CreateTransitForm
+from forms import UserRegistrationForm, LoginForm, VisitorRegistrationForm, EmployeeRegistrationForm, EmployeeVisitorRegistrationForm, CreateTransitForm, CreateSiteForm
 from passlib.hash import sha256_crypt
 
 app = Flask(__name__)
@@ -245,6 +245,9 @@ def logout():
     session.clear()
     flash('You are now logged out', 'success')
     return redirect(url_for('login'))
+
+
+## SCREEN 24
 @app.route('/create_transit', methods=['GET','POST'])
 def create_transit(): 
     form = CreateTransitForm()
@@ -253,7 +256,47 @@ def create_transit():
         route = form.route.data 
         price = form.price.data
         connectedSites = form.connectedSites.data
-    return render_template("create_transit.html", title='Create Transit', form=form)
+    return render_template("create_transit.html", title='Create Transit', form=form, legend='Create Transit')
 
+## SCREEN 23
+@app.route('/edit_transit', methods=['GET', 'POST'])
+def edit_transit(): 
+    form = CreateTransitForm()
+    ## MUST WRITE QUERIES HERE 
+    if form.validate_on_submit(): 
+        transportType = form.transportType.data 
+        route = form.route.data 
+        price = form.price.data
+        connectedSites = form.connectedSites.data
+    return render_template("create_transit.html", title='Edit Transit', form=form, legend='Edit Transit') 
+
+## SCREEN 21
+@app.route('/create_site', methods=['GET', 'POST'])
+def create_site(): 
+    form = CreateSiteForm()
+    if form.validate_on_submit() and request.method == 'POST': 
+        siteName = form.siteName.data
+        zipcode = form.zipcode.data
+        address = form.address.data 
+        manager = form.manager.data 
+        openEveryday = form.openEveryday.data
+    return render_template("create_site.html", title="Create Site", form=form, legend="Create Site")
+
+## SCREEN 20 
+@app.route('/edit_site', methods=['GET', 'POST'])
+def edit_site(): 
+    ## can query from the database to get the specific SiteName as PK 
+    ## site = query using curr
+    form = CreateSiteForm()
+    if form.validate_on_submit(): 
+        ## here is where the site.name etc. should be in order to update 
+        siteName = form.siteName.data
+        zipcode = form.zipcode.data
+        address = form.address.data 
+        manager = form.manager.data 
+        openEveryday = form.openEveryday.data
+    return render_template("create_site.html", title="Edit Site", form=form, legend="Edit Site")
+
+    
 if __name__ == '__main__':
     app.run(debug=True)
