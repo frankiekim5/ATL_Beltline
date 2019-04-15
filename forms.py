@@ -43,7 +43,7 @@ class EmployeeRegistrationForm(FlaskForm): # inherits from FlaskForm
         'State',
         choices=[(state, state) for state in STATE_ABBREV]
     )
-    zipcode = IntegerField('Zipcode', validators=[DataRequired(), NumberRange(min=10000, max=99999, message="Zipcode must be 5 digits.")])
+    zipcode = StringField('Zipcode', validators=[DataRequired(), Length(min=5, max=5, message="Zipcode must be 5 digits.")])
     email = StringField('Email', validators=[DataRequired(), Email()])
     submit = SubmitField('Sign Up')
 
@@ -69,7 +69,7 @@ class EmployeeVisitorRegistrationForm(FlaskForm): # inherits from FlaskForm
         'State',
         choices=[(state, state) for state in STATE_ABBREV]
     )
-    zipcode = IntegerField('Zipcode', validators=[DataRequired(), NumberRange(min=10000, max=99999, message="Zipcode must be 5 digits.")])
+    zipcode = StringField('Zipcode', validators=[DataRequired(), Length(min=5, max=5, message="Zipcode must be 5 digits.")])
     email = StringField('Email', validators=[DataRequired(), Email()])
     submit = SubmitField('Sign Up')
 

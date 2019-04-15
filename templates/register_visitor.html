@@ -1,6 +1,10 @@
 {% extends "layout.html" %}
-{% block navigation %}
-{% endblock navigation %}
+{% block leftnav %}
+{% endblock leftnav %}
+{% block rightnav %}
+    <a class="nav-item nav-link" href="/login">Login</a>
+    <a class="nav-item nav-link" href="/registerNav">Register</a>
+{% endblock rightnav %}
 {% block content %}
     <div class="content-section">
         <form method="POST" action="">
