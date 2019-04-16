@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, IntegerField, DecimalField, BooleanField, DateField, TextAreaField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, IntegerField, DecimalField, BooleanField, DateField, TextAreaField, RadioField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, NumberRange
 
 
@@ -115,3 +115,11 @@ class EventForm(FlaskForm):
     assignStaff = SelectField('Assign Staff', validators=[DataRequired()], 
         choices = [('Timmy Wu', 'Timmy Wu')])
     submit = SubmitField('Submit')
+
+class ManageSiteForm(FlaskForm): 
+    site = SelectField('Site', choices = [('Inman Park', 'Inman Park')], validators=[DataRequired()])
+    manager = SelectField('Manager', choices = [('Timmy','Timmy')], validators=[DataRequired()])
+    openEveryDay = SelectField('Open Everyday', choices = [('yes', 'yes'), ('no','no')], validators=[DataRequired()])
+    siteList = RadioField('Sites', choices=[('Inman Park', 'Inman Park'), ('West Village', 'West Village')])
+    filter = SubmitField('Filter')
+    
