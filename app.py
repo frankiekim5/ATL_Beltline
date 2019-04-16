@@ -1,6 +1,6 @@
-from flask import Flask, render_template, url_for, flash, redirect, session, request
+from flask import Flask, render_template, url_for, flash, redirect, session, request, jsonify
 from flask_mysqldb import MySQL
-from forms import UserRegistrationForm, LoginForm, VisitorRegistrationForm, EmployeeRegistrationForm, EmployeeVisitorRegistrationForm, TransitForm, EmailRegistrationForm, TransitForm, SiteForm
+from forms import UserRegistrationForm, LoginForm, VisitorRegistrationForm, EmployeeRegistrationForm, EmployeeVisitorRegistrationForm, TransitForm, EmailRegistrationForm, TransitForm, SiteForm, EventForm
 from passlib.hash import sha256_crypt
 
 app = Flask(__name__)
@@ -20,10 +20,20 @@ app.config['SECRET_KEY'] = '9a5abb1bd779b72b6a20aeb3cc1d9731'
 def main():
     return render_template('index.html', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
 
-@app.route('/profile')
+@app.route('/profile', methods=['GET', 'POST'])
 def profile():
     form = EmailRegistrationForm()
-    return render_template('profile.html', form=form, emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+    if request.method == 'POST':
+        for email in session['emails']:
+            if request.form[email] == email:
+                session['emails'].remove(email)
+                cur = mysql.connection.cursor()
+                cur.execute("DELETE FROM user_email WHERE email=%s", (email,))
+                mysql.connection.commit()
+                cur.close()
+        return render_template('profile.html', form=form, emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+    else:
+        return render_template('profile.html', form=form, emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
 
 @app.route('/registerNav')
 def registerNav():
@@ -254,7 +264,9 @@ def logout():
     flash('You are now logged out', 'success')
     return redirect(url_for('login'))
 
-
+@app.route('/transit_nav')
+def transit_nav():
+    return render_template('transit_navigation.html', title='Transit Navigation', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
 ## SCREEN 24
 @app.route('/create_transit', methods=['GET','POST'])
 def create_transit(): 
@@ -264,7 +276,20 @@ def create_transit():
         route = form.route.data 
         price = form.price.data
         connectedSites = form.connectedSites.data
-    return render_template("create_transit.html", title='Create Transit', form=form, legend='Create Transit')
+
+         # Create cursor
+        cur = mysql.connection.cursor()
+
+        # Execute query
+        cur.execute("INSERT INTO transit(transit_type, transit_route, transit_price) VALUES(%s, %s, %s)", (transportType, route, price))
+
+        # Commit to DB
+        mysql.connection.commit()
+
+        # Close connection
+        cur.close()
+        return redirect(url_for('transit_nav', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username')))
+    return render_template("create_transit.html", title='Create Transit', form=form, legend='Create Transit', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
 
 ## SCREEN 23
 @app.route('/edit_transit', methods=['GET', 'POST'])
@@ -276,21 +301,63 @@ def edit_transit():
         route = form.route.data 
         price = form.price.data
         connectedSites = form.connectedSites.data
-    return render_template("create_transit.html", title='Edit Transit', form=form, legend='Edit Transit') 
+    return render_template("create_transit.html", title='Edit Transit', form=form, legend='Edit Transit', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username')) 
 
-## SCREEN 21
+def view_managers_for_sites():
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        # Query retrieves first and last names for unassigned managers
+        cur.execute("SELECT firstname, lastname FROM user WHERE username in (SELECT username FROM manager WHERE username not in (SELECT manager_username FROM site))")
+        results = cur.fetchall()
+
+        managers = []
+        for manager in results:
+            fullName = manager['firstname'] + " " + manager['lastname']
+            managers.append(fullName)
+
+        # Commit to DB
+        mysql.connection.commit()
+
+        # Close connection
+        cur.close()
+        return managers
+
+@app.route('/site_nav')
+def site_nav():
+    return render_template('site_navigation.html', title='Site Navigation', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+
 @app.route('/create_site', methods=['GET', 'POST'])
 def create_site(): 
     form = SiteForm()
+    managers = view_managers_for_sites()
     if form.validate_on_submit() and request.method == 'POST': 
         siteName = form.siteName.data
         zipcode = form.zipcode.data
         address = form.address.data 
-        manager = form.manager.data 
+        manager = request.form.get('unassigned_managers')
         openEveryday = form.openEveryday.data
-    return render_template("create_site.html", title="Create Site", form=form, legend="Create Site")
 
-## SCREEN 20 
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        # Execute queries
+        # Get manager's username
+        manager = manager.split()
+        cur.execute("SELECT username FROM user WHERE firstname=%s and lastname=%s", [manager[0], manager[1]])
+        manager_username = cur.fetchone()
+        # Set manager's assigned to site value to True (1)
+        cur.execute("INSERT INTO site(site_name, manager_username, zipcode, address, open_everyday) VALUES(%s, %s, %s, %s, %s)", (siteName, manager_username['username'], zipcode, address, openEveryday))
+
+        # Commit to DB
+        mysql.connection.commit()
+
+        # Close connection
+        cur.close()
+        return redirect(url_for('site_nav', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username')))
+    return render_template("create_site.html", title='Create Site', form=form, legend='Create Site', unassigned_managers=managers)
+
+#
 @app.route('/edit_site', methods=['GET', 'POST'])
 def edit_site(): 
     ## can query from the database to get the specific SiteName as PK 
