@@ -264,9 +264,9 @@ def logout():
     flash('You are now logged out', 'success')
     return redirect(url_for('login'))
 
-@app.route('/transit_nav')
-def transit_nav():
-    return render_template('transit_navigation.html', title='Transit Navigation', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+@app.route('/manage_transit')
+def manage_transit():
+    return render_template('manage_transit.html', title='Manage Transit', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
 ## SCREEN 24
 @app.route('/create_transit', methods=['GET','POST'])
 def create_transit(): 
@@ -387,8 +387,6 @@ def create_event():
         description = form.description.data
         assignStaff = form.assignStaff.data
     return render_template("create_event.html", title="Create Event", form=form)
-
-
 
 if __name__ == '__main__':
     app.run(debug=True)
