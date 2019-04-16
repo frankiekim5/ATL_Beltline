@@ -1,6 +1,6 @@
 from flask import Flask, render_template, url_for, flash, redirect, session, request
 from flask_mysqldb import MySQL
-from forms import UserRegistrationForm, LoginForm, VisitorRegistrationForm, EmployeeRegistrationForm, EmployeeVisitorRegistrationForm, CreateTransitForm, EmailRegistrationForm,  CreateTransitForm, CreateSiteForm
+from forms import UserRegistrationForm, LoginForm, VisitorRegistrationForm, EmployeeRegistrationForm, EmployeeVisitorRegistrationForm, TransitForm, EmailRegistrationForm, TransitForm, SiteForm
 from passlib.hash import sha256_crypt
 
 app = Flask(__name__)
@@ -258,7 +258,7 @@ def logout():
 ## SCREEN 24
 @app.route('/create_transit', methods=['GET','POST'])
 def create_transit(): 
-    form = CreateTransitForm()
+    form = TransitForm()
     if form.validate_on_submit() and request.method == 'POST': 
         transportType = form.transportType.data 
         route = form.route.data 
@@ -269,7 +269,7 @@ def create_transit():
 ## SCREEN 23
 @app.route('/edit_transit', methods=['GET', 'POST'])
 def edit_transit(): 
-    form = CreateTransitForm()
+    form = TransitForm()
     ## MUST WRITE QUERIES HERE 
     if form.validate_on_submit(): 
         transportType = form.transportType.data 
@@ -281,7 +281,7 @@ def edit_transit():
 ## SCREEN 21
 @app.route('/create_site', methods=['GET', 'POST'])
 def create_site(): 
-    form = CreateSiteForm()
+    form = SiteForm()
     if form.validate_on_submit() and request.method == 'POST': 
         siteName = form.siteName.data
         zipcode = form.zipcode.data
@@ -295,7 +295,7 @@ def create_site():
 def edit_site(): 
     ## can query from the database to get the specific SiteName as PK 
     ## site = query using curr
-    form = CreateSiteForm()
+    form = SiteForm()
     if form.validate_on_submit(): 
         ## here is where the site.name etc. should be in order to update 
         siteName = form.siteName.data
@@ -305,6 +305,22 @@ def edit_site():
         openEveryday = form.openEveryday.data
     return render_template("create_site.html", title="Edit Site", form=form, legend="Edit Site")
 
-    
+## SCREEN 27 
+@app.route('/create_event', methods=['GET', 'POST'])
+def create_event(): 
+    form = EventForm()  
+    if form.validate_on_submit(): 
+        name = form.name.data  
+        price = form.price.data 
+        capacity = form.capacity.data
+        minStaff = form.minStaff.data 
+        startDate = form.startDate.data
+        endDate = form.endDate.data 
+        description = form.description.data
+        assignStaff = form.assignStaff.data
+    return render_template("create_event.html", title="Create Event", form=form)
+
+
+
 if __name__ == '__main__':
     app.run(debug=True)

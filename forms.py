@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, IntegerField, DecimalField, BooleanField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, IntegerField, DecimalField, BooleanField, DateField, TextAreaField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, NumberRange
 
 
@@ -82,7 +82,7 @@ class LoginForm(FlaskForm): # inherits from FlaskForm
     remember= BooleanField('Remember Me')
     submit = SubmitField('Login')
 
-class CreateTransitForm(FlaskForm): 
+class TransitForm(FlaskForm): 
     transportType = SelectField('Transport Type', 
         choices = [('marta','MARTA'), ('bus','Bus'),('bike','Bike')], validators=[DataRequired()])
     route = StringField('Route', validators=[DataRequired()])
@@ -92,11 +92,23 @@ class CreateTransitForm(FlaskForm):
     submit = SubmitField('Create')
 
 
-class CreateSiteForm(FlaskForm): 
+class SiteForm(FlaskForm): 
     siteName = StringField('Name', validators=[DataRequired()])
     zipcode = IntegerField('Zipcode', validators=[DataRequired()])
     address = StringField('Address', validators=[DataRequired()])
     manager = SelectField('Manager', 
         choices = [('Frankie Kim', 'Frankie Kim')], validators=[DataRequired()])
     openEveryday = BooleanField('Open Everyday')
+    submit = SubmitField('Submit')
+
+class EventForm(FlaskForm): 
+    name = StringField('Name', validators=[DataRequired()])
+    price = DecimalField('Price', validators=[DataRequired()])
+    capacity = IntegerField('Capacity', validators=[DataRequired()])
+    minStaff = IntegerField('Minimum Staff Required', validators=[DataRequired()])
+    startDate = DateField('Start Date', validators=[DataRequired()])
+    endDate = DateField('End Date', validators=[DataRequired()])
+    description = TextAreaField('Description', validators=[DataRequired()])
+    assignStaff = SelectField('Assign Staff', validators=[DataRequired()], 
+        choices = [('Timmy Wu', 'Timmy Wu')])
     submit = SubmitField('Submit')

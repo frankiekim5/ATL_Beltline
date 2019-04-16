@@ -1,0 +1,122 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-section">
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4" style="font-size:35px">Create Event</legend>
+                <div class="form-group">
+                    {{ form.name.label(class="form-control-label") }}
+                    {% if form.name.errors %}
+                        {{ form.name(class="form-control form-control-lg is-invalid") }}
+                        <div style="color:red">
+                            {% for error in form.name.errors %}
+                                <span style="font-size:13px">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.name(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        {{ form.price.label(class="form-control-label") }}
+                        {% if form.price.errors %}
+                            {{ form.price(class="form-control form-control-lg is-invalid") }}
+                            <div style="color:red">
+                                {% for error in form.price.errors %}
+                                    <span style="font-size:13px">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.price(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group col-md-4">
+                        {{ form.capacity.label(class="form-control-label") }}
+                        {% if form.capacity.errors %}
+                            {{ form.capacity(class="form-control form-control-lg is-invalid") }}
+                            <div style="color:red">
+                                {% for error in form.capacity.errors %}
+                                    <span style="font-size:13px">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.capacity(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group col-md-4">
+                        {{ form.minStaff.label(class="form-control-label") }}
+                        {% if form.minStaff.errors %}
+                            {{ form.minStaff(class="form-control form-control-lg is-invalid") }}
+                            <div style="color:red">
+                                {% for error in form.minStaff.errors %}
+                                    <span style="font-size:13px">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.minStaff(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class="form-group col-md-6">
+                        {{ form.startDate.label(class="form-control-label") }}
+                        {% if form.startDate.errors %}
+                            {{ form.startDate(class="form-control form-control-lg is-invalid") }}
+                            <div style="color:red">
+                                {% for error in form.startDate.errors %}
+                                    <span style="font-size:13px">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.startDate(class="form-control form-control-lg", type="date") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group col-md-6">
+                        {{ form.endDate.label(class="form-control-label") }}
+                        {% if form.endDate.errors %}
+                            {{ form.endDate(class="form-control form-control-lg is-invalid") }}
+                            <div style="color:red">
+                                {% for error in form.endDate.errors %}
+                                    <span style="font-size:13px">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.endDate(class="form-control form-control-lg", type="date") }}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="form-group">
+                    {{ form.description.label(class="form-control-label") }}
+                    {% if form.description.errors %}
+                        {{ form.description(class="form-control form-control-lg is-invalid") }}
+                        <div style="color:red">
+                            {% for error in form.description.errors %}
+                                <span style="font-size:13px">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.description(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.assignStaff.label(class="form-control-label") }}
+                    {% if form.assignStaff.errors %}
+                        {{ form.assignStaff(class="form-control form-control-lg is-invalid") }}
+                        <div style="color:red">
+                            {% for error in form.assignStaff.errors %}
+                                <span style="font-size:13px">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.assignStaff(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+            </fieldset>
+            <div class="form-group">
+                    {{ form.submit(class="btn btn-outline-info") }}
+            </div>
+        </form>
+    </div>
+{% endblock content %}
