@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="content-section">
+        <!-- <h1 style="text-align: center">Register Navigation</h1> -->
+        <legend class="border-bottom mb-4" style="text-align:center; font-size:35px">Transit Navigation</legend>
+        <div class="navbar-nav">
+            <a class="btn btn-outline-info" href="{{ url_for('transit_nav', emails=emails, userType=userType, username=username) }}" style="font-size:25px">Manage Transit</a>
+            <br>
+            <a class="btn btn-outline-info" href="{{ url_for('edit_transit', emails=emails, userType=userType, username=username) }}" style="font-size:25px">Edit Transit</a>
+            <br>
+            <a class="btn btn-outline-info" href="{{ url_for('create_transit', emails=emails, userType=userType, username=username) }}" style="font-size:25px">Create Transit</a>
+            <br>
+            <a class="btn btn-outline-info" href="{{ url_for('main', emails=emails, userType=userType, username=username) }}" style="font-size:25px">Back</a>
+        </div>
+    </div>
+{% endblock content %}

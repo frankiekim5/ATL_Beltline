@@ -47,18 +47,13 @@
                     {% endif %}
                 </div>
                 <div class="row">
-                    <div class="form-group col-md-8">
-                        {{ form.manager.label(class="form-control-label") }}
-                        {% if form.manager.errors %}
-                            {{ form.manager(class="form-control form-control-lg is-invalid") }}
-                            <div style="color:red">
-                                {% for error in form.manager.errors %}
-                                    <span style="font-size:13px">{{ error }}</span>
-                                {% endfor %}
-                            </div>
-                        {% else %}
-                            {{ form.manager(class="form-control form-control-lg") }}
-                        {% endif %}
+                    <div class="form-group col-md-8" id="inputType">
+                        <label for="unassigned_managers" class="form-control-label">Managers</label>
+                        <select name="unassigned_managers" class="form-control form-control-lg" id="unassigned_managers" required>
+                            {% for manager in unassigned_managers %}
+                                <option value='{{manager}}'>{{ manager }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                     <div class="form-group form-check col-md-4">
                         {{ form.openEveryday.label(class="form-control-label") }}

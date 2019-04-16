@@ -92,12 +92,15 @@ class TransitForm(FlaskForm):
     submit = SubmitField('Create')
 
 
-class SiteForm(FlaskForm): 
+class SiteForm(FlaskForm):
     siteName = StringField('Name', validators=[DataRequired()])
     zipcode = IntegerField('Zipcode', validators=[DataRequired()])
     address = StringField('Address', validators=[DataRequired()])
-    manager = SelectField('Manager', 
-        choices = [('Frankie Kim', 'Frankie Kim')], validators=[DataRequired()])
+    ### Access the Database to retrieve managers who haven't been assigned to a site yet ###
+    # def managers(self):
+    #     managers = SelectField('Manager', 
+    #         choices = self.unassigned_managers, validators=[DataRequired()])
+    #     return managers
     openEveryday = BooleanField('Open Everyday')
     submit = SubmitField('Submit')
 
