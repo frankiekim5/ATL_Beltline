@@ -18,12 +18,12 @@ app.config['SECRET_KEY'] = '9a5abb1bd779b72b6a20aeb3cc1d9731'
 
 @app.route('/')
 def main():
-    return render_template('index.html', session=request.args.get('session'), userType=request.args.get('userType'), username=request.args.get('username'))
+    return render_template('index.html', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
 
 @app.route('/profile')
 def profile():
     form = EmailRegistrationForm()
-    return render_template('profile.html', form=form, session=request.args.get('session'), userType=request.args.get('userType'), username=request.args.get('username'))
+    return render_template('profile.html', form=form, emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
 
 @app.route('/registerNav')
 def registerNav():
@@ -216,11 +216,11 @@ def login():
                         elif adminResult > 0:
                             # User is an admin. Redirect to homepage with admin's functionalities
                             session['userType'] = 'Administrator-Visitor'
-                        return redirect(url_for('main', session=session, userType=session['userType'], username=session['username']))
+                        return redirect(url_for('main', emails=session['emails'], userType=session['userType'], username=session['username']))
                     else:
                         # User is only a visitor.
                         session['userType'] = 'Visitor'
-                        return redirect(url_for('main', session=session, userType=session['userType'], username=session['username']))
+                        return redirect(url_for('main', emails=session['emails'], userType=session['userType'], username=session['username']))
                 # Check if user is only an employee
                 if employeeResult > 0:
                     # User is also an employee. Check what type of employee user is.
@@ -233,10 +233,10 @@ def login():
                     elif adminResult > 0:
                         # User is an admin. Redirect to homepage with admin's functionalities
                         session['userType'] = 'Administrator'
-                    return redirect(url_for('main', session=session, userType=session['userType'], username=session['username']))
+                    return redirect(url_for('main', emails=session['emails'], userType=session['userType'], username=session['username']))
                 
                 flash('You have been logged in', 'success')
-                return redirect(url_for('main', session=session, userType=session['userType'], username=session['username']))
+                return redirect(url_for('main', emails=session['emails'], userType=session['userType'], username=session['username']))
             else:
                 flash('Invalid login', 'danger')
                 return render_template('login.html', title='Login', form=form)

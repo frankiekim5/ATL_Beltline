@@ -26,28 +26,28 @@
                 <div class="collapse navbar-collapse" id="navbarToggle">
                     <div class="navbar-nav mr-auto">
                         {% if userType == 'User' %}
-                            <a class="nav-item nav-link" href="{{ url_for('main', userType=userType, username=username) }}">Home</a>
+                            <a class="nav-item nav-link" href="{{ url_for('main', emails=emails, userType=userType, username=username) }}">Home</a>
                             <a class="nav-item nav-link" href="/about">User</a>
                         {% elif userType == 'Manager' %}
-                            <a class="nav-item nav-link" href="{{ url_for('main', userType=userType, username=username) }}">Home</a>    
+                        <a class="nav-item nav-link" href="{{ url_for('main', emails=emails, userType=userType, username=username) }}">Home</a>
                             <a class="nav-item nav-link" href="/about">Manager</a>
                         {% elif userType == 'Staff' %}
-                            <a class="nav-item nav-link" href="{{ url_for('main', userType=userType, username=username) }}">Home</a>
+                        <a class="nav-item nav-link" href="{{ url_for('main', emails=emails, userType=userType, username=username) }}">Home</a>
                             <a class="nav-item nav-link" href="/about">Staff</a>
                         {% elif userType == 'Administrator' %}
-                            <a class="nav-item nav-link" href="{{ url_for('main', userType=userType, username=username) }}">Home</a>
+                        <a class="nav-item nav-link" href="{{ url_for('main', emails=emails, userType=userType, username=username) }}">Home</a>
                             <a class="nav-item nav-link" href="/about">Administrator</a>
                         {% elif userType == 'Visitor' %}
-                            <a class="nav-item nav-link" href="{{ url_for('main', userType=userType, username=username) }}">Home</a>
+                        <a class="nav-item nav-link" href="{{ url_for('main', emails=emails, userType=userType, username=username) }}">Home</a>
                             <a class="nav-item nav-link" href="/about">Visitor</a>
                         {% elif userType == 'Manager-Visitor' %}
-                            <a class="nav-item nav-link" href="{{ url_for('main', userType=userType, username=username) }}">Home</a>
+                        <a class="nav-item nav-link" href="{{ url_for('main', emails=emails, userType=userType, username=username) }}">Home</a>
                             <a class="nav-item nav-link" href="/about">Manager-Visitor</a>
                         {% elif userType == 'Staff-Visitor' %}
-                            <a class="nav-item nav-link" href="{{ url_for('main', userType=userType, username=username) }}">Home</a>
+                        <a class="nav-item nav-link" href="{{ url_for('main', emails=emails, userType=userType, username=username) }}">Home</a>
                             <a class="nav-item nav-link" href="/about">Staff-Visitor</a>
                         {% elif userType == 'Administrator-Visitor' %}
-                            <a class="nav-item nav-link" href="{{ url_for('main', userType=userType, username=username) }}">Home</a>
+                        <a class="nav-item nav-link" href="{{ url_for('main', emails=emails, userType=userType, username=username) }}">Home</a>
                             <a class="nav-item nav-link" href="/about">Administrator-Visitor</a>
                         {% else %}
                             <a class="nav-item nav-link" href="/">Home</a>
@@ -56,28 +56,28 @@
                     <!-- Navbar Right Side -->
                     <div class="navbar-nav">
                         {% if userType == 'User' %}
-                            <a class="nav-item nav-link" href="{{ url_for('profile', userType=userType, username=username) }}">{{ username }}</a>
+                            <a class="nav-item nav-link" href="{{ url_for('profile', emails=emails, userType=userType, username=username) }}">{{ username }}</a>
                             <a class="nav-item nav-link" href="/logout">Logout</a>
                         {% elif userType == 'Manager' %}
-                            <a class="nav-item nav-link" href="{{ url_for('profile', userType=userType, username=username) }}">{{ username }}</a>
+                        <a class="nav-item nav-link" href="{{ url_for('profile', emails=emails, userType=userType, username=username) }}">{{ username }}</a>
                             <a class="nav-item nav-link" href="/logout">Logout</a>
                         {% elif userType == 'Staff' %}
-                            <a class="nav-item nav-link" href="{{ url_for('profile', userType=userType, username=username) }}">{{ username }}</a>
+                        <a class="nav-item nav-link" href="{{ url_for('profile', emails=emails, userType=userType, username=username) }}">{{ username }}</a>
                             <a class="nav-item nav-link" href="/logout">Logout</a>
                         {% elif userType == 'Administrator' %}
-                            <a class="nav-item nav-link" href="{{ url_for('profile', userType=userType, username=username) }}">{{ username }}</a>
+                        <a class="nav-item nav-link" href="{{ url_for('profile', emails=emails, userType=userType, username=username) }}">{{ username }}</a>
                             <a class="nav-item nav-link" href="/logout">Logout</a>
                         {% elif userType == 'Visitor' %}
-                            <a class="nav-item nav-link" href="{{ url_for('profile', userType=userType, username=username) }}">{{ username }}</a>
+                        <a class="nav-item nav-link" href="{{ url_for('profile', emails=emails, userType=userType, username=username) }}">{{ username }}</a>
                             <a class="nav-item nav-link" href="/logout">Logout</a>
                         {% elif userType == 'Manager-Visitor' %}
-                            <a class="nav-item nav-link" href="{{ url_for('profile', userType=userType, username=username) }}">{{ username }}</a>
+                        <a class="nav-item nav-link" href="{{ url_for('profile', emails=emails, userType=userType, username=username) }}">{{ username }}</a>
                             <a class="nav-item nav-link" href="/logout">Logout</a>
                         {% elif userType == 'Staff-Visitor' %}
-                            <a class="nav-item nav-link" href="{{ url_for('profile', userType=userType, username=username) }}">{{ username }}</a>
+                        <a class="nav-item nav-link" href="{{ url_for('profile', emails=emails, userType=userType, username=username) }}">{{ username }}</a>
                             <a class="nav-item nav-link" href="/logout">Logout</a>
                         {% elif userType == 'Administrator-Visitor' %}
-                            <a class="nav-item nav-link" href="{{ url_for('profile', userType=userType, username=username) }}">{{ username }}</a>
+                        <a class="nav-item nav-link" href="{{ url_for('profile', emails=emails, userType=userType, username=username) }}">{{ username }}</a>
                             <a class="nav-item nav-link" href="/logout">Logout</a>
                         {% else %}
                             <a class="nav-item nav-link" href="/login">Login</a>

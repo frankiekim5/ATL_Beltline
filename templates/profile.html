@@ -6,8 +6,9 @@
         <h3>User Type: {{ userType }}</h3>
         <br>
         <h2>Emails:</h2>
-        {% for email in session['email'] %}
-            {{ email(class="form-control form-control-lg") }}
+        {% for item in session['emails'] %}
+            <h5 class="form-control" class="form-control-lg">{{ item }}</h5>
+        {% endfor %}
         <div class="form-group">
                 {% if form.email.errors %}
                     {{ form.email(class="form-control form-control-lg is-invalid") }}
