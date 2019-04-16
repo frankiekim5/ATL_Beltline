@@ -323,9 +323,10 @@ def view_managers_for_sites():
         cur.close()
         return managers
 
-@app.route('/site_nav')
-def site_nav():
-    return render_template('site_navigation.html', title='Site Navigation', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+@app.route('/manage_site', methods=['GET', 'POST'])
+def manage_site():
+    form = SiteForm()
+    return render_template('manage_site.html', form=form, title='Manage Navigation', legend='Manage Site', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
 
 @app.route('/create_site', methods=['GET', 'POST'])
 def create_site(): 
@@ -355,12 +356,12 @@ def create_site():
         # Close connection
         cur.close()
         return redirect(url_for('site_nav', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username')))
-    return render_template("create_site.html", title='Create Site', form=form, legend='Create Site', unassigned_managers=managers)
+    return render_template("create_site.html", title='Create Site', form=form, legend='Create Site', unassigned_managers=managers, emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
 
 #
 @app.route('/edit_site', methods=['GET', 'POST'])
 def edit_site(): 
-    ## can query from the database to get the specific SiteName as PK 
+    ## can query from the database to get the specific SiteName as PK
     ## site = query using curr
     form = SiteForm()
     if form.validate_on_submit(): 
@@ -370,7 +371,7 @@ def edit_site():
         address = form.address.data 
         manager = form.manager.data 
         openEveryday = form.openEveryday.data
-    return render_template("create_site.html", title="Edit Site", form=form, legend="Edit Site")
+    return render_template("create_site.html", title="Edit Site", form=form, legend="Edit Site",  emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
 
 ## SCREEN 27 
 @app.route('/create_event', methods=['GET', 'POST'])
