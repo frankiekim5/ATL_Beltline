@@ -1,6 +1,6 @@
 from flask import Flask, render_template, url_for, flash, redirect, session, request, jsonify
 from flask_mysqldb import MySQL
-from forms import UserRegistrationForm, LoginForm, VisitorRegistrationForm, EmployeeRegistrationForm, EmployeeVisitorRegistrationForm, TransitForm, EmailRegistrationForm, TransitForm, SiteForm, EventForm
+from forms import UserRegistrationForm, LoginForm, VisitorRegistrationForm, EmployeeRegistrationForm, EmployeeVisitorRegistrationForm, TransitForm, EmailRegistrationForm, TransitForm, SiteForm, EventForm, ManageSiteForm
 from passlib.hash import sha256_crypt
 
 app = Flask(__name__)
@@ -267,6 +267,7 @@ def logout():
 @app.route('/manage_transit')
 def manage_transit():
     return render_template('manage_transit.html', title='Manage Transit', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+
 ## SCREEN 24
 @app.route('/create_transit', methods=['GET','POST'])
 def create_transit(): 
@@ -325,7 +326,12 @@ def view_managers_for_sites():
 
 @app.route('/manage_site', methods=['GET', 'POST'])
 def manage_site():
-    form = SiteForm()
+    form = ManageSiteForm()
+    if form.validate_on_submit(): 
+        site = form.site.data 
+        manager = form.manager.data 
+        openEveryDay = form.openEveryDay.data 
+        siteList = form.siteList.data 
     return render_template('manage_site.html', form=form, title='Manage Navigation', legend='Manage Site', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
 
 @app.route('/create_site', methods=['GET', 'POST'])
@@ -386,6 +392,8 @@ def create_event():
         endDate = form.endDate.data 
         description = form.description.data
         assignStaff = form.assignStaff.data
+       
+
     return render_template("create_event.html", title="Create Event", form=form)
 
 if __name__ == '__main__':
