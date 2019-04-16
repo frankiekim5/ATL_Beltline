@@ -1,6 +1,6 @@
 from flask import Flask, render_template, url_for, flash, redirect, session, request
 from flask_mysqldb import MySQL
-from forms import UserRegistrationForm, LoginForm, VisitorRegistrationForm, EmployeeRegistrationForm, EmployeeVisitorRegistrationForm, TransitForm, SiteForm, EventForm
+from forms import UserRegistrationForm, LoginForm, VisitorRegistrationForm, EmployeeRegistrationForm, EmployeeVisitorRegistrationForm, TransitForm, EmailRegistrationForm, TransitForm, SiteForm
 from passlib.hash import sha256_crypt
 
 app = Flask(__name__)
@@ -18,11 +18,12 @@ app.config['SECRET_KEY'] = '9a5abb1bd779b72b6a20aeb3cc1d9731'
 
 @app.route('/')
 def main():
-    return render_template('index.html', userType=request.args.get('userType'), username=request.args.get('username'))
+    return render_template('index.html', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
 
 @app.route('/profile')
 def profile():
-    return render_template('profile.html', userType=request.args.get('userType'), username=request.args.get('username'))
+    form = EmailRegistrationForm()
+    return render_template('profile.html', form=form, emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
 
 @app.route('/registerNav')
 def registerNav():
@@ -177,16 +178,23 @@ def login():
         if result > 0:
             # Get stored password hash
             password = cur.fetchone()['password']
-            # return '<h1>' + str(password) + '</h1>'
+            # return '<h1>' + str(session) + '</h1>'
 
             # Compare passwords
             if sha256_crypt.verify(password_candidate, password):
                 # Passwords matched
                 session['logged_in'] = True
-                session['email'] = email
                 session['username'] = username
-                session['userType'] = 'User' # default to User. Will be changed below if the user is more than just a user.
-                # return '<h1>' + str(session['username']) + '</h1>'
+                session['userType'] = 'User' # default to User. Will be changed below if the user is more than just a user
+
+                # Retreive All emails associated with this user.
+                cur.execute("SELECT * from user_email WHERE username=%s", [username])
+                userEmail = cur.fetchall()
+                allEmails = []
+                for item in userEmail:
+                    allEmails.append(item['email'])
+                session['emails'] = allEmails
+                # return '<h1>' + str(session['emails']) + '</h1>'
                 
                 # Check what the user type is #
                 visitorResult = cur.execute("SELECT * FROM visitor WHERE username = %s", [username])
@@ -208,11 +216,11 @@ def login():
                         elif adminResult > 0:
                             # User is an admin. Redirect to homepage with admin's functionalities
                             session['userType'] = 'Administrator-Visitor'
-                        return redirect(url_for('main', userType=session['userType'], username=session['username']))
+                        return redirect(url_for('main', emails=session['emails'], userType=session['userType'], username=session['username']))
                     else:
                         # User is only a visitor.
                         session['userType'] = 'Visitor'
-                        return redirect(url_for('main', userType=session['userType'], username=session['username']))
+                        return redirect(url_for('main', emails=session['emails'], userType=session['userType'], username=session['username']))
                 # Check if user is only an employee
                 if employeeResult > 0:
                     # User is also an employee. Check what type of employee user is.
@@ -225,10 +233,10 @@ def login():
                     elif adminResult > 0:
                         # User is an admin. Redirect to homepage with admin's functionalities
                         session['userType'] = 'Administrator'
-                    return redirect(url_for('main', userType=session['userType'], username=session['username']))
+                    return redirect(url_for('main', emails=session['emails'], userType=session['userType'], username=session['username']))
                 
                 flash('You have been logged in', 'success')
-                return redirect(url_for('main', userType=session['userType'], username=session['username']))
+                return redirect(url_for('main', emails=session['emails'], userType=session['userType'], username=session['username']))
             else:
                 flash('Invalid login', 'danger')
                 return render_template('login.html', title='Login', form=form)
