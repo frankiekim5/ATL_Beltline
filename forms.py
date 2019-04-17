@@ -121,5 +121,13 @@ class ManageSiteForm(FlaskForm):
     manager = SelectField('Manager', choices = [('Timmy','Timmy')], validators=[DataRequired()])
     openEveryDay = SelectField('Open Everyday', choices = [('yes', 'yes'), ('no','no')], validators=[DataRequired()])
     siteList = RadioField('Sites', choices=[('Inman Park', 'Inman Park'), ('West Village', 'West Village')])
-    filter = SubmitField('Filter')
+    submit = SubmitField('Filter')
     
+class ManageTransitForm(FlaskForm): 
+    transportType = SelectField('Transport', choices = [('ALL','ALL'),('marta','MARTA'), ('bus','Bus'),('bike','Bike')],validators=[DataRequired()] )
+    route = StringField('Route', validators=[DataRequired()])
+    containSite = SelectField('Contain Site', choices = [('Inman Park', 'Inman Park')], validators=[DataRequired()])
+    minPrice = DecimalField('Min Price', validators=[DataRequired()])
+    maxPrice = DecimalField('Max Price', validators=[DataRequired()])
+    routeList = RadioField('Routes', choices = [('816','816'),('102','102')])
+    submit = SubmitField('Filter')
