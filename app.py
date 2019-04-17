@@ -304,47 +304,6 @@ def edit_transit():
         connectedSites = form.connectedSites.data
     return render_template("create_transit.html", title='Edit Transit', form=form, legend='Edit Transit', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username')) 
 
-def managers_assigned_and_sites():
-        # Create cursor
-        cur = mysql.connection.cursor()
-
-        # Query retrieves first and last names for unassigned managers
-        cur.execute("SELECT firstname, lastname FROM user WHERE username in (SELECT username FROM manager WHERE username in (SELECT manager_username FROM site))")
-        results = cur.fetchall()
-
-        managers = []
-        for manager in results:
-            fullName = manager['firstname'] + " " + manager['lastname']
-            managers.append(fullName)
-
-        # Query retrieves the sites by site_name
-        cur.execute("SELECT site_name from site")
-        results = cur.fetchall()
-
-        sites = []
-        for site in results:
-            sites.append(site['site_name'])
-
-        # Commit to DB
-        mysql.connection.commit()
-
-        # Close connection
-        cur.close()
-        sites_managers = [sites, managers]
-        return sites_managers
-
-@app.route('/manage_site', methods=['GET', 'POST'])
-def manage_site():
-    form = ManageSiteForm()
-    sites = managers_assigned_and_sites()[0]
-    managers = managers_assigned_and_sites()[1]
-    if form.validate_on_submit(): 
-        site = form.site.data 
-        manager = form.manager.data 
-        openEveryDay = form.openEveryDay.data 
-        siteList = form.siteList.data
-    return render_template('manage_site.html', form=form, sites=sites, managers=managers, title='Manage Navigation', legend='Manage Site', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
-
 def view_managers_for_sites():
         # Create cursor
         cur = mysql.connection.cursor()
@@ -364,6 +323,52 @@ def view_managers_for_sites():
         # Close connection
         cur.close()
         return managers
+
+def managers_assigned_and_sites():
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+        
+        # Query retrieves the sites by site_name
+        cur.execute("SELECT site_name, manager_username, open_everyday from site")
+        results2 = cur.fetchall()
+
+        sites = []
+        for site in results2:
+            # sites.append(site['site_name'])
+            each_site = {}
+            each_site['site'] = site['site_name']
+            each_site['manager'] = site['manager_username']
+            if site['open_everyday'] == 1:
+                each_site['open_everyday'] = 'Yes'
+            else:
+                each_site['open_everyday'] = 'No'
+            sites.append(each_site)
+        
+        for site in sites:
+            cur.execute("SELECT firstname, lastname FROM user WHERE username in (SELECT username FROM manager WHERE username in (SELECT manager_username FROM site WHERE site_name=%s))", [site['site']])
+            result = cur.fetchone()
+            fullName = result['firstname'] + " " + result['lastname']
+            site['manager'] = fullName
+
+        # cur.execute("SELECT firstname, lastname FROM user WHERE username in (SELECT username FROM manager WHERE username in (SELECT manager_username FROM site WHERE site_name=%s))", [site['site_name']])
+        # Commit to DB
+        mysql.connection.commit()
+
+        # Close connection
+        cur.close()
+        return sites
+
+@app.route('/manage_site', methods=['GET', 'POST'])
+def manage_site():
+    form = ManageSiteForm()
+    sites = managers_assigned_and_sites()
+    if form.validate_on_submit(): 
+        site = form.site.data 
+        manager = form.manager.data 
+        openEveryDay = form.openEveryDay.data 
+        siteList = form.siteList.data
+    return render_template('manage_site.html', form=form, sites=sites, title='Manage Navigation', legend='Manage Site', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
 
 @app.route('/create_site', methods=['GET', 'POST'])
 def create_site(): 
@@ -392,7 +397,7 @@ def create_site():
 
         # Close connection
         cur.close()
-        return redirect(url_for('site_nav', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username')))
+        return redirect(url_for('manage_site', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username')))
     return render_template("create_site.html", title='Create Site', form=form, legend='Create Site', unassigned_managers=managers, emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
 
 #
