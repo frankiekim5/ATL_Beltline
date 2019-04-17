@@ -1,7 +1,11 @@
 from flask import Flask, render_template, url_for, flash, redirect, session, request, jsonify
 from flask_mysqldb import MySQL
+<<<<<<< HEAD
+from forms import UserRegistrationForm, LoginForm, VisitorRegistrationForm, EmployeeRegistrationForm, EmployeeVisitorRegistrationForm, TransitForm, EmailRegistrationForm, TransitForm, SiteForm, EventForm, ManageSiteForm
+=======
 from forms import UserRegistrationForm, LoginForm, VisitorRegistrationForm, EmployeeRegistrationForm, EmployeeVisitorRegistrationForm, TransitForm, EmailRegistrationForm, TransitForm, SiteForm, EventForm, ManageSiteForm, ManageTransitForm, ManageUser
 from forms import ManageEvent, EditEvent
+>>>>>>> c58ac7a5f7285a4f113e7f3967e585c4424eace6
 from passlib.hash import sha256_crypt
 
 app = Flask(__name__)
@@ -265,6 +269,8 @@ def logout():
     flash('You are now logged out', 'success')
     return redirect(url_for('login'))
 
+<<<<<<< HEAD
+=======
 ## SCREEN 18 
 @app.route('/manage_user')
 def manage_user(): 
@@ -277,21 +283,14 @@ def manage_user():
     return render_template('manage_user.html', title="Manage User", legend="Manage User", form=form)
 
 ## SCREEN 22 
+>>>>>>> c58ac7a5f7285a4f113e7f3967e585c4424eace6
 @app.route('/manage_transit')
 def manage_transit():
-    form = ManageTransitForm()
-    if form.validate_on_submit(): 
-        transportType = form.transportType.data 
-        route = form.route.data 
-        containSite = form.containSite.data 
-        minPrice = form.minPrice.data 
-        maxPrice = form.maxPrice.data 
-        routeList = form.routeList.data
-    return render_template('manage_transit.html', title='Manage Transit', legend="Manage Transit", form = form, emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+    return render_template('manage_transit.html', title='Manage Transit', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
 
 ## SCREEN 24
 @app.route('/create_transit', methods=['GET','POST'])
-def create_transit(): 
+def create_transit():
     form = TransitForm()
     if form.validate_on_submit() and request.method == 'POST': 
         transportType = form.transportType.data 
@@ -345,16 +344,55 @@ def view_managers_for_sites():
         cur.close()
         return managers
 
+<<<<<<< HEAD
+def managers_assigned_and_sites():
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+        
+        # Query retrieves the sites by site_name
+        cur.execute("SELECT site_name, manager_username, open_everyday from site")
+        results2 = cur.fetchall()
+
+        sites = []
+        for site in results2:
+            # sites.append(site['site_name'])
+            each_site = {}
+            each_site['site'] = site['site_name']
+            each_site['manager'] = site['manager_username']
+            if site['open_everyday'] == 1:
+                each_site['open_everyday'] = 'Yes'
+            else:
+                each_site['open_everyday'] = 'No'
+            sites.append(each_site)
+        
+        for site in sites:
+            cur.execute("SELECT firstname, lastname FROM user WHERE username in (SELECT username FROM manager WHERE username in (SELECT manager_username FROM site WHERE site_name=%s))", [site['site']])
+            result = cur.fetchone()
+            fullName = result['firstname'] + " " + result['lastname']
+            site['manager'] = fullName
+
+        # cur.execute("SELECT firstname, lastname FROM user WHERE username in (SELECT username FROM manager WHERE username in (SELECT manager_username FROM site WHERE site_name=%s))", [site['site_name']])
+        # Commit to DB
+        mysql.connection.commit()
+
+        # Close connection
+        cur.close()
+        return sites
+
+=======
 ## SCREEN 19 
+>>>>>>> c58ac7a5f7285a4f113e7f3967e585c4424eace6
 @app.route('/manage_site', methods=['GET', 'POST'])
 def manage_site():
     form = ManageSiteForm()
+    sites = managers_assigned_and_sites()
     if form.validate_on_submit(): 
         site = form.site.data 
         manager = form.manager.data 
         openEveryDay = form.openEveryDay.data 
-        siteList = form.siteList.data 
-    return render_template('manage_site.html', form=form, title='Manage Navigation', legend='Manage Site', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+        siteList = form.siteList.data
+    return render_template('manage_site.html', form=form, sites=sites, title='Manage Navigation', legend='Manage Site', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
 
 
 ## SCREEN 21 
@@ -385,7 +423,7 @@ def create_site():
 
         # Close connection
         cur.close()
-        return redirect(url_for('site_nav', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username')))
+        return redirect(url_for('manage_site', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username')))
     return render_template("create_site.html", title='Create Site', form=form, legend='Create Site', unassigned_managers=managers, emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
 
 ## SCREEN 20 
