@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, IntegerField, DecimalField, BooleanField, DateField, TextAreaField, RadioField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, IntegerField, DecimalField, BooleanField, DateField, TextAreaField, RadioField, SelectMultipleField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, NumberRange
 
 
@@ -151,4 +151,14 @@ class ManageEvent(FlaskForm):
     minRevenueRange = IntegerField('Min Revenue Range')
     maxRevenueRange = IntegerField('Max Revenue Range')
     eventList = RadioField('Events', choices = [('Bus Tour','Bus Tour'), ('Private Bus Tour','Private Bus Tour')])
+    submit = SubmitField('Filter')
+
+class EditEvent(FlaskForm): 
+    staffAssigned = SelectMultipleField('Staff Assigned', 
+        choices = [('Timmy Wu', 'Timmy Wu'),("Danny Lee", "Danny Lee"),('Frankie Kim','Frankie Kim')])
+    description = TextAreaField('Description', validators=[DataRequired()])
+    minVisitsRange = IntegerField('Min Visits Range')
+    maxVisitsRange = IntegerField('Max Visits Range')
+    minRevenueRange = IntegerField('Min Revenue Range')
+    maxRevenueRange = IntegerField('Max Revenue Range')
     submit = SubmitField('Filter')

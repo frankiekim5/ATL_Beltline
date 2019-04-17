@@ -1,0 +1,142 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-section">
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4" style="font-size:35px">{{legend}}</legend>
+                <div class="row">
+                    <div class="col-md-6"> 
+                        <h5>Name:</h5>
+                        <p class="font-italic">Bus Tour (HARDCODED)</p>
+                    </div>
+                    <div class="col-md-6"> 
+                        <h5>Price:</h5>
+                        <p class="font-italic">$25</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6"> 
+                        <h5>Start Date:</h5>
+                        <p class="font-italic">2019-02-01</p>
+                    </div>
+                    <div class="col-md-6"> 
+                        <h5>End Date:</h5>
+                        <p class="font-italic">2019-02-04</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6"> 
+                        <h5>Min Staff Required:</h5>
+                        <p class="font-italic">4</p>
+                    </div>
+                    <div class="col-md-6"> 
+                        <h5>Capacity:</h5>
+                        <p class="font-italic">100</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    {{ form.description.label(class="form-control-label") }}
+                    {% if form.description.errors %}
+                        {{ form.description(class="form-control form-control-lg is-invalid") }}
+                        <div style="color:red">
+                            {% for error in form.description.errors %}
+                                <span style="font-size:13px">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.description(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.staffAssigned.label(class="form-control-label") }}
+                    {% if form.staffAssigned.errors %}
+                        {{ form.staffAssigned(class="form-control form-control-lg is-invalid") }}
+                        <div style="color:red">
+                            {% for error in form.staffAssigned.errors %}
+                                <span style="font-size:13px">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.staffAssigned(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="form-group col-md-3">
+                        {{ form.minVisitsRange.label(class="form-control-label") }}
+                        {% if form.minVisitsRange.errors %}
+                            {{ form.minVisitsRange(class="form-control form-control-lg is-invalid") }}
+                            <div style="color:red">
+                                {% for error in form.minVisitsRange.errors %}
+                                    <span style="font-size:13px">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.minVisitsRange(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group col-md-3">
+                        {{ form.maxVisitsRange.label(class="form-control-label") }}
+                        {% if form.maxVisitsRange.errors %}
+                            {{ form.maxVisitsRange(class="form-control form-control-lg is-invalid") }}
+                            <div style="color:red">
+                                {% for error in form.maxVisitsRange.errors %}
+                                    <span style="font-size:13px">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.maxVisitsRange(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group col-md-3">
+                        {{ form.minRevenueRange.label(class="form-control-label") }}
+                        {% if form.minRevenueRange.errors %}
+                            {{ form.minVisitsRange(class="form-control form-control-lg is-invalid") }}
+                            <div style="color:red">
+                                {% for error in form.minRevenueRange.errors %}
+                                    <span style="font-size:13px">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.minRevenueRange(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group col-md-3">
+                        {{ form.maxRevenueRange.label(class="form-control-label") }}
+                        {% if form.maxRevenueRange.errors %}
+                            {{ form.maxRevenueRange(class="form-control form-control-lg is-invalid") }}
+                            <div style="color:red">
+                                {% for error in form.maxRevenueRange.errors %}
+                                    <span style="font-size:13px">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.maxRevenueRange(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                </div>
+            </fieldset>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col">Daily Visits</th>
+                    <th scope="col">Daily Revenue($)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>HARDCODED</td>
+                        <td>HARDCODED</td>
+                        <td>HARDCODED</td>
+                    </tr> 
+                </tbody>
+            </table>
+            <div class="form-group">
+                {{ form.submit(class="btn btn-outline-info") }}
+                <a class="btn btn-outline-info" href="">Update</a>
+            </div>
+        </form>
+    </div>
+{% endblock content %}
