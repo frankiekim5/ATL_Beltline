@@ -138,3 +138,17 @@ class ManageUser(FlaskForm):
     status = SelectField('Status', choices = [('all','ALL'),('approved','Approved'),('pending','Pending'),('declined','Declined')])
     userList = RadioField('Routes', choices = [('cwilson','cwilson'),('jasonlee','jasonlee')])
     submit = SubmitField('Filter')
+
+class ManageEvent(FlaskForm): 
+    name = StringField('Name')
+    descriptionKeyword = StringField('Description Keyword')
+    startDate = DateField('Start Date')
+    endDate = DateField('End Date')
+    minDurationRange = IntegerField('Min Duration Range')
+    maxDurationRange = IntegerField('Max Duration Range')
+    minVisitsRange = IntegerField('Min Visits Range')
+    maxVisitsRange = IntegerField('Max Visits Range')
+    minRevenueRange = IntegerField('Min Revenue Range')
+    maxRevenueRange = IntegerField('Max Revenue Range')
+    eventList = RadioField('Events', choices = [('Bus Tour','Bus Tour'), ('Private Bus Tour','Private Bus Tour')])
+    submit = SubmitField('Filter')

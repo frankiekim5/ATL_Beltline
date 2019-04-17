@@ -1,6 +1,7 @@
 from flask import Flask, render_template, url_for, flash, redirect, session, request, jsonify
 from flask_mysqldb import MySQL
 from forms import UserRegistrationForm, LoginForm, VisitorRegistrationForm, EmployeeRegistrationForm, EmployeeVisitorRegistrationForm, TransitForm, EmailRegistrationForm, TransitForm, SiteForm, EventForm, ManageSiteForm, ManageTransitForm, ManageUser
+from forms import ManageEvent 
 from passlib.hash import sha256_crypt
 
 app = Flask(__name__)
@@ -402,6 +403,23 @@ def edit_site():
         openEveryday = form.openEveryday.data
     return render_template("create_site.html", title="Edit Site", form=form, legend="Edit Site",  emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
 
+## SCREEN 25 
+@app.route('/manage_event', methods=["GET", "POST"])
+def manage_event(): 
+    form = ManageEvent()
+    if form.validate_on_submit(): 
+        name = form.name.data
+        descriptionKeyword = form.descriptionKeyword.data
+        startDate = form.startDate.data 
+        endDate = form.endDate.data 
+        minDurationRange = form.minDurationRange.data 
+        maxDurationRange = form.maxDurationRange.data 
+        minVisitsRange = form.minVisitsRange.data 
+        maxVisitsRange = form.maxVisitsRange.data 
+        minRevenueRange = form.minRevenueRange.data 
+        maxRevenueRange = form.maxRevenueRange.data
+    return render_template('manage_event.html', title="Manage Event", legend="Manage Event", form=form)
+
 ## SCREEN 27 
 @app.route('/create_event', methods=['GET', 'POST'])
 def create_event(): 
@@ -415,8 +433,6 @@ def create_event():
         endDate = form.endDate.data 
         description = form.description.data
         assignStaff = form.assignStaff.data
-       
-
     return render_template("create_event.html", title="Create Event", form=form)
 
 if __name__ == '__main__':
