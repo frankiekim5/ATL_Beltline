@@ -117,10 +117,10 @@ class EventForm(FlaskForm):
     submit = SubmitField('Submit')
 
 class ManageSiteForm(FlaskForm): 
-    site = SelectField('Site', choices = [('Inman Park', 'Inman Park')], validators=[DataRequired()])
-    manager = SelectField('Manager', choices = [('Timmy','Timmy')], validators=[DataRequired()])
-    openEveryDay = SelectField('Open Everyday', choices = [('yes', 'yes'), ('no','no')], validators=[DataRequired()])
-    siteList = RadioField('Sites', choices=[('Inman Park', 'Inman Park'), ('West Village', 'West Village')])
+    # site = SelectField('Site', choices = [('all', '--All--')], validators=[DataRequired()])
+    # manager = SelectField('Manager', choices = [('all','--All--')], validators=[DataRequired()])
+    openEveryDay = SelectField('Open Everyday', choices = [('yes', 'Yes'), ('no','No')], validators=[DataRequired()])
+    # siteList = RadioField('Sites', choices=[('Inman Park', 'Inman Park'), ('West Village', 'West Village')])
     submit = SubmitField('Filter')
     
 class ManageTransitForm(FlaskForm): 
