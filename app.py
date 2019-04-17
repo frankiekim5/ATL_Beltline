@@ -1,6 +1,6 @@
 from flask import Flask, render_template, url_for, flash, redirect, session, request, jsonify
 from flask_mysqldb import MySQL
-from forms import UserRegistrationForm, LoginForm, VisitorRegistrationForm, EmployeeRegistrationForm, EmployeeVisitorRegistrationForm, TransitForm, EmailRegistrationForm, TransitForm, SiteForm, EventForm, ManageSiteForm
+from forms import UserRegistrationForm, LoginForm, VisitorRegistrationForm, EmployeeRegistrationForm, EmployeeVisitorRegistrationForm, TransitForm, EmailRegistrationForm, TransitForm, SiteForm, EventForm, ManageSiteForm, ManageTransitForm
 from passlib.hash import sha256_crypt
 
 app = Flask(__name__)
@@ -264,9 +264,18 @@ def logout():
     flash('You are now logged out', 'success')
     return redirect(url_for('login'))
 
+## SCREEN 22 
 @app.route('/manage_transit')
 def manage_transit():
-    return render_template('manage_transit.html', title='Manage Transit', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+    form = ManageTransitForm()
+    if form.validate_on_submit(): 
+        transportType = form.transportType.data 
+        route = form.route.data 
+        containSite = form.containSite.data 
+        minPrice = form.minPrice.data 
+        maxPrice = form.maxPrice.data 
+        routeList = form.routeList.data
+    return render_template('manage_transit.html', title='Manage Transit', legend="Manage Transit", form = form, emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
 
 ## SCREEN 24
 @app.route('/create_transit', methods=['GET','POST'])
