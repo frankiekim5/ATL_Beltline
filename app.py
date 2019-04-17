@@ -1,7 +1,7 @@
 from flask import Flask, render_template, url_for, flash, redirect, session, request, jsonify
 from flask_mysqldb import MySQL
 from forms import UserRegistrationForm, LoginForm, VisitorRegistrationForm, EmployeeRegistrationForm, EmployeeVisitorRegistrationForm, TransitForm, EmailRegistrationForm, TransitForm, SiteForm, EventForm, ManageSiteForm, ManageTransitForm, ManageUser
-from forms import ManageEvent, EditEvent, UserTakeTransit
+from forms import ManageEvent, EditEvent, UserTakeTransit, TransitHistory
 from passlib.hash import sha256_crypt
 
 app = Flask(__name__)
@@ -272,7 +272,11 @@ def take_transit():
     return render_template('take_transit.html', title="Take Transit",legend="Take Transit",form=form)
 
 ## SCREEN 16 
-
+@app.route('/transit_history', methods=['GET', 'POST'])
+def transit_history(): 
+    form = TransitHistory()
+    return render_template('transit_history.html', title="Transit History",legend="Transit History",form=form)
+ 
 ## SCREEN 17 
 
 
