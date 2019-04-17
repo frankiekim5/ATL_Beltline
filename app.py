@@ -270,7 +270,7 @@ def manage_transit():
 
 ## SCREEN 24
 @app.route('/create_transit', methods=['GET','POST'])
-def create_transit(): 
+def create_transit():
     form = TransitForm()
     if form.validate_on_submit() and request.method == 'POST': 
         transportType = form.transportType.data 
@@ -304,6 +304,47 @@ def edit_transit():
         connectedSites = form.connectedSites.data
     return render_template("create_transit.html", title='Edit Transit', form=form, legend='Edit Transit', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username')) 
 
+def managers_assigned_and_sites():
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        # Query retrieves first and last names for unassigned managers
+        cur.execute("SELECT firstname, lastname FROM user WHERE username in (SELECT username FROM manager WHERE username in (SELECT manager_username FROM site))")
+        results = cur.fetchall()
+
+        managers = []
+        for manager in results:
+            fullName = manager['firstname'] + " " + manager['lastname']
+            managers.append(fullName)
+
+        # Query retrieves the sites by site_name
+        cur.execute("SELECT site_name from site")
+        results = cur.fetchall()
+
+        sites = []
+        for site in results:
+            sites.append(site['site_name'])
+
+        # Commit to DB
+        mysql.connection.commit()
+
+        # Close connection
+        cur.close()
+        sites_managers = [sites, managers]
+        return sites_managers
+
+@app.route('/manage_site', methods=['GET', 'POST'])
+def manage_site():
+    form = ManageSiteForm()
+    sites = managers_assigned_and_sites()[0]
+    managers = managers_assigned_and_sites()[1]
+    if form.validate_on_submit(): 
+        site = form.site.data 
+        manager = form.manager.data 
+        openEveryDay = form.openEveryDay.data 
+        siteList = form.siteList.data
+    return render_template('manage_site.html', form=form, sites=sites, managers=managers, title='Manage Navigation', legend='Manage Site', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+
 def view_managers_for_sites():
         # Create cursor
         cur = mysql.connection.cursor()
@@ -323,16 +364,6 @@ def view_managers_for_sites():
         # Close connection
         cur.close()
         return managers
-
-@app.route('/manage_site', methods=['GET', 'POST'])
-def manage_site():
-    form = ManageSiteForm()
-    if form.validate_on_submit(): 
-        site = form.site.data 
-        manager = form.manager.data 
-        openEveryDay = form.openEveryDay.data 
-        siteList = form.siteList.data 
-    return render_template('manage_site.html', form=form, title='Manage Navigation', legend='Manage Site', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
 
 @app.route('/create_site', methods=['GET', 'POST'])
 def create_site(): 

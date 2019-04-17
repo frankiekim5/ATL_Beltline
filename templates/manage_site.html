@@ -5,31 +5,24 @@
             {{ form.hidden_tag() }}
             <fieldset class="form-group">
                 <legend class="border-bottom mb-4" style="font-size:35px">{{legend}}</legend>
+
                 <div class="form-group">
-                    {{ form.site.label(class="form-control-label") }}
-                    {% if form.site.errors %}
-                        {{ form.site(class="form-control form-control-lg is-invalid") }}
-                        <div style="color:red">
-                            {% for error in form.site.errors %}
-                            <span style="font-size:13px">{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ form.site(class="form-control form-control-lg") }}
-                    {% endif %}
+                    <label for="sites" class="form-control-label">Site</label>
+                    <select name="sites" class="form-control form-control-lg" id="sites" required>
+                        <option value="all">--All--</option>
+                        {% for site in sites %}
+                            <option value='{{site}}'>{{ site }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
                 <div class="form-group">
-                    {{ form.manager.label(class="form-control-label") }}
-                    {% if form.manager.errors %}
-                        {{ form.manager(class="form-control form-control-lg is-invalid") }}
-                        <div style="color:red">
-                            {% for error in form.manager.errors %}
-                            <span style="font-size:13px">{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ form.manager(class="form-control form-control-lg") }}
-                    {% endif %}
+                    <label for="managers" class="form-control-label">Manager</label>
+                    <select name="managers" class="form-control form-control-lg" id="managers" required>
+                        <option value="all">--All--</option>
+                        {% for manager in managers %}
+                            <option value='{{manager}}'>{{ manager }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
                 <div class="form-group">
                     {{ form.openEveryDay.label(class="form-control-label") }}
