@@ -162,3 +162,25 @@ class EditEvent(FlaskForm):
     minRevenueRange = IntegerField('Min Revenue Range')
     maxRevenueRange = IntegerField('Max Revenue Range')
     submit = SubmitField('Filter')
+
+class UserTakeTransit(FlaskForm): 
+    containSite = SelectField('Contain Site', 
+        choices = [("Inman Park","Inman Park")])
+    transportType = SelectField('Transport', choices = [('ALL','ALL'),('marta','MARTA'), ('bus','Bus'),('bike','Bike')],validators=[DataRequired()])
+    minPrice = DecimalField('Min Price', validators=[DataRequired()])
+    maxPrice = DecimalField('Max Price', validators=[DataRequired()])
+    routeList = RadioField('Routes', choices = [('816','816'),('102','102')])
+    transitDate = DateField('Transit Date')
+    submit = SubmitField('Filter')
+    logTransit = SubmitField('Log Transit')
+
+class TransitHistory(FlaskForm): 
+    transportType = SelectField('Transport', choices = [('ALL','ALL'),('marta','MARTA'), ('bus','Bus'),('bike','Bike')],validators=[DataRequired()])
+    containSite = SelectField('Contain Site', 
+        choices = [("Inman Park","Inman Park")])
+    route = StringField('Route', validators=[DataRequired()])
+    startDate = DateField('Start Date')
+    endDate = DateField('End Date')
+    submit = SubmitField('Filter')
+
+    
