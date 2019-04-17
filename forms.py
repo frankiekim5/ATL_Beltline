@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, IntegerField, DecimalField, BooleanField, DateField, TextAreaField, RadioField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, IntegerField, DecimalField, BooleanField, DateField, TextAreaField, RadioField, SelectMultipleField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, NumberRange
 
 
@@ -130,4 +130,35 @@ class ManageTransitForm(FlaskForm):
     minPrice = DecimalField('Min Price', validators=[DataRequired()])
     maxPrice = DecimalField('Max Price', validators=[DataRequired()])
     routeList = RadioField('Routes', choices = [('816','816'),('102','102')])
+    submit = SubmitField('Filter')
+
+class ManageUser(FlaskForm): 
+    username = StringField('Username')
+    usertype = SelectField('Type', choices = [('user','User'),('visitor','Visitor'),('staff','Staff'),('manager','Manager')], validators=[DataRequired()])
+    status = SelectField('Status', choices = [('all','ALL'),('approved','Approved'),('pending','Pending'),('declined','Declined')])
+    userList = RadioField('Routes', choices = [('cwilson','cwilson'),('jasonlee','jasonlee')])
+    submit = SubmitField('Filter')
+
+class ManageEvent(FlaskForm): 
+    name = StringField('Name')
+    descriptionKeyword = StringField('Description Keyword')
+    startDate = DateField('Start Date')
+    endDate = DateField('End Date')
+    minDurationRange = IntegerField('Min Duration Range')
+    maxDurationRange = IntegerField('Max Duration Range')
+    minVisitsRange = IntegerField('Min Visits Range')
+    maxVisitsRange = IntegerField('Max Visits Range')
+    minRevenueRange = IntegerField('Min Revenue Range')
+    maxRevenueRange = IntegerField('Max Revenue Range')
+    eventList = RadioField('Events', choices = [('Bus Tour','Bus Tour'), ('Private Bus Tour','Private Bus Tour')])
+    submit = SubmitField('Filter')
+
+class EditEvent(FlaskForm): 
+    staffAssigned = SelectMultipleField('Staff Assigned', 
+        choices = [('Timmy Wu', 'Timmy Wu'),("Danny Lee", "Danny Lee"),('Frankie Kim','Frankie Kim')])
+    description = TextAreaField('Description', validators=[DataRequired()])
+    minVisitsRange = IntegerField('Min Visits Range')
+    maxVisitsRange = IntegerField('Max Visits Range')
+    minRevenueRange = IntegerField('Min Revenue Range')
+    maxRevenueRange = IntegerField('Max Revenue Range')
     submit = SubmitField('Filter')

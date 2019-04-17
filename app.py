@@ -1,6 +1,11 @@
 from flask import Flask, render_template, url_for, flash, redirect, session, request, jsonify
 from flask_mysqldb import MySQL
+<<<<<<< HEAD
 from forms import UserRegistrationForm, LoginForm, VisitorRegistrationForm, EmployeeRegistrationForm, EmployeeVisitorRegistrationForm, TransitForm, EmailRegistrationForm, TransitForm, SiteForm, EventForm, ManageSiteForm
+=======
+from forms import UserRegistrationForm, LoginForm, VisitorRegistrationForm, EmployeeRegistrationForm, EmployeeVisitorRegistrationForm, TransitForm, EmailRegistrationForm, TransitForm, SiteForm, EventForm, ManageSiteForm, ManageTransitForm, ManageUser
+from forms import ManageEvent, EditEvent
+>>>>>>> c58ac7a5f7285a4f113e7f3967e585c4424eace6
 from passlib.hash import sha256_crypt
 
 app = Flask(__name__)
@@ -264,6 +269,21 @@ def logout():
     flash('You are now logged out', 'success')
     return redirect(url_for('login'))
 
+<<<<<<< HEAD
+=======
+## SCREEN 18 
+@app.route('/manage_user')
+def manage_user(): 
+    form = ManageUser()
+    if form.validate_on_submit(): 
+        username = form.username.data 
+        usertype = form.usertype.data 
+        status = form.status.data 
+        userList = form.userList.data 
+    return render_template('manage_user.html', title="Manage User", legend="Manage User", form=form)
+
+## SCREEN 22 
+>>>>>>> c58ac7a5f7285a4f113e7f3967e585c4424eace6
 @app.route('/manage_transit')
 def manage_transit():
     return render_template('manage_transit.html', title='Manage Transit', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
@@ -324,6 +344,7 @@ def view_managers_for_sites():
         cur.close()
         return managers
 
+<<<<<<< HEAD
 def managers_assigned_and_sites():
 
         # Create cursor
@@ -359,6 +380,9 @@ def managers_assigned_and_sites():
         cur.close()
         return sites
 
+=======
+## SCREEN 19 
+>>>>>>> c58ac7a5f7285a4f113e7f3967e585c4424eace6
 @app.route('/manage_site', methods=['GET', 'POST'])
 def manage_site():
     form = ManageSiteForm()
@@ -370,6 +394,8 @@ def manage_site():
         siteList = form.siteList.data
     return render_template('manage_site.html', form=form, sites=sites, title='Manage Navigation', legend='Manage Site', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
 
+
+## SCREEN 21 
 @app.route('/create_site', methods=['GET', 'POST'])
 def create_site(): 
     form = SiteForm()
@@ -400,7 +426,7 @@ def create_site():
         return redirect(url_for('manage_site', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username')))
     return render_template("create_site.html", title='Create Site', form=form, legend='Create Site', unassigned_managers=managers, emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
 
-#
+## SCREEN 20 
 @app.route('/edit_site', methods=['GET', 'POST'])
 def edit_site(): 
     ## can query from the database to get the specific SiteName as PK
@@ -415,21 +441,50 @@ def edit_site():
         openEveryday = form.openEveryday.data
     return render_template("create_site.html", title="Edit Site", form=form, legend="Edit Site",  emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
 
+## SCREEN 25 
+@app.route('/manage_event', methods=["GET", "POST"])
+def manage_event(): 
+    form = ManageEvent()
+    if form.validate_on_submit(): 
+        name = form.name.data
+        descriptionKeyword = form.descriptionKeyword.data
+        startDate = form.startDate.data 
+        endDate = form.endDate.data 
+        minDurationRange = form.minDurationRange.data 
+        maxDurationRange = form.maxDurationRange.data 
+        minVisitsRange = form.minVisitsRange.data 
+        maxVisitsRange = form.maxVisitsRange.data 
+        minRevenueRange = form.minRevenueRange.data 
+        maxRevenueRange = form.maxRevenueRange.data
+    return render_template('manage_event.html', title="Manage Event", legend="Manage Event", form=form)
+
+## SCREEN 26 
+@app.route('/edit_event', methods=["GET", "POST"])
+def edit_event(): 
+    form = EditEvent()
+    if form.validate_on_submit(): 
+        name = form.name.data 
+        price = form.price.data
+        capacity = form.capacity.data
+        minStaff = form.minStaff.data 
+        startDate = form.startDate.data
+        endDate = form.endDate.data 
+        staffAssigned = form.staffAssigned.data
+        description = form.description.data
+        minVisitsRange = form.minVisitsRange.data 
+        maxVisitsRange = form.maxVisitsRange.data 
+        minRevenueRange = form.minRevenueRange.data 
+        maxRevenueRange = form.maxRevenueRange.data
+    return render_template("edit_event.html", title="Edit Event", legend ="Edit Event", form=form)
+
 ## SCREEN 27 
 @app.route('/create_event', methods=['GET', 'POST'])
 def create_event(): 
     form = EventForm()  
     if form.validate_on_submit(): 
-        name = form.name.data  
-        price = form.price.data 
-        capacity = form.capacity.data
         minStaff = form.minStaff.data 
-        startDate = form.startDate.data
-        endDate = form.endDate.data 
         description = form.description.data
         assignStaff = form.assignStaff.data
-       
-
     return render_template("create_event.html", title="Create Event", form=form)
 
 if __name__ == '__main__':

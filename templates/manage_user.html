@@ -1,0 +1,115 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="content-section">
+            <form method="POST" action="">
+                {{ form.hidden_tag() }}
+                <fieldset class="form-group">
+                    <legend class="border-bottom mb-4" style="font-size:35px">{{legend}}</legend>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            {{ form.username.label(class="form-control-label") }}
+                            {% if form.username.errors %}
+                                {{ form.username(class="form-control form-control-lg is-invalid") }}
+                                <div style="color:red">
+                                    {% for error in form.username.errors %}
+                                    <span style="font-size:13px">{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form.username(class="form-control form-control-lg") }}
+                            {% endif %}
+                        </div>
+                        <div class="form-group col-md-3">
+                                {{ form.usertype.label(class="form-control-label") }}
+                                {% if form.usertype.errors %}
+                                    {{ form.usertype(class="form-control form-control-lg is-invalid") }}
+                                    <div style="color:red">
+                                        {% for error in form.usertype.errors %}
+                                        <span style="font-size:13px">{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ form.usertype(class="form-control form-control-lg") }}
+                                {% endif %}
+                        </div>
+                        <div class="form-group col-md-3">
+                            {{ form.status.label(class="form-control-label") }}
+                            {% if form.status.errors %}
+                                {{ form.status(class="form-control form-control-lg is-invalid") }}
+                                <div style="color:red">
+                                    {% for error in form.status.errors %}
+                                    <span style="font-size:13px">{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form.status(class="form-control form-control-lg") }}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        {{ form.userList.label(class="form-control-label") }}
+                        {% if form.userList.errors %}
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                    <th scope="col">Username</th>
+                                    <th scope="col">Email Count</th>
+                                    <th scope="col">User Type</th>
+                                    <th scope="col">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for choice in form.userList %}
+                                    <tr>
+                                        <td>{{choice}}&nbsp;{{ choice.label }}</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    {% endfor %}
+                                    
+                                </tbody>
+                            </table>
+                            <div style="color:red">
+                                {% for error in form.userList.errors %}
+                                        <span style="font-size:13px">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                    <th scope="col">Username</th>
+                                    <th scope="col">Email Count</th>
+                                    <th scope="col">User Type</th>
+                                    <th scope="col">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for choice in form.userList %}
+                                    <tr>
+                                        <td>{{choice}}&nbsp;{{ choice.label }}</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    {% endfor %}
+                                    
+                                </tbody>
+                            </table>
+                            <div style="color:red">
+                                {% for error in form.userList.errors %}
+                                        <span style="font-size:13px">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </fieldset>
+                <div class="form-group">
+                    {{ form.submit(class="btn btn-outline-info") }}
+                    <a class="btn btn-outline-info" href="">Approve</a>
+                    <a class="btn btn-outline-info" href="">Decline</a>
+                </div>
+            </form>
+    </div>
+{% endblock content %}
