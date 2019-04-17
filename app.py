@@ -1,6 +1,6 @@
 from flask import Flask, render_template, url_for, flash, redirect, session, request, jsonify
 from flask_mysqldb import MySQL
-from forms import UserRegistrationForm, LoginForm, VisitorRegistrationForm, EmployeeRegistrationForm, EmployeeVisitorRegistrationForm, TransitForm, EmailRegistrationForm, TransitForm, SiteForm, EventForm, ManageSiteForm, ManageTransitForm
+from forms import UserRegistrationForm, LoginForm, VisitorRegistrationForm, EmployeeRegistrationForm, EmployeeVisitorRegistrationForm, TransitForm, EmailRegistrationForm, TransitForm, SiteForm, EventForm, ManageSiteForm, ManageTransitForm, ManageUser
 from passlib.hash import sha256_crypt
 
 app = Flask(__name__)
@@ -264,6 +264,17 @@ def logout():
     flash('You are now logged out', 'success')
     return redirect(url_for('login'))
 
+## SCREEN 18 
+@app.route('/manage_user')
+def manage_user(): 
+    form = ManageUser()
+    if form.validate_on_submit(): 
+        username = form.username.data 
+        usertype = form.usertype.data 
+        status = form.status.data 
+        userList = form.userList.data 
+    return render_template('manage_user.html', title="Manage User", legend="Manage User", form=form)
+
 ## SCREEN 22 
 @app.route('/manage_transit')
 def manage_transit():
@@ -333,6 +344,7 @@ def view_managers_for_sites():
         cur.close()
         return managers
 
+## SCREEN 19 
 @app.route('/manage_site', methods=['GET', 'POST'])
 def manage_site():
     form = ManageSiteForm()
@@ -343,6 +355,8 @@ def manage_site():
         siteList = form.siteList.data 
     return render_template('manage_site.html', form=form, title='Manage Navigation', legend='Manage Site', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
 
+
+## SCREEN 21 
 @app.route('/create_site', methods=['GET', 'POST'])
 def create_site(): 
     form = SiteForm()
@@ -373,7 +387,7 @@ def create_site():
         return redirect(url_for('site_nav', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username')))
     return render_template("create_site.html", title='Create Site', form=form, legend='Create Site', unassigned_managers=managers, emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
 
-#
+## SCREEN 20 
 @app.route('/edit_site', methods=['GET', 'POST'])
 def edit_site(): 
     ## can query from the database to get the specific SiteName as PK

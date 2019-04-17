@@ -131,3 +131,10 @@ class ManageTransitForm(FlaskForm):
     maxPrice = DecimalField('Max Price', validators=[DataRequired()])
     routeList = RadioField('Routes', choices = [('816','816'),('102','102')])
     submit = SubmitField('Filter')
+
+class ManageUser(FlaskForm): 
+    username = StringField('Username')
+    usertype = SelectField('Type', choices = [('user','User'),('visitor','Visitor'),('staff','Staff'),('manager','Manager')], validators=[DataRequired()])
+    status = SelectField('Status', choices = [('all','ALL'),('approved','Approved'),('pending','Pending'),('declined','Declined')])
+    userList = RadioField('Routes', choices = [('cwilson','cwilson'),('jasonlee','jasonlee')])
+    submit = SubmitField('Filter')
