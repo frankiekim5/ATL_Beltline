@@ -1,6 +1,6 @@
 from flask import Flask, render_template, url_for, flash, redirect, session, request, jsonify
 from flask_mysqldb import MySQL
-from forms import UserRegistrationForm, LoginForm, VisitorRegistrationForm, EmployeeRegistrationForm, EmployeeVisitorRegistrationForm, TransitForm, EmailRegistrationForm, TransitForm, SiteForm, EventForm, ManageSiteForm, ManageTransitForm, ManageUser, ManageEvent, EditEvent, EmployeeProfileForm, UserTakeTransit, TransitHistory
+from forms import UserRegistrationForm, LoginForm, VisitorRegistrationForm, EmployeeRegistrationForm, EmployeeVisitorRegistrationForm, TransitForm, EmailRegistrationForm, TransitForm, SiteForm, EventForm, ManageSiteForm, ManageTransitForm, ManageUser, ManageEvent, EditEvent, UserTakeTransit, TransitHistory, EmployeeProfileForm
 from passlib.hash import sha256_crypt
 from random import randint
 
@@ -335,6 +335,26 @@ def view_all_users():
     # Close connection
     cur.close()
     return all_users
+    
+## SCREEN 15 
+@app.route('/take_transit', methods=['GET', 'POST'])
+def take_transit(): 
+    form = UserTakeTransit()
+    return render_template('take_transit.html', title="Take Transit",legend="Take Transit",form=form)
+
+## SCREEN 16 
+@app.route('/transit_history', methods=['GET', 'POST'])
+def transit_history(): 
+    form = TransitHistory()
+    return render_template('transit_history.html', title="Transit History",legend="Transit History",form=form)
+ 
+## SCREEN 17 
+@app.route('/manage_profile', methods=['GET','POST'])
+def manage_profile(): 
+    form = EmployeeProfileForm()
+    ## email QUERY
+    emails = ["timmywu@email.com", "timmylovesfrankie@gmail.com","timmy.wu@bobalover.com"]
+    return render_template("employee_profile.html", title="Manage Profile", legend="Manage Profile", form=form, emails = emails)
 
 ## SCREEN 18 
 @app.route('/manage_user', methods=['GET', 'POST'])
@@ -802,7 +822,7 @@ def create_transit():
         # Close connection
         cur.close()
         return redirect(url_for('transit_nav', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username')))
-    return render_template("create_transit.html", connected_sites=connected_sites, title='Create Transit', form=form, legend='Create Transit', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+    return render_template("create_transit.html", connected_sites=form, title='Create Transit', form=form, legend='Create Transit', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
 
 ## SCREEN 23
 @app.route('/edit_transit', methods=['GET', 'POST'])
