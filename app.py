@@ -1,12 +1,8 @@
 from flask import Flask, render_template, url_for, flash, redirect, session, request, jsonify
 from flask_mysqldb import MySQL
-<<<<<<< HEAD
-from forms import UserRegistrationForm, LoginForm, VisitorRegistrationForm, EmployeeRegistrationForm, EmployeeVisitorRegistrationForm, TransitForm, EmailRegistrationForm, TransitForm, SiteForm, EventForm, ManageSiteForm, ManageTransitForm, ManageUser, ManageEvent, EditEvent, EmployeeProfileForm
-=======
-from forms import UserRegistrationForm, LoginForm, VisitorRegistrationForm, EmployeeRegistrationForm, EmployeeVisitorRegistrationForm, TransitForm, EmailRegistrationForm, TransitForm, SiteForm, EventForm, ManageSiteForm, ManageTransitForm, ManageUser
-from forms import ManageEvent, EditEvent, UserTakeTransit, TransitHistory
->>>>>>> 9b5a38c66d05e333832014d21fc5dc4bddd22be3
+from forms import UserRegistrationForm, LoginForm, VisitorRegistrationForm, EmployeeRegistrationForm, EmployeeVisitorRegistrationForm, TransitForm, EmailRegistrationForm, TransitForm, SiteForm, EventForm, ManageSiteForm, ManageTransitForm, ManageUser, ManageEvent, EditEvent, EmployeeProfileForm, UserTakeTransit, TransitHistory
 from passlib.hash import sha256_crypt
+from random import randint
 
 app = Flask(__name__)
 
@@ -274,7 +270,6 @@ def logout():
     flash('You are now logged out', 'success')
     return redirect(url_for('login'))
 
-<<<<<<< HEAD
 def view_all_users():
     # Create cursor
     cur = mysql.connection.cursor()
@@ -334,23 +329,12 @@ def view_all_users():
         else:
             user['user_type'] = 'User'
 
+    # Commit to DB
+    mysql.connection.commit()
+
+    # Close connection
+    cur.close()
     return all_users
-=======
-## SCREEN 15 
-@app.route('/take_transit', methods=['GET', 'POST'])
-def take_transit(): 
-    form = UserTakeTransit()
-    return render_template('take_transit.html', title="Take Transit",legend="Take Transit",form=form)
-
-## SCREEN 16 
-@app.route('/transit_history', methods=['GET', 'POST'])
-def transit_history(): 
-    form = TransitHistory()
-    return render_template('transit_history.html', title="Transit History",legend="Transit History",form=form)
- 
-## SCREEN 17 
-
->>>>>>> 9b5a38c66d05e333832014d21fc5dc4bddd22be3
 
 ## SCREEN 18 
 @app.route('/manage_user', methods=['GET', 'POST'])
@@ -456,6 +440,62 @@ def manage_user():
                                     user['user_type'] = 'Manager'
                                 filtered_users.append(user)
                     return render_template('manage_user.html', all_users=filtered_users, title="Manage User", legend="Manage User", form=form, emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))                    
+            else:
+                # username field has been filled
+                for user in all_users:
+                    if user['username'] == username:
+                        if user['user_type'] == 'Manager-Visitor':
+                            user['user_type'] = 'Manager'
+                        elif user['user_type'] == 'Staff-Visitor':
+                            user['user_type'] = 'Staff'
+                        # Check if username matches all filter criteria
+                        if usertype == user['user_type'].lower():
+                            if status == 'all':
+                                filtered_users.append(user)
+                            elif status == 'pending' and user['user_type'] == 'Pending':
+                                filtered_users.append(user)
+                            elif status == 'approved' and user['user_type'] == 'Approved':
+                                filtered_users.append(user)
+                            elif status == 'declind' and user['user_type'] == 'Declined':
+                                filtered_users.append(user)
+                return render_template('manage_user.html', all_users=filtered_users, title="Manage User", legend="Manage User", form=form, emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))                    
+        elif form.approve.data:
+            selected_user = request.form['user']
+            for user in all_users:
+                if user['username'] == selected_user:
+                    # Create cursor
+                    cur = mysql.connection.cursor()
+                    if user['status'] == 'Pending' or user['status'] == 'Declined':
+                        # Set the user's status to Approved in the database
+                        cur.execute("UPDATE user SET status='Approved' WHERE username=%s", (selected_user,))
+
+                        if user['user_type'] == 'Manager' or user['user_type'] == 'Manager-Visitor' or user['user_type'] == 'Staff' or user['user_type'] == 'Staff-Visitor':
+                            emp_id = randint(100000000, 999999999)
+                            cur.execute("UPDATE employee SET employee_id=%s WHERE username=%s", (emp_id, selected_user))
+
+                        # Commit to DB
+                        mysql.connection.commit()
+
+                        # Close connection
+                        cur.close()
+            return redirect(url_for('manage_user', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username')))
+        elif form.decline.data:
+            selected_user = request.form['user']
+            for user in all_users:
+                if user['username'] == selected_user:
+                    # Create cursor
+                    cur = mysql.connection.cursor()
+                    if user['status'] == 'Pending':
+                        cur.execute("UPDATE user SET status='Declined' WHERE username=%s", (selected_user,))
+
+                        # Commit to DB
+                        mysql.connection.commit()
+
+                        # Close connection
+                        cur.close()
+                    elif user['status'] == 'Approved':
+                        flash('Cannot decline an approved user', 'danger')
+            return redirect(url_for('manage_user', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username')))
     for user in all_users:
         if user['user_type'] == 'Manager-Visitor':
             user['user_type'] = 'Manager'
@@ -468,11 +508,7 @@ def manage_user():
 @app.route('/manage_transit')
 def manage_transit():
     form = ManageTransitForm()
-<<<<<<< HEAD
     return render_template('manage_transit.html', legend="Manage Transit", form=form, title='Manage Transit', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
-=======
-    return render_template('manage_transit.html', title='Manage Transit',legend="Manage Transit", emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'), form=form)
->>>>>>> 9b5a38c66d05e333832014d21fc5dc4bddd22be3
 
 ## SCREEN 24
 @app.route('/create_transit', methods=['GET','POST'])
@@ -565,15 +601,6 @@ def managers_assigned_and_sites():
         cur.close()
         return sites
 
-<<<<<<< HEAD
-# @app.route('/manage_site/edit', methods=['GET', 'POST'])
-# def manage_site_edit():
-#     form = ManageSiteForm()
-#     if form.validate_on_submit():
-#         return
-
-=======
->>>>>>> 9b5a38c66d05e333832014d21fc5dc4bddd22be3
 @app.route('/manage_site', methods=['GET', 'POST'])
 def manage_site():
     form = ManageSiteForm()

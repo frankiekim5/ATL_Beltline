@@ -94,7 +94,7 @@ class TransitForm(FlaskForm):
         choices = [('marta','MARTA'), ('bus','Bus'),('bike','Bike')], validators=[DataRequired()])
     route = StringField('Route', validators=[DataRequired()])
     price = DecimalField('Price', validators=[DataRequired(), NumberRange(min=0.01, max=None, message="Positive Price Only")])
-    connectedSites = SelectField('Connected Sites', 
+    connectedSites = SelectMultipleField('Connected Sites', 
         choices = [('Atlanta Beltline Center', 'Atlanta Beltline Center')], validators=[DataRequired()])
     submit = SubmitField('Create')
 
@@ -143,6 +143,8 @@ class ManageUser(FlaskForm):
     usertype = SelectField('Type', choices = [('user','User'),('visitor','Visitor'),('staff','Staff'),('manager','Manager')], validators=[DataRequired()])
     status = SelectField('Status', choices = [('all','ALL'),('approved','Approved'),('pending','Pending'),('declined','Declined')])
     filter = SubmitField('Filter')
+    approve = SubmitField('Approve')
+    decline = SubmitField('Decline')
 
 class ManageEvent(FlaskForm): 
     name = StringField('Name')
