@@ -47,8 +47,6 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        {{ form.userList.label(class="form-control-label") }}
-                        {% if form.userList.errors %}
                             <table class="table table-bordered">
                                 <thead>
                                     <tr>
@@ -59,54 +57,30 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for choice in form.userList %}
+                                    {% for user in all_users %}
                                     <tr>
-                                        <td>{{choice}}&nbsp;{{ choice.label }}</td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
+                                        <td>
+                                            <input type="radio" name="user" value="{{user['username']}}">
+                                            <label for="username">{{ user['username'] }}</label>
+                                        </td>
+                                        <td>
+                                            <label for="email_count">{{ user['email_count'] }}</label>
+                                        </td>
+                                        <td>
+                                            <label for="user_typeList">{{ user['user_type'] }}</label>
+                                        </td>
+                                        <td>
+                                            <label for="statusList">{{ user['status'] }}</label>
+                                        </td>
                                     </tr>
                                     {% endfor %}
                                     
                                 </tbody>
                             </table>
-                            <div style="color:red">
-                                {% for error in form.userList.errors %}
-                                        <span style="font-size:13px">{{ error }}</span>
-                                {% endfor %}
-                            </div>
-                        {% else %}
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                    <th scope="col">Username</th>
-                                    <th scope="col">Email Count</th>
-                                    <th scope="col">User Type</th>
-                                    <th scope="col">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for choice in form.userList %}
-                                    <tr>
-                                        <td>{{choice}}&nbsp;{{ choice.label }}</td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                    {% endfor %}
-                                    
-                                </tbody>
-                            </table>
-                            <div style="color:red">
-                                {% for error in form.userList.errors %}
-                                        <span style="font-size:13px">{{ error }}</span>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
                     </div>
                 </fieldset>
                 <div class="form-group">
-                    {{ form.submit(class="btn btn-outline-info") }}
+                    {{ form.filter(class="btn btn-outline-info") }}
                     <a class="btn btn-outline-info" href="">Approve</a>
                     <a class="btn btn-outline-info" href="">Decline</a>
                 </div>

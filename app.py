@@ -1,11 +1,6 @@
 from flask import Flask, render_template, url_for, flash, redirect, session, request, jsonify
 from flask_mysqldb import MySQL
-<<<<<<< HEAD
-from forms import UserRegistrationForm, LoginForm, VisitorRegistrationForm, EmployeeRegistrationForm, EmployeeVisitorRegistrationForm, TransitForm, EmailRegistrationForm, TransitForm, SiteForm, EventForm, ManageSiteForm
-=======
-from forms import UserRegistrationForm, LoginForm, VisitorRegistrationForm, EmployeeRegistrationForm, EmployeeVisitorRegistrationForm, TransitForm, EmailRegistrationForm, TransitForm, SiteForm, EventForm, ManageSiteForm, ManageTransitForm, ManageUser
-from forms import ManageEvent, EditEvent
->>>>>>> c58ac7a5f7285a4f113e7f3967e585c4424eace6
+from forms import UserRegistrationForm, LoginForm, VisitorRegistrationForm, EmployeeRegistrationForm, EmployeeVisitorRegistrationForm, TransitForm, EmailRegistrationForm, TransitForm, SiteForm, EventForm, ManageSiteForm, ManageTransitForm, ManageUser, ManageEvent, EditEvent, EmployeeProfileForm
 from passlib.hash import sha256_crypt
 
 app = Flask(__name__)
@@ -39,6 +34,11 @@ def profile():
         return render_template('profile.html', form=form, emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
     else:
         return render_template('profile.html', form=form, emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+
+@app.route('/employee_profile', methods=['GET', 'POST'])
+def employee_profile():
+    form = EmployeeProfileForm()
+    return render_template('employee_profile.html', form=form, emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
 
 @app.route('/registerNav')
 def registerNav():
@@ -122,7 +122,7 @@ def registerEmployee():
 
         # Execute query
         cur.execute("INSERT INTO user(username, firstname, lastname, status, password) VALUES(%s, %s, %s, %s, %s)", (username, firstname, lastname, status, password))
-        cur.execute("INSERT INTO employee(username, phone, address, city, state, zipcode) VALUES(%s, %s, %s, %s, %s, %s)", (username, phone, address, city, state, zipcode))
+        cur.execute("INSERT INTO employee(username, employee_id, phone, address, city, state, zipcode) VALUES(%s, NULL, %s, %s, %s, %s, %s)", (username, phone, address, city, state, zipcode))
         cur.execute("INSERT INTO user_email(username, email) VALUES(%s, %s)", (username, email))
         if (userType == 'manager'):
             cur.execute("INSERT INTO manager(username) VALUES(%s)", (username,))
@@ -161,7 +161,7 @@ def registerEmployeeVisitor():
         # Execute query
         cur.execute("INSERT INTO user(username, firstname, lastname, status, password) VALUES(%s, %s, %s, %s, %s)", (username, firstname, lastname, status, password))
         cur.execute("INSERT INTO visitor(username) VALUES(%s)", (username,))
-        cur.execute("INSERT INTO employee(username, phone, address, city, state, zipcode) VALUES(%s, %s, %s, %s, %s, %s)", (username, phone, address, city, state, zipcode))
+        cur.execute("INSERT INTO employee(username, employee_id, phone, address, city, state, zipcode) VALUES(%s, NULL, %s, %s, %s, %s, %s)", (username, phone, address, city, state, zipcode))
         cur.execute("INSERT INTO user_email(username, email) VALUES(%s, %s)", (username, email))
         if (userType == 'manager'):
             cur.execute("INSERT INTO manager(username) VALUES(%s)", (username,))
@@ -269,24 +269,184 @@ def logout():
     flash('You are now logged out', 'success')
     return redirect(url_for('login'))
 
-<<<<<<< HEAD
-=======
+def view_all_users():
+    # Create cursor
+    cur = mysql.connection.cursor()
+
+    # Execute queries
+    cur.execute("SELECT username, status FROM user")
+    userStatus = cur.fetchall()
+    
+    all_users = []
+    for user in userStatus:
+        user['email_count'] = 0
+        all_users.append(user)
+
+    cur.execute("SELECT username FROM user_email")
+    user_emails = cur.fetchall()
+    
+    for person in user_emails:
+        username = person['username']
+        for user in userStatus:
+            if user['username'] == username:
+                user['email_count'] += 1
+    
+    cur.execute("SELECT username FROM visitor")
+    visitors = cur.fetchall()
+    cur.execute("SELECT username FROM manager")
+    managers = cur.fetchall()
+    cur.execute("SELECT username FROM staff")
+    staff = cur.fetchall()
+
+    # Gather all visitors, managers, and staff from queries
+    all_visitors = []
+    for visitor in visitors:
+        all_visitors.append(visitor['username'])
+    all_managers = []
+    for manager in managers:
+        all_managers.append(manager['username'])
+    all_staff = []
+    for staff_member in staff:
+        all_staff.append(staff_member['username'])
+
+    # Check usertype of each user
+    for user in all_users:
+        username = user['username']
+        # if username in all_visitors or (username in all_visitors and (username in all_managers or username in all_staff)):
+        if username in all_visitors and (username not in all_managers and username not in all_staff):
+            user['user_type'] = 'Visitor'
+        # elif username in all_managers or (username in all_managers and username in all_visitors):
+        elif username in all_managers and username not in all_visitors:
+            user['user_type'] = 'Manager'
+        # elif username in all_staff or (username in all_staff and username in all_visitors):
+        elif username in all_staff and username not in all_visitors:
+            user['user_type'] = 'Staff'
+        elif username in all_visitors and (username in all_managers and username not in all_staff):
+            user['user_type'] = 'Manager-Visitor'
+        elif username in all_visitors and (username not in all_managers and username in all_staff):
+            user['user_type'] = 'Staff-Visitor'
+        else:
+            user['user_type'] = 'User'
+
+    return all_users
+
 ## SCREEN 18 
-@app.route('/manage_user')
+@app.route('/manage_user', methods=['GET', 'POST'])
 def manage_user(): 
     form = ManageUser()
-    if form.validate_on_submit(): 
-        username = form.username.data 
-        usertype = form.usertype.data 
-        status = form.status.data 
-        userList = form.userList.data 
-    return render_template('manage_user.html', title="Manage User", legend="Manage User", form=form)
+    all_users = view_all_users()
+    if form.validate_on_submit():
+        if form.filter.data:
+            username = form.username.data
+            usertype = form.usertype.data 
+            status = form.status.data
+            filtered_users = []
+            if username == "":
+                if usertype == 'user':
+                    for user in all_users:
+                        if status == 'all':
+                            if user['user_type'] == 'User':
+                                filtered_users.append(user)
+                        elif status == 'approved':
+                            if user['user_type'] == 'User' and user['status'] == 'Approved':
+                                filtered_users.append(user)
+                        elif status == 'pending':
+                            if user['user_type'] == 'User' and user['status'] == 'Pending':
+                                filtered_users.append(user)
+                        else:
+                            if user['user_type'] == 'User' and user['status'] == 'Declined':
+                                filtered_users.append(user)
+                    return render_template('manage_user.html', all_users=filtered_users, title="Manage User", legend="Manage User", form=form, emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+                elif usertype == 'visitor':
+                    for user in all_users:
+                        if status == 'all':
+                            if user['user_type'] == 'Visitor' or user['user_type'] == 'Staff-Visitor' or user['user_type'] == 'Manager-Visitor':
+                                if user['user_type'] == 'Manager-Visitor':
+                                    user['user_type'] = 'Manager'
+                                elif user['user_type'] == 'Staff-Visitor':
+                                    user['user_type'] = 'Staff'
+                                filtered_users.append(user)
+                        elif status == 'approved':
+                            if user['user_type'] == 'Visitor' or user['user_type'] == 'Staff-Visitor' or user['user_type'] == 'Manager-Visitor' and user['status'] == 'Approved':
+                                if user['user_type'] == 'Manager-Visitor':
+                                    user['user_type'] = 'Manager'
+                                elif user['user_type'] == 'Staff-Visitor':
+                                    user['user_type'] = 'Staff'
+                                filtered_users.append(user)
+                        elif status == 'pending':
+                            if user['user_type'] == 'Visitor' or user['user_type'] == 'Staff-Visitor' or user['user_type'] == 'Manager-Visitor' and user['status'] == 'Pending':
+                                if user['user_type'] == 'Manager-Visitor':
+                                    user['user_type'] = 'Manager'
+                                elif user['user_type'] == 'Staff-Visitor':
+                                    user['user_type'] = 'Staff'
+                                filtered_users.append(user)
+                        else:
+                            if user['user_type'] == 'Visitor' or user['user_type'] == 'Staff-Visitor' or user['user_type'] == 'Manager-Visitor' and user['status'] == 'Declined':
+                                if user['user_type'] == 'Manager-Visitor':
+                                    user['user_type'] = 'Manager'
+                                elif user['user_type'] == 'Staff-Visitor':
+                                    user['user_type'] = 'Staff'
+                                filtered_users.append(user)
+                    return render_template('manage_user.html', all_users=filtered_users, title="Manage User", legend="Manage User", form=form, emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+                elif usertype == 'staff':
+                    for user in all_users:
+                        if status == 'all':
+                            if user['user_type'] == 'Staff' or user['user_type'] == 'Staff-Visitor':
+                                if user['user_type'] == 'Staff-Visitor':
+                                    user['user_type'] = 'Staff'
+                                filtered_users.append(user)
+                        elif status == 'approved':
+                            if user['user_type'] == 'Staff' or user['user_type'] == 'Staff-Visitor' and user['status'] == 'Approved':
+                                if user['user_type'] == 'Staff-Visitor':
+                                    user['user_type'] = 'Staff'
+                                filtered_users.append(user)
+                        elif status == 'pending':
+                            if user['user_type'] == 'Staff' or user['user_type'] == 'Staff-Visitor' and user['status'] == 'Pending':
+                                if user['user_type'] == 'Staff-Visitor':
+                                    user['user_type'] = 'Staff'
+                                filtered_users.append(user)
+                        else:
+                            if user['user_type'] == 'Staff' or user['user_type'] == 'Staff-Visitor' and user['status'] == 'Declined':
+                                if user['user_type'] == 'Staff-Visitor':
+                                    user['user_type'] = 'Staff'
+                                filtered_users.append(user)
+                    return render_template('manage_user.html', all_users=filtered_users, title="Manage User", legend="Manage User", form=form, emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))                    
+                else:
+                    for user in all_users:
+                        if status == 'all':
+                            if user['user_type'] == 'Manager' or user['user_type'] == 'Manager-Visitor':
+                                if user['user_type'] == 'Manager-Visitor':
+                                    user['user_type'] = 'Manager'
+                                filtered_users.append(user)
+                        elif status == 'approved':
+                            if user['user_type'] == 'Manager' or user['user_type'] == 'Manager-Visitor' and user['status'] == 'Approved':
+                                if user['user_type'] == 'Manager-Visitor':
+                                    user['user_type'] = 'Manager'
+                                filtered_users.append(user)
+                        elif status == 'pending':
+                            if user['user_type'] == 'Manager' or user['user_type'] == 'Manager-Visitor' and user['status'] == 'Pending':
+                                if user['user_type'] == 'Manager-Visitor':
+                                    user['user_type'] = 'Manager'
+                                filtered_users.append(user)
+                        else:
+                            if user['user_type'] == 'Manager' or user['user_type'] == 'Manager-Visitor' and user['status'] == 'Declined':
+                                if user['user_type'] == 'Manager-Visitor':
+                                    user['user_type'] = 'Manager'
+                                filtered_users.append(user)
+                    return render_template('manage_user.html', all_users=filtered_users, title="Manage User", legend="Manage User", form=form, emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))                    
+    for user in all_users:
+        if user['user_type'] == 'Manager-Visitor':
+            user['user_type'] = 'Manager'
+        elif user['user_type'] == 'Staff-Visitor':
+            user['user_type'] = 'Staff'
+    return render_template('manage_user.html', all_users=all_users, title="Manage User", legend="Manage User", form=form, emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+            
 
 ## SCREEN 22 
->>>>>>> c58ac7a5f7285a4f113e7f3967e585c4424eace6
 @app.route('/manage_transit')
 def manage_transit():
-    return render_template('manage_transit.html', title='Manage Transit', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+    form = ManageTransitForm()
+    return render_template('manage_transit.html', legend="Manage Transit", form=form, title='Manage Transit', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
 
 ## SCREEN 24
 @app.route('/create_transit', methods=['GET','POST'])
@@ -344,9 +504,8 @@ def view_managers_for_sites():
         cur.close()
         return managers
 
-<<<<<<< HEAD
 def managers_assigned_and_sites():
-
+    
         # Create cursor
         cur = mysql.connection.cursor()
         
@@ -380,19 +539,114 @@ def managers_assigned_and_sites():
         cur.close()
         return sites
 
-=======
-## SCREEN 19 
->>>>>>> c58ac7a5f7285a4f113e7f3967e585c4424eace6
+# @app.route('/manage_site/edit', methods=['GET', 'POST'])
+# def manage_site_edit():
+#     form = ManageSiteForm()
+#     if form.validate_on_submit():
+#         return
+
 @app.route('/manage_site', methods=['GET', 'POST'])
 def manage_site():
     form = ManageSiteForm()
     sites = managers_assigned_and_sites()
-    if form.validate_on_submit(): 
-        site = form.site.data 
-        manager = form.manager.data 
-        openEveryDay = form.openEveryDay.data 
-        siteList = form.siteList.data
-    return render_template('manage_site.html', form=form, sites=sites, title='Manage Navigation', legend='Manage Site', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+    if form.validate_on_submit():
+        if form.filter.data:
+            site = request.form['sitesDrop']
+            managers = request.form.get('managers')
+            openEveryDay = form.openEveryDay.data
+            filtered_sites = []
+            # Filter based on site and manager being 'All'
+            if site == 'all' and managers == 'all':
+                if openEveryDay == 'yes':
+                    for site in sites:
+                        if site['open_everyday'] == 'Yes':
+                            filtered_sites.append(site)
+                elif openEveryDay == 'no':
+                    for site in sites:
+                        if site['open_everyday'] == 'No':
+                            filtered_sites.append(site)
+                else:
+                    filtered_sites = sites
+                return render_template('manage_site.html', form=form, sites=sites, sitesList=filtered_sites, title='Manage Navigation', legend='Manage Site', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+            elif site != 'all' and managers == 'all':
+                if openEveryDay == 'yes':
+                    for each_site in sites:
+                        if site == each_site['site'] and each_site['open_everyday'] == 'Yes':
+                            filtered_sites.append(each_site)
+                            return render_template('manage_site.html', form=form, sites=sites, sitesList=filtered_sites, title='Manage Navigation', legend='Manage Site', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+                    return render_template('manage_site.html', form=form, sites=sites, sitesList=filtered_sites, title='Manage Navigation', legend='Manage Site', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+                elif openEveryDay == 'no':
+                    for each_site in sites:
+                        if site == each_site['site'] and each_site['open_everyday'] == 'No':
+                            filtered_sites.append(each_site)
+                            return render_template('manage_site.html', form=form, sites=sites, sitesList=filtered_sites, title='Manage Navigation', legend='Manage Site', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+                    return render_template('manage_site.html', form=form, sites=sites, sitesList=filtered_sites, title='Manage Navigation', legend='Manage Site', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+                else:
+                    for each_site in sites:
+                        if site == each_site['site']:
+                            filtered_sites.append(each_site)
+                            return render_template('manage_site.html', form=form, sites=sites, sitesList=filtered_sites, title='Manage Navigation', legend='Manage Site', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+            elif managers != 'all' and site == 'all':
+                if openEveryDay == 'yes':
+                    for each_site in sites:
+                        if managers == each_site['manager'] and each_site['open_everyday'] == 'Yes':
+                            filtered_sites.append(each_site)
+                            return render_template('manage_site.html', form=form, sites=sites, sitesList=filtered_sites, title='Manage Navigation', legend='Manage Site', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+                    return render_template('manage_site.html', form=form, sites=sites, sitesList=filtered_sites, title='Manage Navigation', legend='Manage Site', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+                elif openEveryDay == 'no':
+                    for each_site in sites:
+                        if managers == each_site['manager'] and each_site['open_everyday'] == 'No':
+                            filtered_sites.append(each_site)
+                            return render_template('manage_site.html', form=form, sites=sites, sitesList=filtered_sites, title='Manage Navigation', legend='Manage Site', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+                    return render_template('manage_site.html', form=form, sites=sites, sitesList=filtered_sites, title='Manage Navigation', legend='Manage Site', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+                else:
+                    for each_site in sites:
+                        if managers == each_site['manager']:
+                            filtered_sites.append(each_site)
+                            return render_template('manage_site.html', form=form, sites=sites, sitesList=filtered_sites, title='Manage Navigation', legend='Manage Site', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+            else:
+                if openEveryDay == 'yes':
+                    for each_site in sites:
+                        if managers == each_site['manager'] and site == each_site['site'] and each_site['open_everyday'] == 'Yes':
+                            filtered_sites.append(each_site)
+                            return render_template('manage_site.html', form=form, sites=sites, sitesList=filtered_sites, title='Manage Navigation', legend='Manage Site', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+                    return render_template('manage_site.html', form=form, sites=sites, sitesList=filtered_sites, title='Manage Navigation', legend='Manage Site', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+                elif openEveryDay == 'no':
+                    for each_site in sites:
+                        if managers == each_site['manager'] and site == each_site['site'] and each_site['open_everyday'] == 'No':
+                            filtered_sites.append(each_site)
+                            return render_template('manage_site.html', form=form, sites=sites, sitesList=filtered_sites, title='Manage Navigation', legend='Manage Site', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+                    return render_template('manage_site.html', form=form, sites=sites, sitesList=filtered_sites, title='Manage Navigation', legend='Manage Site', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+                else:
+                    for each_site in sites:
+                        if managers == each_site['manager'] and site == each_site['site']:
+                            filtered_sites.append(each_site)
+                            return render_template('manage_site.html', form=form, sites=sites, sitesList=filtered_sites, title='Manage Navigation', legend='Manage Site', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+                    return render_template('manage_site.html', form=form, sites=sites, sitesList=filtered_sites, title='Manage Navigation', legend='Manage Site', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+        elif form.edit.data:
+            if 'site' not in request.form:
+                flash('Please select a site to edit', 'danger')
+            else:
+                site_name = request.form['site']
+                return redirect(url_for('edit_site', site_name=site_name, emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username')))
+        elif form.delete.data:
+            if 'site' not in request.form:
+                flash('Please select a site to delete', 'danger')
+            else:
+                site_name = request.form['site']
+                # Delete the site from the database
+                # Create cursor
+                cur = mysql.connection.cursor()
+
+                # Execute query
+                cur.execute("DELETE FROM site WHERE site_name=%s", (site_name,))
+                # Commit to DB
+                mysql.connection.commit()
+
+                # Close connection
+                cur.close()
+                return redirect(url_for('manage_site', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username')))
+    return render_template('manage_site.html', form=form, sites=sites, sitesList=sites, title='Manage Navigation', legend='Manage Site', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
 
 
 ## SCREEN 21 
@@ -427,19 +681,84 @@ def create_site():
     return render_template("create_site.html", title='Create Site', form=form, legend='Create Site', unassigned_managers=managers, emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
 
 ## SCREEN 20 
-@app.route('/edit_site', methods=['GET', 'POST'])
-def edit_site(): 
+@app.route('/edit_site/<site_name>', methods=['GET', 'POST'])
+def edit_site(site_name):
     ## can query from the database to get the specific SiteName as PK
     ## site = query using curr
     form = SiteForm()
-    if form.validate_on_submit(): 
+    if form.validate_on_submit() and request.method == 'POST':
         ## here is where the site.name etc. should be in order to update 
         siteName = form.siteName.data
         zipcode = form.zipcode.data
-        address = form.address.data 
-        manager = form.manager.data 
+        address = form.address.data
+        manager = request.form.get('unassigned_managers')
         openEveryday = form.openEveryday.data
-    return render_template("create_site.html", title="Edit Site", form=form, legend="Edit Site",  emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        # Execute queries
+        manager = manager.split()
+        cur.execute("SELECT username FROM user WHERE firstname=%s and lastname=%s", [manager[0], manager[1]])
+        manager_username = cur.fetchone()
+        # Check if manager has stayed the same or is an unassigned manager
+        cur.execute("SELECT username FROM manager WHERE username NOT IN (SELECT manager_username FROM site)")
+        unassigned_managers = cur.fetchall()
+        
+        new_manager = ""
+        for manager in unassigned_managers:
+            if manager_username == manager['username']:
+                new_manager = manager_username
+            else:
+                new_manager = manager_username['username']
+        
+        cur.execute("UPDATE site SET site_name=%s, manager_username=%s, zipcode=%s, address=%s, open_everyday=%s WHERE site_name=%s", (siteName, new_manager, zipcode, address, openEveryday, site_name))
+        # Commit to DB
+        mysql.connection.commit()
+
+        # Close connection
+        cur.close()
+        return redirect(url_for('manage_site', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username')))
+    elif request.method == 'GET':
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        # Query the information for the site
+        cur.execute("SELECT site_name, manager_username, zipcode, address, open_everyday FROM site WHERE site_name=%s", [site_name])
+        site = cur.fetchone()
+        if site['open_everyday'] == 1:
+            site['open_everyday'] = True
+        else:
+            site['open_everyday'] = False
+        
+        
+        cur.execute("SELECT firstname, lastname FROM user WHERE username in (SELECT username FROM manager WHERE username in (SELECT manager_username FROM site WHERE site_name=%s))", [site_name])
+        manager_name = cur.fetchone()
+        site['manager_name'] = manager_name['firstname'] + " " + manager_name['lastname']
+
+        cur.execute("SELECT firstname, lastname FROM user WHERE username in (SELECT username FROM manager WHERE username not in (SELECT manager_username FROM site))")
+        result = cur.fetchall()
+
+        managers = []
+        for manager in result:
+            fullName = manager['firstname'] + " " + manager['lastname']
+            managers.append(fullName)
+
+        managers.insert(0, site['manager_name'])
+
+        # Commit to DB
+        mysql.connection.commit()
+
+        # Close connection
+        cur.close()
+        
+        # Put the information from the site into the Edit Site screen
+        form.siteName.data = site['site_name']
+        form.zipcode.data = site['zipcode']
+        form.address.data = site['address']
+        form.openEveryday.data = site['open_everyday']
+
+        return render_template("create_site.html", title="Edit Site", unassigned_managers=managers, form=form, legend="Edit Site",  emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
 
 ## SCREEN 25 
 @app.route('/manage_event', methods=["GET", "POST"])
