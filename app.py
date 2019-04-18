@@ -1,6 +1,11 @@
 from flask import Flask, render_template, url_for, flash, redirect, session, request, jsonify
 from flask_mysqldb import MySQL
+<<<<<<< HEAD
+from forms import UserRegistrationForm, LoginForm, VisitorRegistrationForm, EmployeeRegistrationForm, EmployeeVisitorRegistrationForm, TransitForm, EmailRegistrationForm, TransitForm, SiteForm, EventForm, ManageSiteForm, ManageTransitForm, ManageUser
+from forms import ManageEvent, EditEvent, UserTakeTransit, TransitHistory, EmployeeProfileForm
+=======
 from forms import UserRegistrationForm, LoginForm, VisitorRegistrationForm, EmployeeRegistrationForm, EmployeeVisitorRegistrationForm, TransitForm, EmailRegistrationForm, TransitForm, SiteForm, EventForm, ManageSiteForm, ManageTransitForm, ManageUser, ManageEvent, EditEvent, EmployeeProfileForm, UserTakeTransit, TransitHistory
+>>>>>>> 64b099598f0c61e908ebf48abd4a0c05f5b6b54e
 from passlib.hash import sha256_crypt
 from random import randint
 
@@ -335,6 +340,29 @@ def view_all_users():
     # Close connection
     cur.close()
     return all_users
+<<<<<<< HEAD
+    
+## SCREEN 15 
+@app.route('/take_transit', methods=['GET', 'POST'])
+def take_transit(): 
+    form = UserTakeTransit()
+    return render_template('take_transit.html', title="Take Transit",legend="Take Transit",form=form)
+
+## SCREEN 16 
+@app.route('/transit_history', methods=['GET', 'POST'])
+def transit_history(): 
+    form = TransitHistory()
+    return render_template('transit_history.html', title="Transit History",legend="Transit History",form=form)
+ 
+## SCREEN 17 
+@app.route('/manage_profile', methods=['GET','POST'])
+def manage_profile(): 
+    form = EmployeeProfileForm()
+    ## email QUERY
+    emails = ["timmywu@email.com", "timmylovesfrankie@gmail.com","timmy.wu@bobalover.com"]
+    return render_template("employee_profile.html", title="Manage Profile", legend="Manage Profile", form=form, emails = emails)
+=======
+>>>>>>> 64b099598f0c61e908ebf48abd4a0c05f5b6b54e
 
 ## SCREEN 18 
 @app.route('/manage_user', methods=['GET', 'POST'])
