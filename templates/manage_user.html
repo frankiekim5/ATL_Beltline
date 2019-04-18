@@ -81,8 +81,8 @@
                 </fieldset>
                 <div class="form-group">
                     {{ form.filter(class="btn btn-outline-info") }}
-                    <a class="btn btn-outline-info" href="">Approve</a>
-                    <a class="btn btn-outline-info" href="">Decline</a>
+                    {{ form.approve(class="btn btn-outline-info") }}
+                    {{ form.decline(class="btn btn-outline-info") }}
                 </div>
             </form>
     </div>
