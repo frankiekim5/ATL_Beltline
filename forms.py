@@ -80,8 +80,10 @@ class EmployeeProfileForm(FlaskForm):
     firstName = StringField('First Name', validators=[DataRequired()])
     lastName = StringField('Last Name', validators=[DataRequired()])
     phone = IntegerField('Phone', validators=[DataRequired(), NumberRange(min=1000000000, max=9999999999, message="Phone number must be 10 digits.")])
-    email = StringField('Email', validators=[DataRequired(), Email()])
-    visitorAccount = RadioField('Visitor Account', choices = [('visitor', 'Visitor Account')])
+    email = StringField('Emails', validators=[DataRequired(), Email()])
+    visitorAccount = BooleanField('Visitor Account')
+    update = SubmitField('Update')
+    addEmail = SubmitField('Add Email')
 
 class LoginForm(FlaskForm): # inherits from FlaskForm
     email = StringField('Email', validators=[DataRequired(), Email()])

@@ -1,11 +1,7 @@
 from flask import Flask, render_template, url_for, flash, redirect, session, request, jsonify
 from flask_mysqldb import MySQL
-<<<<<<< HEAD
-from forms import UserRegistrationForm, LoginForm, VisitorRegistrationForm, EmployeeRegistrationForm, EmployeeVisitorRegistrationForm, TransitForm, EmailRegistrationForm, TransitForm, SiteForm, EventForm, ManageSiteForm, ManageTransitForm, ManageUser, ManageEvent, EditEvent, EmployeeProfileForm
-=======
 from forms import UserRegistrationForm, LoginForm, VisitorRegistrationForm, EmployeeRegistrationForm, EmployeeVisitorRegistrationForm, TransitForm, EmailRegistrationForm, TransitForm, SiteForm, EventForm, ManageSiteForm, ManageTransitForm, ManageUser
-from forms import ManageEvent, EditEvent, UserTakeTransit, TransitHistory
->>>>>>> 9b5a38c66d05e333832014d21fc5dc4bddd22be3
+from forms import ManageEvent, EditEvent, UserTakeTransit, TransitHistory, EmployeeProfileForm
 from passlib.hash import sha256_crypt
 
 app = Flask(__name__)
@@ -274,7 +270,6 @@ def logout():
     flash('You are now logged out', 'success')
     return redirect(url_for('login'))
 
-<<<<<<< HEAD
 def view_all_users():
     # Create cursor
     cur = mysql.connection.cursor()
@@ -335,7 +330,7 @@ def view_all_users():
             user['user_type'] = 'User'
 
     return all_users
-=======
+    
 ## SCREEN 15 
 @app.route('/take_transit', methods=['GET', 'POST'])
 def take_transit(): 
@@ -349,8 +344,12 @@ def transit_history():
     return render_template('transit_history.html', title="Transit History",legend="Transit History",form=form)
  
 ## SCREEN 17 
-
->>>>>>> 9b5a38c66d05e333832014d21fc5dc4bddd22be3
+@app.route('/manage_profile', methods=['GET','POST'])
+def manage_profile(): 
+    form = EmployeeProfileForm()
+    ## email QUERY
+    emails = ["timmywu@email.com", "timmylovesfrankie@gmail.com","timmy.wu@bobalover.com"]
+    return render_template("employee_profile.html", title="Manage Profile", legend="Manage Profile", form=form, emails = emails)
 
 ## SCREEN 18 
 @app.route('/manage_user', methods=['GET', 'POST'])
@@ -468,11 +467,7 @@ def manage_user():
 @app.route('/manage_transit')
 def manage_transit():
     form = ManageTransitForm()
-<<<<<<< HEAD
     return render_template('manage_transit.html', legend="Manage Transit", form=form, title='Manage Transit', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
-=======
-    return render_template('manage_transit.html', title='Manage Transit',legend="Manage Transit", emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'), form=form)
->>>>>>> 9b5a38c66d05e333832014d21fc5dc4bddd22be3
 
 ## SCREEN 24
 @app.route('/create_transit', methods=['GET','POST'])
@@ -565,15 +560,6 @@ def managers_assigned_and_sites():
         cur.close()
         return sites
 
-<<<<<<< HEAD
-# @app.route('/manage_site/edit', methods=['GET', 'POST'])
-# def manage_site_edit():
-#     form = ManageSiteForm()
-#     if form.validate_on_submit():
-#         return
-
-=======
->>>>>>> 9b5a38c66d05e333832014d21fc5dc4bddd22be3
 @app.route('/manage_site', methods=['GET', 'POST'])
 def manage_site():
     form = ManageSiteForm()
