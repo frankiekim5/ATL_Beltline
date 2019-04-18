@@ -1,0 +1,139 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="content-section">
+            <form method="POST" action="">
+                {{ form.hidden_tag() }}
+                <fieldset class="form-group">
+                    <legend class="border-bottom mb-4" style="font-size:35px">{{legend}}</legend>
+                    <div class="row">
+                        <div class="form-group col-md-3">
+                            {{ form.containSite.label(class="form-control-label") }}
+                            {% if form.containSite.errors %}
+                                {{ form.containSite(class="form-control form-control-lg is-invalid") }}
+                                <div style="color:red">
+                                    {% for error in form.containSite.errors %}
+                                    <span style="font-size:13px">{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form.containSite(class="form-control form-control-lg") }}
+                            {% endif %}
+                        </div>
+                        <div class="form-group col-md-3">
+                            {{ form.transportType.label(class="form-control-label") }}
+                            {% if form.transportType.errors %}
+                                {{ form.transportType(class="form-control form-control-lg is-invalid") }}
+                                <div style="color:red">
+                                    {% for error in form.transportType.errors %}
+                                    <span style="font-size:13px">{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form.transportType(class="form-control form-control-lg") }}
+                            {% endif %}
+                        </div>
+                        <div class="form-group col-md-3">
+                                {{ form.minPrice.label(class="form-control-label") }}
+                                {% if form.minPrice.errors %}
+                                    {{ form.minPrice(class="form-control form-control-lg is-invalid") }}
+                                    <div style="color:red">
+                                        {% for error in form.minPrice.errors %}
+                                        <span style="font-size:13px">{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ form.minPrice(class="form-control form-control-lg") }}
+                                {% endif %}
+                        </div>
+                        <div class="form-group col-md-3">
+                            {{ form.maxPrice.label(class="form-control-label") }}
+                            {% if form.maxPrice.errors %}
+                                {{ form.maxPrice(class="form-control form-control-lg is-invalid") }}
+                                <div style="color:red">
+                                    {% for error in form.maxPrice.errors %}
+                                    <span style="font-size:13px">{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form.maxPrice(class="form-control form-control-lg") }}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        {{ form.submit(class="btn btn-outline-info") }}
+                    </div>
+                    <hr>
+                    <div class="form-group">
+                        {% if form.routeList.errors %}
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                    <th scope="col">Route</th>
+                                    <th scope="col">Transport Type</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col"># Connected Sites</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for choice in form.routeList %}
+                                    <tr>
+                                        <td>{{choice}}&nbsp;{{ choice.label }}</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    {% endfor %}
+                                    
+                                </tbody>
+                            </table>
+                            <div style="color:red">
+                                {% for error in form.routeList.errors %}
+                                        <span style="font-size:13px">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                    <th scope="col">Route</th>
+                                    <th scope="col">Transport Type</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col"># Connected Sites</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for choice in form.routeList %}
+                                    <tr>
+                                        <td>{{choice}}&nbsp;{{ choice.label }}</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        {% endif %}
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            {{ form.logTransit.label(class="form-control-label") }}
+                            {% if form.logTransit.errors %}
+                                {{ form.logTransit(class="form-control form-control-lg is-invalid", type="date") }}
+                                <div style="color:red">
+                                    {% for error in form.logTransit.errors %}
+                                    <span style="font-size:13px">{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form.logTransit(class="form-control form-control-lg", type="date") }}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        {{ form.logTransit(class="btn btn-outline-info") }}
+                    </div>
+                </fieldset>
+            </form>
+    </div>
+{% endblock content %}
+
