@@ -76,6 +76,13 @@ class EmployeeVisitorRegistrationForm(FlaskForm): # inherits from FlaskForm
 class EmailRegistrationForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
 
+class EmployeeProfileForm(FlaskForm):
+    firstName = StringField('First Name', validators=[DataRequired()])
+    lastName = StringField('Last Name', validators=[DataRequired()])
+    phone = IntegerField('Phone', validators=[DataRequired(), NumberRange(min=1000000000, max=9999999999, message="Phone number must be 10 digits.")])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    visitorAccount = RadioField('Visitor Account', choices = [('visitor', 'Visitor Account')])
+
 class LoginForm(FlaskForm): # inherits from FlaskForm
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired(), Length(min=8)])
@@ -94,7 +101,7 @@ class TransitForm(FlaskForm):
 
 class SiteForm(FlaskForm):
     siteName = StringField('Name', validators=[DataRequired()])
-    zipcode = IntegerField('Zipcode', validators=[DataRequired()])
+    zipcode = StringField('Zipcode', validators=[DataRequired(), Length(min=5, max=5, message="Zipcode must be 5 digits.")])
     address = StringField('Address', validators=[DataRequired()])
     ### Access the Database to retrieve managers who haven't been assigned to a site yet ###
     # def managers(self):
@@ -117,11 +124,10 @@ class EventForm(FlaskForm):
     submit = SubmitField('Submit')
 
 class ManageSiteForm(FlaskForm): 
-    # site = SelectField('Site', choices = [('all', '--All--')], validators=[DataRequired()])
-    # manager = SelectField('Manager', choices = [('all','--All--')], validators=[DataRequired()])
-    openEveryDay = SelectField('Open Everyday', choices = [('yes', 'Yes'), ('no','No')], validators=[DataRequired()])
-    # siteList = RadioField('Sites', choices=[('Inman Park', 'Inman Park'), ('West Village', 'West Village')])
-    submit = SubmitField('Filter')
+    openEveryDay = SelectField('Open Everyday', choices = [('all','--All--'), ('yes', 'Yes'), ('no','No')], validators=[DataRequired()])
+    filter = SubmitField('Filter')
+    edit = SubmitField('Edit')
+    delete = SubmitField('Delete')
     
 class ManageTransitForm(FlaskForm): 
     transportType = SelectField('Transport', choices = [('ALL','ALL'),('marta','MARTA'), ('bus','Bus'),('bike','Bike')],validators=[DataRequired()] )
@@ -136,8 +142,7 @@ class ManageUser(FlaskForm):
     username = StringField('Username')
     usertype = SelectField('Type', choices = [('user','User'),('visitor','Visitor'),('staff','Staff'),('manager','Manager')], validators=[DataRequired()])
     status = SelectField('Status', choices = [('all','ALL'),('approved','Approved'),('pending','Pending'),('declined','Declined')])
-    userList = RadioField('Routes', choices = [('cwilson','cwilson'),('jasonlee','jasonlee')])
-    submit = SubmitField('Filter')
+    filter = SubmitField('Filter')
 
 class ManageEvent(FlaskForm): 
     name = StringField('Name')
