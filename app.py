@@ -502,49 +502,6 @@ def manage_user():
         elif user['user_type'] == 'Staff-Visitor':
             user['user_type'] = 'Staff'
     return render_template('manage_user.html', all_users=all_users, title="Manage User", legend="Manage User", form=form, emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
-            
-
-## SCREEN 22 
-@app.route('/manage_transit')
-def manage_transit():
-    form = ManageTransitForm()
-    return render_template('manage_transit.html', legend="Manage Transit", form=form, title='Manage Transit', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
-
-## SCREEN 24
-@app.route('/create_transit', methods=['GET','POST'])
-def create_transit():
-    form = TransitForm()
-    if form.validate_on_submit() and request.method == 'POST': 
-        transportType = form.transportType.data 
-        route = form.route.data 
-        price = form.price.data
-        connectedSites = form.connectedSites.data
-
-         # Create cursor
-        cur = mysql.connection.cursor()
-
-        # Execute query
-        cur.execute("INSERT INTO transit(transit_type, transit_route, transit_price) VALUES(%s, %s, %s)", (transportType, route, price))
-
-        # Commit to DB
-        mysql.connection.commit()
-
-        # Close connection
-        cur.close()
-        return redirect(url_for('transit_nav', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username')))
-    return render_template("create_transit.html", title='Create Transit', form=form, legend='Create Transit', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
-
-## SCREEN 23
-@app.route('/edit_transit', methods=['GET', 'POST'])
-def edit_transit(): 
-    form = TransitForm()
-    ## MUST WRITE QUERIES HERE 
-    if form.validate_on_submit(): 
-        transportType = form.transportType.data 
-        route = form.route.data 
-        price = form.price.data
-        connectedSites = form.connectedSites.data
-    return render_template("create_transit.html", title='Edit Transit', form=form, legend='Edit Transit', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username')) 
 
 def view_managers_for_sites():
         # Create cursor
@@ -815,6 +772,49 @@ def edit_site(site_name):
         form.openEveryday.data = site['open_everyday']
 
         return render_template("create_site.html", title="Edit Site", unassigned_managers=managers, form=form, legend="Edit Site",  emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+
+
+## SCREEN 22 
+@app.route('/manage_transit')
+def manage_transit():
+    form = ManageTransitForm()
+    return render_template('manage_transit.html', legend="Manage Transit", form=form, title='Manage Transit', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+
+## SCREEN 24
+@app.route('/create_transit', methods=['GET','POST'])
+def create_transit():
+    form = TransitForm()
+    if form.validate_on_submit() and request.method == 'POST': 
+        transportType = form.transportType.data 
+        route = form.route.data 
+        price = form.price.data
+        connectedSites = form.connectedSites.data
+
+         # Create cursor
+        cur = mysql.connection.cursor()
+
+        # Execute query
+        cur.execute("INSERT INTO transit(transit_type, transit_route, transit_price) VALUES(%s, %s, %s)", (transportType, route, price))
+
+        # Commit to DB
+        mysql.connection.commit()
+
+        # Close connection
+        cur.close()
+        return redirect(url_for('transit_nav', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username')))
+    return render_template("create_transit.html", connected_sites=connected_sites, title='Create Transit', form=form, legend='Create Transit', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+
+## SCREEN 23
+@app.route('/edit_transit', methods=['GET', 'POST'])
+def edit_transit(): 
+    form = TransitForm()
+    ## MUST WRITE QUERIES HERE 
+    if form.validate_on_submit(): 
+        transportType = form.transportType.data 
+        route = form.route.data 
+        price = form.price.data
+        connectedSites = form.connectedSites.data
+    return render_template("create_transit.html", title='Edit Transit', form=form, legend='Edit Transit', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username')) 
 
 ## SCREEN 25 
 @app.route('/manage_event', methods=["GET", "POST"])
