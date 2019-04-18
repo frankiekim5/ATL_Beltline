@@ -1,8 +1,13 @@
 from flask import Flask, render_template, url_for, flash, redirect, session, request, jsonify
 from flask_mysqldb import MySQL
+<<<<<<< HEAD
 from forms import UserRegistrationForm, LoginForm, VisitorRegistrationForm, EmployeeRegistrationForm, EmployeeVisitorRegistrationForm, TransitForm, EmailRegistrationForm, TransitForm, SiteForm, EventForm, ManageSiteForm, ManageTransitForm, ManageUser
 from forms import ManageEvent, EditEvent, UserTakeTransit, TransitHistory, EmployeeProfileForm
+=======
+from forms import UserRegistrationForm, LoginForm, VisitorRegistrationForm, EmployeeRegistrationForm, EmployeeVisitorRegistrationForm, TransitForm, EmailRegistrationForm, TransitForm, SiteForm, EventForm, ManageSiteForm, ManageTransitForm, ManageUser, ManageEvent, EditEvent, EmployeeProfileForm, UserTakeTransit, TransitHistory
+>>>>>>> 64b099598f0c61e908ebf48abd4a0c05f5b6b54e
 from passlib.hash import sha256_crypt
+from random import randint
 
 app = Flask(__name__)
 
@@ -329,7 +334,13 @@ def view_all_users():
         else:
             user['user_type'] = 'User'
 
+    # Commit to DB
+    mysql.connection.commit()
+
+    # Close connection
+    cur.close()
     return all_users
+<<<<<<< HEAD
     
 ## SCREEN 15 
 @app.route('/take_transit', methods=['GET', 'POST'])
@@ -350,6 +361,8 @@ def manage_profile():
     ## email QUERY
     emails = ["timmywu@email.com", "timmylovesfrankie@gmail.com","timmy.wu@bobalover.com"]
     return render_template("employee_profile.html", title="Manage Profile", legend="Manage Profile", form=form, emails = emails)
+=======
+>>>>>>> 64b099598f0c61e908ebf48abd4a0c05f5b6b54e
 
 ## SCREEN 18 
 @app.route('/manage_user', methods=['GET', 'POST'])
@@ -455,6 +468,62 @@ def manage_user():
                                     user['user_type'] = 'Manager'
                                 filtered_users.append(user)
                     return render_template('manage_user.html', all_users=filtered_users, title="Manage User", legend="Manage User", form=form, emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))                    
+            else:
+                # username field has been filled
+                for user in all_users:
+                    if user['username'] == username:
+                        if user['user_type'] == 'Manager-Visitor':
+                            user['user_type'] = 'Manager'
+                        elif user['user_type'] == 'Staff-Visitor':
+                            user['user_type'] = 'Staff'
+                        # Check if username matches all filter criteria
+                        if usertype == user['user_type'].lower():
+                            if status == 'all':
+                                filtered_users.append(user)
+                            elif status == 'pending' and user['user_type'] == 'Pending':
+                                filtered_users.append(user)
+                            elif status == 'approved' and user['user_type'] == 'Approved':
+                                filtered_users.append(user)
+                            elif status == 'declind' and user['user_type'] == 'Declined':
+                                filtered_users.append(user)
+                return render_template('manage_user.html', all_users=filtered_users, title="Manage User", legend="Manage User", form=form, emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))                    
+        elif form.approve.data:
+            selected_user = request.form['user']
+            for user in all_users:
+                if user['username'] == selected_user:
+                    # Create cursor
+                    cur = mysql.connection.cursor()
+                    if user['status'] == 'Pending' or user['status'] == 'Declined':
+                        # Set the user's status to Approved in the database
+                        cur.execute("UPDATE user SET status='Approved' WHERE username=%s", (selected_user,))
+
+                        if user['user_type'] == 'Manager' or user['user_type'] == 'Manager-Visitor' or user['user_type'] == 'Staff' or user['user_type'] == 'Staff-Visitor':
+                            emp_id = randint(100000000, 999999999)
+                            cur.execute("UPDATE employee SET employee_id=%s WHERE username=%s", (emp_id, selected_user))
+
+                        # Commit to DB
+                        mysql.connection.commit()
+
+                        # Close connection
+                        cur.close()
+            return redirect(url_for('manage_user', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username')))
+        elif form.decline.data:
+            selected_user = request.form['user']
+            for user in all_users:
+                if user['username'] == selected_user:
+                    # Create cursor
+                    cur = mysql.connection.cursor()
+                    if user['status'] == 'Pending':
+                        cur.execute("UPDATE user SET status='Declined' WHERE username=%s", (selected_user,))
+
+                        # Commit to DB
+                        mysql.connection.commit()
+
+                        # Close connection
+                        cur.close()
+                    elif user['status'] == 'Approved':
+                        flash('Cannot decline an approved user', 'danger')
+            return redirect(url_for('manage_user', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username')))
     for user in all_users:
         if user['user_type'] == 'Manager-Visitor':
             user['user_type'] = 'Manager'
