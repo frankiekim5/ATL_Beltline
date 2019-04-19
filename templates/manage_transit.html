@@ -35,17 +35,13 @@
                     </div>
                     <div class="row">
                         <div class="form-group col-md-6">
-                            {{ form.containSite.label(class="form-control-label") }}
-                            {% if form.containSite.errors %}
-                                {{ form.containSite(class="form-control form-control-lg is-invalid") }}
-                                <div style="color:red">
-                                    {% for error in form.containSite.errors %}
-                                    <span style="font-size:13px">{{ error }}</span>
-                                    {% endfor %}
-                                </div>
-                            {% else %}
-                                {{ form.containSite(class="form-control form-control-lg") }}
-                            {% endif %}
+                            <label for="contain_site" class="form-control-label">Contain Site</label>
+                            <select name="contain_site" class="form-control form-control-lg" id="contain_site" required>
+                                <option value="all">--All--</option>
+                                {% for site in sites %}
+                                    <option value="{{site}}">{{ site }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
                         <div class="form-group col-md-3">
                                 {{ form.minPrice.label(class="form-control-label") }}
@@ -75,77 +71,47 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        {{ form.routeList.label(class="form-control-label") }}
-                        {% if form.routeList.errors %}
                             <table class="table table-bordered">
                                 <thead>
                                     <tr>
-                                    <th scope="col">Event Name</th>
-                                    <th scope="col">Site Name</th>
-                                    <th scope="col">Ticket Price</th>
-                                    <th scope="col">Ticket Remaining</th>
-                                    <th scope="col">Total Visits</th>
-                                    <th scope="col">My Visits</th>
+                                    <th scope="col">Route</th>
+                                    <th scope="col">Transport Type</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col"># Connected Sites</th>
+                                    <th scope="col"># Transits Logged</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for choice in form.routeList %}
+                                    {% if transits != None %}
+                                    {% for transit in transits %}
                                     <tr>
-                                        <td>{{choice}}&nbsp;{{ choice.label }}</td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
+                                        <td>
+                                            <input type="radio" name="transit" value="{{transit['transit_route'] + ' ' + transit['transit_type']}}">
+                                            <label for="transit_route">{{ transit['transit_route'] }}</label>
+                                        </td>
+                                        <td>
+                                            <label for="transport_type">{{ transit['transit_type'] }}</label>
+                                        </td>
+                                        <td>
+                                            <label for="transit_price">{{ transit['transit_price'] }}</label>
+                                        </td>
+                                        <td>
+                                            <label for="connected_sites">{{ transit['connected_sites'] }}</label>
+                                        </td>
+                                        <td>
+                                            <label for="transits_logged">{{ transit['connected_sites'] }}</label>
+                                        </td>
                                     </tr>
                                     {% endfor %}
-                                    
+                                    {% endif %}
                                 </tbody>
                             </table>
-                            <div style="color:red">
-                                {% for error in form.routeList.errors %}
-                                        <span style="font-size:13px">{{ error }}</span>
-                                {% endfor %}
-                            </div>
-                        {% else %}
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                    <th scope="col">Event Name</th>
-                                    <th scope="col">Site Name</th>
-                                    <th scope="col">Ticket Price</th>
-                                    <th scope="col">Ticket Remaining</th>
-                                    <th scope="col">Total Visits</th>
-                                    <th scope="col">My Visits</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for choice in form.routeList %}
-                                    <tr>
-                                        <td>{{choice}}&nbsp;{{ choice.label }}</td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                    {% endfor %}
-                                    
-                                </tbody>
-                            </table>
-                            <div style="color:red">
-                                {% for error in form.routeList.errors %}
-                                        <span style="font-size:13px">{{ error }}</span>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
                     </div>
                 </fieldset>
                 <div class="form-group">
-                    {{ form.submit(class="btn btn-outline-info") }}
-                    <a class="btn btn-outline-info" href="{{ url_for('create_transit') }}">Create</a>
-                    <a class="btn btn-outline-info" href="{{ url_for('edit_transit') }}">Edit</a>
-                    <a class="btn btn-outline-info" href="{{ url_for('edit_transit') }}">Delete</a>
+                    {{ form.filter(class="btn btn-outline-info") }}
+                    <a class="btn btn-outline-info" href="{{ url_for('create_transit', emails=emails, userType=userType, username=username) }}">Create</a>
+                    {{ form.edit(class="btn btn-outline-info") }}
                 </div>
             </form>
     </div>
