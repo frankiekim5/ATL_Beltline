@@ -881,28 +881,59 @@ def manage_transit():
                     if transit['transit_type'] == transportType and transit['transit_route'] == route and transit['transit_price'] >= minPrice and transit['transit_price'] <= maxPrice:
                         filtered_transits.append(transit)
         elif containSite != 'all' and transportType == 'all':
-            if route == "":
-                # Create cursor
-                cur = mysql.connection.cursor()
+            # Create cursor
+            cur = mysql.connection.cursor()
 
-                cur.execute("SELECT transit_type, transit_route FROM connect WHERE site_name=%s", (containSite,))
-                transit_sites = cur.fetchall()
-                
-                needed_transits = []
+            # Query the transits that have this site.
+            cur.execute("SELECT transit_type, transit_route FROM connect WHERE site_name=%s", (containSite,))
+            transit_sites = cur.fetchall()
+
+            needed_transits = []
+            if route == "":
                 for transit in transit_sites:
                     needed_transits.append(transit)
+            else:
+                for transit in transit_sites:
+                    if transit['transit_route'] == route:
+                        needed_transits.append(transit)
+            for transit in all_transits:
+                for comparison in needed_transits:
+                    if transit['transit_route'] == comparison['transit_route'] and transit['transit_type'] == comparison['transit_type'] and transit['transit_price'] >= minPrice and transit['transit_price'] <= maxPrice:
+                        filtered_transits.append(transit)            
                 
-                # for transit in all_transits:
-                #     if transit['']
-                
-                # Commit to DB
-                mysql.connection.commit()
+            # Commit to DB
+            mysql.connection.commit()
 
-                # Close connection
-                cur.close()
+            # Close connection
+            cur.close()
+        else:
+            # Create cursor
+            cur = mysql.connection.cursor()
+
+            # Query the transits that have this site.
+            cur.execute("SELECT transit_type, transit_route FROM connect WHERE site_name=%s", (containSite,))
+            transit_sites = cur.fetchall()
+
+            needed_transits = []
+            if route == "":
+                for transit in transit_sites:
+                    if transit['transit_type'] == transportType:
+                        needed_transits.append(transit)
+            else:
+                for transit in transit_sites:
+                    if transit['transit_route'] == route and transit['transit_type'] == transportType:
+                        needed_transits.append(transit)
+            for transit in all_transits:
+                for comparison in needed_transits:
+                    if transit['transit_route'] == comparison['transit_route'] and transit['transit_type'] == comparison['transit_type'] and transit['transit_price'] >= minPrice and transit['transit_price'] <= maxPrice:
+                        filtered_transits.append(transit)                
+            # Commit to DB
+            mysql.connection.commit()
+
+            # Close connection
+            cur.close()
                 
         return render_template('manage_transit.html', form=form, sites=all_sites, transits=filtered_transits, title='Manage Transit', legend='Manage Transit', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
-
     return render_template('manage_transit.html', sites=all_sites, transits=None, legend="Manage Transit", form=form, title='Manage Transit', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
 
 
