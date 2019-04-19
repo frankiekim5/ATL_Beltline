@@ -188,4 +188,11 @@ class TransitHistory(FlaskForm):
     endDate = DateField('End Date')
     submit = SubmitField('Filter')
 
-    
+class ManageStaff(FlaskForm): 
+    site = SelectField('Site', 
+        choices = [("Inman Park","Inman Park")])
+    firstName = StringField('First Name')
+    lastName = StringField('Last Name')
+    startDate = DateField('Start Date')
+    endDate = DateField('End Date')
+    filter = SubmitField('Filter')

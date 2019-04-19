@@ -1,6 +1,6 @@
 from flask import Flask, render_template, url_for, flash, redirect, session, request, jsonify
 from flask_mysqldb import MySQL
-from forms import UserRegistrationForm, LoginForm, VisitorRegistrationForm, EmployeeRegistrationForm, EmployeeVisitorRegistrationForm, TransitForm, EmailRegistrationForm, TransitForm, SiteForm, EventForm, ManageSiteForm, ManageTransitForm, ManageUser, ManageEvent, EditEvent, UserTakeTransit, TransitHistory, EmployeeProfileForm
+from forms import UserRegistrationForm, LoginForm, VisitorRegistrationForm, EmployeeRegistrationForm, EmployeeVisitorRegistrationForm, TransitForm, EmailRegistrationForm, TransitForm, SiteForm, EventForm, ManageSiteForm, ManageTransitForm, ManageUser, ManageEvent, EditEvent, UserTakeTransit, TransitHistory, EmployeeProfileForm, ManageStaff
 from passlib.hash import sha256_crypt
 from random import randint
 
@@ -1071,6 +1071,14 @@ def create_event():
         description = form.description.data
         assignStaff = form.assignStaff.data
     return render_template("create_event.html", title="Create Event", form=form)
+
+## SCREEN 28 
+@app.route('/manage_staff', methods=['GET', 'POST'])
+def manage_staff(): 
+    form = ManageStaff()
+    staff = [("Peter Han", 3), ("Timmy Wu", 2)]
+    return render_template("manage_staff.html", title="Manage Staff", legend="Manage Staff", form=form, staff=staff)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
