@@ -793,48 +793,238 @@ def edit_site(site_name):
 
         return render_template("create_site.html", title="Edit Site", unassigned_managers=managers, form=form, legend="Edit Site",  emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
 
+# Helper method to retrieve all transits
+def get_all_transits():
+    # Create cursor
+    cur = mysql.connection.cursor()
+
+    # Execute queries
+    cur.execute("SELECT * FROM transit")
+    transits = cur.fetchall()
+
+    # Calculate # connected sites
+    for transit in transits:
+        cur.execute("SELECT COUNT(*) FROM connect WHERE transit_type=%s and transit_route=%s", (transit['transit_type'], transit['transit_route']))
+        num_connected = cur.fetchone()
+        transit['connected_sites'] = num_connected['COUNT(*)']
+
+    # Commit to DB
+    mysql.connection.commit()
+
+    # Close connection
+    cur.close()
+    return transits
+
+# Retrieves all the sites
+def get_all_sites():
+    # Create cursor
+    cur = mysql.connection.cursor()
+
+    # Retrieve all of the sites
+    cur.execute("SELECT site_name FROM site")
+    sites = cur.fetchall()
+    
+    all_sites = []
+    for site in sites:
+        all_sites.append(site['site_name'])
+
+    # Commit to DB
+    mysql.connection.commit()
+
+    # Close connection
+    cur.close()
+    return all_sites
 
 ## SCREEN 22 
-@app.route('/manage_transit')
+@app.route('/manage_transit', methods=['GET', 'POST'])
 def manage_transit():
     form = ManageTransitForm()
-    return render_template('manage_transit.html', legend="Manage Transit", form=form, title='Manage Transit', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+    all_transits = get_all_transits()
+    all_sites = get_all_sites()
+    if form.edit.data:
+        if 'transit' not in request.form:
+            flash('Please select a site to edit', 'danger')
+        else:
+            transit = request.form['transit']
+            return redirect(url_for('edit_transit', transit=transit, emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username')))
+    elif form.filter.data:
+        transportType = form.transportType.data
+        route = form.route.data
+        minPrice = form.minPrice.data
+        maxPrice = form.maxPrice.data
+
+        # Check if min price field was left blank. Default to 0
+        if minPrice == None:
+            minPrice = 0
+        # Check if max price field was left blank. Default to large number
+        if maxPrice == None:
+            maxPrice = 100000000
+        
+        filtered_transits = []
+        containSite = request.form.get('contain_site')
+        if containSite == 'all' and transportType == 'all':
+            if route == "":
+                for transit in all_transits:
+                    if transit['transit_price'] >= minPrice and transit['transit_price'] <= maxPrice:
+                        filtered_transits.append(transit)
+            else:
+                for transit in all_transits:
+                    if transit['transit_route'] == route and transit['transit_price'] >= minPrice and transit['transit_price'] <= maxPrice:
+                        filtered_transits.append(transit)
+        elif containSite == 'all' and transportType != 'all':
+            if route == "":
+                for transit in all_transits:
+                    if transit['transit_type'] == transportType and transit['transit_price'] >= minPrice and transit['transit_price'] <= maxPrice:
+                        filtered_transits.append(transit)
+            else:
+                for transit in all_transits:
+                    if transit['transit_type'] == transportType and transit['transit_route'] == route and transit['transit_price'] >= minPrice and transit['transit_price'] <= maxPrice:
+                        filtered_transits.append(transit)
+        elif containSite != 'all' and transportType == 'all':
+            if route == "":
+                # Create cursor
+                cur = mysql.connection.cursor()
+
+                cur.execute("SELECT transit_type, transit_route FROM connect WHERE site_name=%s", (containSite,))
+                transit_sites = cur.fetchall()
+                
+                needed_transits = []
+                for transit in transit_sites:
+                    needed_transits.append(transit)
+                
+                # for transit in all_transits:
+                #     if transit['']
+                
+                # Commit to DB
+                mysql.connection.commit()
+
+                # Close connection
+                cur.close()
+                
+        return render_template('manage_transit.html', form=form, sites=all_sites, transits=filtered_transits, title='Manage Transit', legend='Manage Transit', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+
+    return render_template('manage_transit.html', sites=all_sites, transits=None, legend="Manage Transit", form=form, title='Manage Transit', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+
 
 ## SCREEN 24
 @app.route('/create_transit', methods=['GET','POST'])
 def create_transit():
     form = TransitForm()
+    all_sites = get_all_sites()
     if form.validate_on_submit() and request.method == 'POST': 
-        transportType = form.transportType.data 
+        transportType = form.transportType.data
         route = form.route.data 
         price = form.price.data
-        connectedSites = form.connectedSites.data
+        connectedSites = request.form.getlist('all_sites')
+
+        if len(connectedSites) < 2:
+            flash("Please select at least 2 sites", 'danger')
+            # return redirect(url_for('create_transit', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username')))
+            return render_template("create_transit.html", all_sites=all_sites, title='Create Transit', form=form, legend='Create Transit', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
 
          # Create cursor
         cur = mysql.connection.cursor()
 
         # Execute query
         cur.execute("INSERT INTO transit(transit_type, transit_route, transit_price) VALUES(%s, %s, %s)", (transportType, route, price))
+        for site in connectedSites:
+            cur.execute("INSERT INTO connect(site_name, transit_type, transit_route) VALUES(%s, %s, %s)", (site, transportType, route))
 
         # Commit to DB
         mysql.connection.commit()
 
         # Close connection
         cur.close()
-        return redirect(url_for('transit_nav', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username')))
-    return render_template("create_transit.html", connected_sites=form, title='Create Transit', form=form, legend='Create Transit', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+        return redirect(url_for('manage_transit', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username')))
+    return render_template("create_transit.html", all_sites=all_sites, title='Create Transit', form=form, legend='Create Transit', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
 
 ## SCREEN 23
-@app.route('/edit_transit', methods=['GET', 'POST'])
-def edit_transit(): 
+@app.route('/edit_transit/<transit>', methods=['GET', 'POST'])
+def edit_transit(transit):
     form = TransitForm()
-    ## MUST WRITE QUERIES HERE 
-    if form.validate_on_submit(): 
+    transit = transit.split()
+    all_sites = get_all_sites()
+    transit_route = transit[0]
+    transit_type = transit[1]
+    ## MUST WRITE QUERIES HERE
+    if form.validate_on_submit() and request.method == 'POST':
         transportType = form.transportType.data 
         route = form.route.data 
         price = form.price.data
-        connectedSites = form.connectedSites.data
-    return render_template("create_transit.html", title='Edit Transit', form=form, legend='Edit Transit', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username')) 
+        connectedSites = request.form.getlist('all_sites')
+
+        if len(connectedSites) < 2:
+            flash("Please select at least 2 sites", 'danger')
+            return render_template("create_transit.html", all_sites=all_sites, all_connected=connectedSites, title='Edit Transit', form=form, legend='Edit Transit', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        # Execute queries
+        # Store new connected sites within connect
+
+        # cur.execute("UPDATE connect SET transit_type=%s and transit_route=%s WHERE site_name=%s and transit_type=%s and transit_route=%s", (transportType, route, site, transit_type, transit_route))
+        cur.execute("SELECT site_name FROM connect WHERE transit_type=%s and transit_route=%s", (transit_type, transit_route))
+        route_sites = cur.fetchall()
+
+        # Putting all route_sites into a list by site_name
+        route_site_names = []
+        for site in route_sites:
+            route_site_names.append(site['site_name'])
+
+        # If a site in the newly connected sites list is not in the connect table, insert it into the connect table
+        for site in connectedSites:
+            if site not in route_site_names:
+                cur.execute("INSERT INTO connect(transit_type, transit_route, site_name) VALUES(%s, %s, %s)", (transit_type, transit_route, site))
+        # If a site is de-selected, remove it from connect
+        for site in route_site_names:
+            if site not in connectedSites:
+                cur.execute("DELETE FROM connect WHERE site_name=%s and transit_type=%s and transit_route=%s", (site, transit_type, transit_route))
+        # Store updated values into transit
+        cur.execute("UPDATE transit SET transit_type=%s, transit_route=%s, transit_price=%s WHERE transit_type=%s and transit_route=%s", (transportType, route, price, transit_type, transit_route))
+
+        # Commit to DB
+        mysql.connection.commit()
+
+        # Close connection
+        cur.close()
+        return redirect(url_for('manage_transit', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username')))
+    elif request.method == 'GET':
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT transit_price FROM transit WHERE transit_route=%s and transit_type=%s", (transit_route, transit_type))
+        t_price = cur.fetchone()
+        transit_price = t_price['transit_price']
+
+        # Retrieve all of the sites
+        cur.execute("SELECT site_name FROM site")
+        all_sites = cur.fetchall()
+        # Retrieve sites the transit connects to
+        cur.execute("SELECT site_name FROM connect WHERE transit_type=%s and transit_route=%s", (transit_type, transit_route))
+        connected_sites = cur.fetchall()
+
+        # Condense all_sites into a list with just the site_names
+        all_sites_list = []
+        for site in all_sites:
+            all_sites_list.append(site['site_name'])
+        
+        # Condense connected_sites into a list
+        all_connected = []
+        for site in connected_sites:
+            all_connected.append(site['site_name'])
+
+        # Put the information from the transit onto the Edit Screen
+        form.transportType.data = transit_type
+        form.route.data = transit_route
+        form.price.data = transit_price
+
+        # Commit to DB
+        mysql.connection.commit()
+
+        # Close connection
+        cur.close()
+        return render_template("create_transit.html", all_sites=all_sites_list, all_connected=all_connected, title='Edit Transit', form=form, legend='Edit Transit', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username')) 
 
 ## SCREEN 25 
 @app.route('/manage_event', methods=["GET", "POST"])

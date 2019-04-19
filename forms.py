@@ -93,13 +93,10 @@ class LoginForm(FlaskForm): # inherits from FlaskForm
 
 class TransitForm(FlaskForm): 
     transportType = SelectField('Transport Type', 
-        choices = [('marta','MARTA'), ('bus','Bus'),('bike','Bike')], validators=[DataRequired()])
+        choices = [('MARTA','MARTA'), ('Bus','Bus'),('Bike','Bike')], validators=[DataRequired()])
     route = StringField('Route', validators=[DataRequired()])
     price = DecimalField('Price', validators=[DataRequired(), NumberRange(min=0.01, max=None, message="Positive Price Only")])
-    connectedSites = SelectMultipleField('Connected Sites', 
-        choices = [('Atlanta Beltline Center', 'Atlanta Beltline Center')], validators=[DataRequired()])
     submit = SubmitField('Create')
-
 
 class SiteForm(FlaskForm):
     siteName = StringField('Name', validators=[DataRequired()])
@@ -132,13 +129,12 @@ class ManageSiteForm(FlaskForm):
     delete = SubmitField('Delete')
     
 class ManageTransitForm(FlaskForm): 
-    transportType = SelectField('Transport', choices = [('ALL','ALL'),('marta','MARTA'), ('bus','Bus'),('bike','Bike')],validators=[DataRequired()] )
-    route = StringField('Route', validators=[DataRequired()])
-    containSite = SelectField('Contain Site', choices = [('Inman Park', 'Inman Park')], validators=[DataRequired()])
-    minPrice = DecimalField('Min Price', validators=[DataRequired()])
-    maxPrice = DecimalField('Max Price', validators=[DataRequired()])
-    routeList = RadioField('Routes', choices = [('816','816'),('102','102')])
-    submit = SubmitField('Filter')
+    transportType = SelectField('Transport', choices = [('all','--All--'),('MARTA','MARTA'), ('Bus','Bus'),('Bike','Bike')])
+    route = StringField('Route')
+    minPrice = DecimalField('Min Price')
+    maxPrice = DecimalField('Max Price')
+    filter = SubmitField('Filter')
+    edit = SubmitField('Edit')
 
 class ManageUser(FlaskForm): 
     username = StringField('Username')

@@ -48,10 +48,14 @@
                 </div>
                 <div class="form-group">
                     <div class="form-group col-md-8" id="inputType">
-                        <label for="connected_sites" class="form-control-label">Connected Sites</label>
-                        <select multiple name="connected_sites" class="form-control form-control-lg" id="connected_sites" required>
-                            {% for connected in connected_sites %}
-                                <option value='{{manager}}'>{{ manager }}</option>
+                        <label for="all_sites" class="form-control-label">Connected Sites</label>
+                        <select multiple name="all_sites" class="form-control form-control-lg" id="all_sites" required>
+                            {% for site in all_sites %}
+                                {% if site in all_connected %}
+                                    <option value='{{site}}' selected="selected">{{ site }}</option>
+                                {% else %}
+                                    <option value='{{site}}'>{{ site }}</option>
+                                {% endif %}
                             {% endfor %}
                         </select>
                     </div>
