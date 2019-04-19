@@ -1,0 +1,100 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-section">
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4" style="font-size:35px">{{legend}}</legend>
+                <div class="form-group">
+                    {{ form.site.label(class="form-control-label") }}
+                    {% if form.site.errors %}
+                        {{ form.site(class="form-control form-control-lg is-invalid") }}
+                        <div style="color:red">
+                            {% for error in form.site.errors %}
+                            <span style="font-size:13px">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.site(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        {{ form.firstName.label(class="form-control-label") }}
+                        {% if form.firstName.errors %}
+                            {{ form.firstName(class="form-control form-control-lg is-invalid") }}
+                            <div style="color:red">
+                                {% for error in form.firstName.errors %}
+                                <span style="font-size:13px">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.firstName(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group col-md-6">
+                        {{ form.lastName.label(class="form-control-label") }}
+                        {% if form.lastName.errors %}
+                            {{ form.lastName(class="form-control form-control-lg is-invalid") }}
+                            <div style="color:red">
+                                {% for error in form.lastName.errors %}
+                                <span style="font-size:13px">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.lastName(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class="form-group col-md-6">
+                        {{ form.startDate.label(class="form-control-label") }}
+                        {% if form.startDate.errors %}
+                            {{ form.startDate(class="form-control form-control-lg is-invalid") }}
+                            <div style="color:red">
+                                {% for error in form.startDate.errors %}
+                                    <span style="font-size:13px">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.startDate(class="form-control form-control-lg", type="date") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group col-md-6">
+                        {{ form.endDate.label(class="form-control-label") }}
+                        {% if form.endDate.errors %}
+                            {{ form.endDate(class="form-control form-control-lg is-invalid") }}
+                            <div style="color:red">
+                                {% for error in form.endDate.errors %}
+                                    <span style="font-size:13px">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.endDate(class="form-control form-control-lg", type="date") }}
+                        {% endif %}
+                    </div>
+                </div>   
+            </fieldset>
+            <div class="form-group">
+                {{ form.filter(class="btn btn-outline-info") }}
+            </div>
+        </form>
+        <hr>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                <th scope="col">Staff Name</th>
+                <th scope="col"># Event Shifts</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for name, num in staff%}
+                <tr>
+                    <td>{{name}}</td>
+                    <td>{{num}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock content %}
