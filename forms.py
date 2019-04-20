@@ -80,7 +80,7 @@ class EmployeeProfileForm(FlaskForm):
     firstName = StringField('First Name', validators=[DataRequired()])
     lastName = StringField('Last Name', validators=[DataRequired()])
     phone = IntegerField('Phone', validators=[DataRequired(), NumberRange(min=1000000000, max=9999999999, message="Phone number must be 10 digits.")])
-    email = StringField('Emails', validators=[DataRequired(), Email()])
+    email = StringField('Emails', validators=[Email()])
     visitorAccount = BooleanField('Visitor Account')
     update = SubmitField('Update')
     addEmail = SubmitField('Add Email')
@@ -169,14 +169,12 @@ class EditEvent(FlaskForm):
     submit = SubmitField('Filter')
 
 class UserTakeTransit(FlaskForm): 
-    containSite = SelectField('Contain Site', 
-        choices = [("Inman Park","Inman Park")])
-    transportType = SelectField('Transport', choices = [('ALL','ALL'),('marta','MARTA'), ('bus','Bus'),('bike','Bike')],validators=[DataRequired()])
-    minPrice = DecimalField('Min Price', validators=[DataRequired()])
-    maxPrice = DecimalField('Max Price', validators=[DataRequired()])
+    transportType = SelectField('Transport', choices = [('all','--All--'),('MARTA','MARTA'), ('Bus','Bus'),('Bike','Bike')],validators=[DataRequired()])
+    minPrice = DecimalField('Min Price')
+    maxPrice = DecimalField('Max Price')
     routeList = RadioField('Routes', choices = [('816','816'),('102','102')])
     transitDate = DateField('Transit Date')
-    submit = SubmitField('Filter')
+    filter = SubmitField('Filter')
     logTransit = SubmitField('Log Transit')
 
 class TransitHistory(FlaskForm): 

@@ -35,18 +35,18 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6">
-                        <label>pen15</label>
-                        <p class="font-italic">HARDCODED</p>
+                        <label>Username</label>
+                        <p class="font-italic">{{username}}</p>
                     </div>
                     <div class="col-md-6">
-                        <label>pen15</label>
-                        <p class="font-italic">HARDCODED</p>
+                        <label>Site Name</label>
+                        <p class="font-italic">{{profile['site_name']}}</p>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-6">
-                        <label>pen15</label>
-                        <p class="font-italic">HARDCODED</p>
+                        <label>Employee ID</label>
+                        <p class="font-italic">{{profile['employee_id']}}</p>
                     </div>
                     <div class="form-group col-md-6">
                         {{ form.phone.label(class="form-control-label") }}
@@ -63,13 +63,13 @@
                     </div>
                 </div>
                 <div>
-                    <label>pen15</label>
-                    <p class="font-italic">HARDCODED</p>
+                    <label>Address</label>
+                    <p class="font-italic">{{profile['address']}}</p>
                 </div>
                 <hr>
-                <label>pen15</label>
+                <label>Emails</label>
                 {% for e in emails %}
-                <p>{{ e }}&nbsp;<a class="ml-2 btn btn-outline-info" href="">Remove</a> </p>
+                <p>{{ e }}&nbsp;<a class="ml-2 btn btn-outline-info" href="{{ url_for('remove_email', email=e, userType=userType, username=username) }}">Remove</a> </p>
                 {% endfor %}
                 <div class="row">
                     <div class="form-group col-md-6">
