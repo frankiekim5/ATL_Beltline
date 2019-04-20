@@ -237,3 +237,7 @@ class ExploreEvent(FlaskForm):
     eventList = RadioField("Name", choices=[('Tour with Peter','Tour with Peter'),('Tour with Timmy','Tour with Timmy')])
     filter = SubmitField('Filter')
     eventDetail = SubmitField('Event Detail')
+
+class VisitorEventDetail(FlaskForm): 
+    visitDate = DateField('Visit Date', validators=[DataRequired()])
+    logVisit = SubmitField('Log Visit')
