@@ -241,3 +241,20 @@ class ExploreEvent(FlaskForm):
 class VisitorEventDetail(FlaskForm): 
     visitDate = DateField('Visit Date', validators=[DataRequired()])
     logVisit = SubmitField('Log Visit')
+
+class ExploreSite(FlaskForm): 
+    siteName = SelectField('Site Name', 
+        choices = [("all","--All--"),("Inman Park","Inman Park")])
+    openEveryDay = SelectField('Open Everyday', choices = [('all','--All--'), ('yes', 'Yes'), ('no','No')])
+    startDate = DateField('Start Date')
+    endDate = DateField('End Date')
+    minVisitsRange = IntegerField('Min Visits')
+    maxVisitsRange = IntegerField('Max Visits')
+    minEventCount = IntegerField('Min Event Count')
+    maxEventCount = IntegerField('Max Event Count')
+    includeVisited = BooleanField('Include Visited')
+    siteList = RadioField("Sites", choices = [('Inman Park','Inman Park'),('PCM','PCM')])
+    filter = SubmitField('Filter')
+    siteDetail = SubmitField('Site Detail')
+    transitDetail = SubmitField('Transit Detail')
+    
