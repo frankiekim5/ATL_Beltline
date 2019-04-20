@@ -101,17 +101,15 @@
                     {% endif %}
                 </div>
                 <div class="form-group">
-                    {{ form.assignStaff.label(class="form-control-label") }}
-                    {% if form.assignStaff.errors %}
-                        {{ form.assignStaff(class="form-control form-control-lg is-invalid") }}
-                        <div style="color:red">
-                            {% for error in form.assignStaff.errors %}
-                                <span style="font-size:13px">{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ form.assignStaff(class="form-control form-control-lg") }}
-                    {% endif %}
+                        {{ form.updateStaff(class="btn btn-outline-info") }}
+                </div>
+                <div class="form-group col-md-8" id="inputType">
+                    <label for="assign_staff" class="form-control-label">Assign Staff</label>
+                    <select multiple name="assign_staff" class="form-control form-control-lg" id="assign_staff">
+                        {% for staff in staff_list %}
+                            <option value='{{staff}}'>{{ staff }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
             </fieldset>
             <div class="form-group">

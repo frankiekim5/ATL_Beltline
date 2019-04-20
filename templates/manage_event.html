@@ -201,7 +201,7 @@
             </fieldset>
             <div class="form-group">
                 {{ form.submit(class="btn btn-outline-info") }}
-                <a class="btn btn-outline-info" href="{{ url_for('create_event') }}">Create</a>
+                <a class="btn btn-outline-info" href="{{ url_for('create_event', userType=userType, username=username) }}">Create</a>
                 <a class="btn btn-outline-info" href="{{ url_for('edit_event') }}">View/Edit</a>
                 <a class="btn btn-outline-info" href="">Delete</a>
             </div>

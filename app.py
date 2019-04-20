@@ -189,6 +189,10 @@ def login():
         # Get the user via username 
         # NOTE: If user enters an email not in user_email, return an error
         result = cur.execute("SELECT * FROM user_email WHERE email = %s", [email])
+        # Login fails
+        if result == 0:
+            flash('Please enter a correct email address', 'danger')
+            return redirect(url_for('login'))
         username = cur.fetchone()['username']
         cur.execute("SELECT * FROM user WHERE username=%s", [username])
         
@@ -536,34 +540,66 @@ def transit_history():
         route = form.route.data
         startDate = form.startDate.data
         endDate = form.endDate.data
-
-        # Check if min price field was left blank. Default to 0
-        if minPrice == None:
-            minPrice = 0
-        # Check if max price field was left blank. Default to large number
-        if maxPrice == None:
-            maxPrice = 100000000
         
         filtered_transits = []
         containSite = request.form.get('contain_site')
         if containSite == 'all' and transportType == 'all':
             if route == "":
-                for transit in all_transits:
-                    if transit['transit_price'] >= minPrice and transit['transit_price'] <= maxPrice:
+                for transit in transit_history:
+                    if startDate == None and endDate != None:
+                        if transit['transit_date'] <= endDate:
+                            filtered_transits.append(transit)
+                    elif startDate != None and endDate == None:
+                        if transit['transit_date'] >= startDate:
+                            filtered_transits.append(transit)
+                    elif startDate != None and endDate != None:
+                        if transit['transit_date'] >= startDate and transit['transit_date'] <= endDate:
+                            filtered_transits.append(transit)
+                    else:
                         filtered_transits.append(transit)
             else:
-                for transit in all_transits:
-                    if transit['transit_route'] == route and transit['transit_price'] >= minPrice and transit['transit_price'] <= maxPrice:
-                        filtered_transits.append(transit)
+                for transit in transit_history:
+                    if transit['transit_route'] == route:
+                        if startDate == None and endDate != None:
+                            if transit['transit_date'] <= endDate:
+                                filtered_transits.append(transit)
+                        elif startDate != None and endDate == None:
+                            if transit['transit_date'] >= startDate:
+                                filtered_transits.append(transit)
+                        elif startDate != None and endDate != None:
+                            if transit['transit_date'] >= startDate and transit['transit_date'] <= endDate:
+                                filtered_transits.append(transit)
+                        else:
+                            filtered_transits.append(transit)
         elif containSite == 'all' and transportType != 'all':
             if route == "":
-                for transit in all_transits:
-                    if transit['transit_type'] == transportType and transit['transit_price'] >= minPrice and transit['transit_price'] <= maxPrice:
-                        filtered_transits.append(transit)
+                for transit in transit_history:
+                    if transit['transit_type'] == transportType:
+                        if startDate == None and endDate != None:
+                            if transit['transit_date'] <= endDate:
+                                filtered_transits.append(transit)
+                        elif startDate != None and endDate == None:
+                            if transit['transit_date'] >= startDate:
+                                filtered_transits.append(transit)
+                        elif startDate != None and endDate != None:
+                            if transit['transit_date'] >= startDate and transit['transit_date'] <= endDate:
+                                filtered_transits.append(transit)
+                        else:
+                            filtered_transits.append(transit)
             else:
-                for transit in all_transits:
-                    if transit['transit_type'] == transportType and transit['transit_route'] == route and transit['transit_price'] >= minPrice and transit['transit_price'] <= maxPrice:
-                        filtered_transits.append(transit)
+                for transit in transit_history:
+                    if transit['transit_type'] == transportType and transit['transit_route'] == route:
+                        if startDate == None and endDate != None:
+                            if transit['transit_date'] <= endDate:
+                                filtered_transits.append(transit)
+                        elif startDate != None and endDate == None:
+                            if transit['transit_date'] >= startDate:
+                                filtered_transits.append(transit)
+                        elif startDate != None and endDate != None:
+                            if transit['transit_date'] >= startDate and transit['transit_date'] <= endDate:
+                                filtered_transits.append(transit)
+                        else:
+                            filtered_transits.append(transit)
         elif containSite != 'all' and transportType == 'all':
             # Create cursor
             cur = mysql.connection.cursor()
@@ -580,10 +616,20 @@ def transit_history():
                 for transit in transit_sites:
                     if transit['transit_route'] == route:
                         needed_transits.append(transit)
-            for transit in all_transits:
+            for transit in transit_history:
                 for comparison in needed_transits:
-                    if transit['transit_route'] == comparison['transit_route'] and transit['transit_type'] == comparison['transit_type'] and transit['transit_price'] >= minPrice and transit['transit_price'] <= maxPrice:
-                        filtered_transits.append(transit)            
+                    if transit['transit_route'] == comparison['transit_route'] and transit['transit_type'] == comparison['transit_type']:
+                        if startDate == None and endDate != None:
+                            if transit['transit_date'] <= endDate:
+                                filtered_transits.append(transit)
+                        elif startDate != None and endDate == None:
+                            if transit['transit_date'] >= startDate:
+                                filtered_transits.append(transit)
+                        elif startDate != None and endDate != None:
+                            if transit['transit_date'] >= startDate and transit['transit_date'] <= endDate:
+                                filtered_transits.append(transit)
+                        else:
+                            filtered_transits.append(transit)   
                 
             # Commit to DB
             mysql.connection.commit()
@@ -607,19 +653,26 @@ def transit_history():
                 for transit in transit_sites:
                     if transit['transit_route'] == route and transit['transit_type'] == transportType:
                         needed_transits.append(transit)
-            for transit in all_transits:
+            for transit in transit_history:
                 for comparison in needed_transits:
-                    if transit['transit_route'] == comparison['transit_route'] and transit['transit_type'] == comparison['transit_type'] and transit['transit_price'] >= minPrice and transit['transit_price'] <= maxPrice:
-                        filtered_transits.append(transit)                
+                    if transit['transit_route'] == comparison['transit_route'] and transit['transit_type'] == comparison['transit_type']:
+                        if startDate == None and endDate != None:
+                            if transit['transit_date'] <= endDate:
+                                filtered_transits.append(transit)
+                        elif startDate != None and endDate == None:
+                            if transit['transit_date'] >= startDate:
+                                filtered_transits.append(transit)
+                        else:
+                            filtered_transits.append(transit)
             # Commit to DB
             mysql.connection.commit()
 
             # Close connection
             cur.close()
                 
-        return render_template('manage_transit.html', form=form, sites=all_sites, transits=filtered_transits, title='Manage Transit', legend='Manage Transit', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+        return render_template('transit_history.html', form=form, sites=all_sites, transits=filtered_transits, title='Transit History', legend='Transit History', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
 
-    return render_template('transit_history.html', sites=all_sites, transits=transit_history, title="Transit History",legend="Transit History",form=form, userType=request.args.get('userType'), username=username)
+    return render_template('transit_history.html', sites=all_sites, transits=[], title="Transit History",legend="Transit History",form=form, userType=request.args.get('userType'), username=username)
 
 # Helper method to deal with email modifications
 @app.route('/remove_email/<email>', methods=['GET', 'POST'])
@@ -1430,7 +1483,7 @@ def edit_transit(transit):
 
 ## SCREEN 25 
 @app.route('/manage_event', methods=["GET", "POST"])
-def manage_event(): 
+def manage_event():
     form = ManageEvent()
     if form.validate_on_submit(): 
         name = form.name.data
@@ -1443,7 +1496,7 @@ def manage_event():
         maxVisitsRange = form.maxVisitsRange.data 
         minRevenueRange = form.minRevenueRange.data 
         maxRevenueRange = form.maxRevenueRange.data
-    return render_template('manage_event.html', title="Manage Event", legend="Manage Event", form=form)
+    return render_template('manage_event.html', title="Manage Event", legend="Manage Event", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
 
 ## SCREEN 26 
 @app.route('/edit_event', methods=["GET", "POST"])
@@ -1464,15 +1517,146 @@ def edit_event():
         maxRevenueRange = form.maxRevenueRange.data
     return render_template("edit_event.html", title="Edit Event", legend ="Edit Event", form=form)
 
+# Helper method to retrieve all available staff by first and last name
+
+
 ## SCREEN 27 
 @app.route('/create_event', methods=['GET', 'POST'])
 def create_event(): 
-    form = EventForm()  
-    if form.validate_on_submit(): 
-        minStaff = form.minStaff.data 
-        description = form.description.data
-        assignStaff = form.assignStaff.data
-    return render_template("create_event.html", title="Create Event", form=form)
+    form = EventForm()
+    username = request.args['username']
+    
+    # Create cursor
+    cur = mysql.connection.cursor()
+
+    # Check if manager currently manages a site
+    result = cur.execute("SELECT site_name FROM site WHERE manager_username=%s", (username,))
+    if result == 0:
+        flash("Manager cannot create an event because he or she doesn't manage a site", 'danger')
+        return redirect(url_for('manage_event', userType=request.args.get('userType'), username=username))
+    site_name = cur.fetchone()
+    site_name = site_name['site_name']
+
+    # Commit to DB
+    mysql.connection.commit()
+
+    # Close connection
+    cur.close()
+    staff_list = []
+    if form.validate_on_submit():
+        # Checks for if manager updates staff list
+        if form.updateStaff.data:
+            startDate = form.startDate.data
+            endDate = form.endDate.data
+            if endDate < startDate:
+                flash('End Date cannot be before the Start Date', 'danger')
+                return render_template("create_event.html", staff_list=staff_list, title="Create Event", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+            minStaff = form.minStaff.data
+
+            # Create cursor
+            cur = mysql.connection.cursor()
+
+            # Staff available
+            cur.execute("SELECT username FROM staff WHERE username NOT IN (SELECT staff_username FROM assign_to)")
+            unassigned_staff = cur.fetchall()
+            
+            temp_staff = []
+            for staff in unassigned_staff:
+                temp_staff.append(staff['username'])
+            
+            # Retrieve first and last name of unassigned staff members
+            for staff in temp_staff:
+                cur.execute("SELECT firstname, lastname from user WHERE username=%s", (staff,))
+                name = cur.fetchone()                
+                fullName = name['firstname'] + " " + name['lastname']
+                staff_list.append(fullName)                            
+
+            # Find staff assigned
+            cur.execute("SELECT * FROM assign_to")
+            staff_assigned = cur.fetchall()
+            
+            assigned_staff = []
+            possible_duplicates = []
+            for staff in staff_assigned:
+                member = {}
+                # Retrieve first and last name of assigned staff members
+                cur.execute("SELECT firstname, lastname from user WHERE username=%s", (staff['staff_username'],))
+                name = cur.fetchone()                
+                fullName = name['firstname'] + " " + name['lastname']
+                member['name'] = fullName
+                member['start_date'] = staff['start_date']
+                # Find the end date of the event the staff is assigned to
+                cur.execute("SELECT end_date FROM event WHERE event_name=%s and start_date=%s and site_name=%s", (staff['event_name'], staff['start_date'], staff['site_name']))
+                end_date = cur.fetchone()
+                member['end_date'] = end_date['end_date']
+                if fullName not in possible_duplicates:
+                    assigned_staff.append(member)
+                possible_duplicates.append(fullName)
+            
+            # See if staff members in assigned_staff are available for this new event
+            for assigned in assigned_staff:
+                if startDate > assigned['end_date'] or endDate < assigned['start_date']:
+                    staff_list.append(assigned['name'])
+
+            if len(staff_list) < minStaff:
+                flash('Not enough available staff members', 'danger')
+                return redirect(url_for('manage_event', userType=request.args.get('userType'), username=request.args.get('username')))
+
+            # Commit to DB
+            mysql.connection.commit()
+
+            # Close connection
+            cur.close()
+            return render_template("create_event.html", staff_list=staff_list, title="Create Event", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+        elif form.submit.data:
+            name = form.name.data
+            price = form.price.data
+            capacity = form.capacity.data
+            minStaff = form.minStaff.data
+            startDate = form.startDate.data
+            endDate = form.endDate.data
+            description = form.description.data
+            assign_staff = request.form.getlist('assign_staff')
+
+            # Check if len of staff is greater than min staff required
+            if len(assign_staff) < minStaff:
+                flash('Cannot assign number of staff under the Minimum Staff Required', 'danger')
+                return render_template("create_event.html", staff_list=staff_list, title="Create Event", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+            
+            # Create cursor
+            cur = mysql.connection.cursor()
+
+            # Check if event overlaps with another event
+            cur.execute("SELECT site_name, start_date, end_date FROM event")
+            possible_overlaps = cur.fetchall()
+            
+            for possible in possible_overlaps:
+                if possible['site_name'] == site_name:
+                    if startDate >= possible['start_date'] and startDate <= possible['end_date'] or endDate >= possible['start_date'] and endDate <= possible['end_date']:
+                        flash('Cannot schedule an event that overlaps with another at the same site', 'danger')
+                        return render_template("create_event.html", staff_list=staff_list, title="Create Event", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+
+            # Enter information for the new event
+            cur.execute("INSERT INTO event(event_name, start_date, site_name, min_staff_req, description, capacity, price, end_date) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)", (name, startDate, site_name, minStaff, description, capacity, price, endDate))
+
+            # Enter information for assign_to
+            for staff in assign_staff:
+                staff_name = staff.split()
+                firstname = staff_name[0]
+                lastname = staff_name[1]
+                cur.execute("SELECT username FROM user WHERE firstname=%s and lastname=%s", (firstname, lastname))
+                username = cur.fetchone()
+                username = username['username']
+                cur.execute("INSERT INTO assign_to(staff_username, event_name, start_date, site_name) VALUES(%s, %s, %s, %s)", (username, name, startDate, site_name))
+                         
+            # Commit to DB
+            mysql.connection.commit()
+
+            # Close connection
+            cur.close()
+            flash('Successfully Created Event', 'success')
+            return redirect(url_for('manage_event', userType=request.args.get('userType'), username=request.args.get('username')))
+    return render_template("create_event.html", staff_list=staff_list, title="Create Event", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
 
 ## SCREEN 28 
 @app.route('/manage_staff', methods=['GET', 'POST'])
