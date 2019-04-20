@@ -1127,5 +1127,20 @@ def view_schedule():
     form = ViewSchedule()
     return render_template("view_schedule.html", title="View Schedule", legend="View Schedule", form=form)
 
+## SCREEN 32 
+@app.route('/event_detail', methods=["GET", "POST"])
+def event_detail(): 
+    event = {
+            "eventName": "Walking Tour",
+            "site": "Inman Park",
+            "startDate": "2019-02-02",
+            "endDate": "2019-02-02",
+            "durationDays":1, 
+            "staffAssigned": "Peter Han",
+            "capacity":20, 
+            "price":0,
+            "description":"walking tour with Peter Han - very dangerous"
+            }
+    return render_template("event_detail.html", title="Event Detail", legend="Event Detail", event=event)
 if __name__ == '__main__':
     app.run(debug=True)
