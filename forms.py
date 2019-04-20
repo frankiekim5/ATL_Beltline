@@ -196,3 +196,18 @@ class ManageStaff(FlaskForm):
     startDate = DateField('Start Date')
     endDate = DateField('End Date')
     filter = SubmitField('Filter')
+
+class SiteReport(FlaskForm): 
+    startDate = DateField('Start Date')
+    endDate = DateField('End Date')
+    minEventCount = IntegerField('Min Event Count')
+    maxEventCount = IntegerField('Max Event Count')
+    minStaffCount = IntegerField('Min Staff Count')
+    maxStaffCount = IntegerField('Max Staff Count')
+    minVisitsRange = IntegerField('Min Visits Range')
+    maxVisitsRange = IntegerField('Max Visits Range')
+    minRevenueRange = IntegerField('Min Revenue Range')
+    maxRevenueRange = IntegerField('Max Revenue Range')
+    siteList = RadioField('Sites', choices = [('Inman Park','Inman Park'),('PCM','PCM')])
+    filter = SubmitField("Filter")
+    dailyDetail = SubmitField("Daily Detail")

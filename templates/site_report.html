@@ -1,0 +1,211 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-section">
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4" style="font-size:35px">{{legend}}</legend>
+                <div class='row'>
+                    <div class="form-group col-md-6">
+                        {{ form.startDate.label(class="form-control-label") }}
+                        {% if form.startDate.errors %}
+                            {{ form.startDate(class="form-control form-control-lg is-invalid") }}
+                            <div style="color:red">
+                                {% for error in form.startDate.errors %}
+                                    <span style="font-size:13px">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.startDate(class="form-control form-control-lg", type="date") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group col-md-6">
+                        {{ form.endDate.label(class="form-control-label") }}
+                        {% if form.endDate.errors %}
+                            {{ form.endDate(class="form-control form-control-lg is-invalid") }}
+                            <div style="color:red">
+                                {% for error in form.endDate.errors %}
+                                    <span style="font-size:13px">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.endDate(class="form-control form-control-lg", type="date") }}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-3">
+                        {{ form.minEventCount.label(class="form-control-label") }}
+                        {% if form.minEventCount.errors %}
+                            {{ form.minEventCount(class="form-control form-control-lg is-invalid") }}
+                            <div style="color:red">
+                                {% for error in form.minEventCount.errors %}
+                                    <span style="font-size:13px">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.minEventCount(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group col-md-3">
+                        {{ form.maxEventCount.label(class="form-control-label") }}
+                        {% if form.maxEventCount.errors %}
+                            {{ form.maxEventCount(class="form-control form-control-lg is-invalid") }}
+                            <div style="color:red">
+                                {% for error in form.maxEventCount.errors %}
+                                    <span style="font-size:13px">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.maxEventCount(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group col-md-3">
+                        {{ form.minStaffCount.label(class="form-control-label") }}
+                        {% if form.minStaffCount.errors %}
+                            {{ form.minStaffCount(class="form-control form-control-lg is-invalid") }}
+                            <div style="color:red">
+                                {% for error in form.minStaffCount.errors %}
+                                    <span style="font-size:13px">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.minStaffCount(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group col-md-3">
+                        {{ form.maxStaffCount.label(class="form-control-label") }}
+                        {% if form.maxStaffCount.errors %}
+                            {{ form.maxStaffCount(class="form-control form-control-lg is-invalid") }}
+                            <div style="color:red">
+                                {% for error in form.maxStaffCount.errors %}
+                                    <span style="font-size:13px">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.maxStaffCount(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-3">
+                        {{ form.minVisitsRange.label(class="form-control-label") }}
+                        {% if form.minVisitsRange.errors %}
+                            {{ form.minVisitsRange(class="form-control form-control-lg is-invalid") }}
+                            <div style="color:red">
+                                {% for error in form.minVisitsRange.errors %}
+                                    <span style="font-size:13px">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.minVisitsRange(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group col-md-3">
+                        {{ form.maxVisitsRange.label(class="form-control-label") }}
+                        {% if form.maxVisitsRange.errors %}
+                            {{ form.maxVisitsRange(class="form-control form-control-lg is-invalid") }}
+                            <div style="color:red">
+                                {% for error in form.maxVisitsRange.errors %}
+                                    <span style="font-size:13px">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.maxVisitsRange(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group col-md-3">
+                        {{ form.minRevenueRange.label(class="form-control-label") }}
+                        {% if form.minRevenueRange.errors %}
+                            {{ form.minVisitsRange(class="form-control form-control-lg is-invalid") }}
+                            <div style="color:red">
+                                {% for error in form.minRevenueRange.errors %}
+                                    <span style="font-size:13px">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.minRevenueRange(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group col-md-3">
+                        {{ form.maxRevenueRange.label(class="form-control-label") }}
+                        {% if form.maxRevenueRange.errors %}
+                            {{ form.maxRevenueRange(class="form-control form-control-lg is-invalid") }}
+                            <div style="color:red">
+                                {% for error in form.maxRevenueRange.errors %}
+                                    <span style="font-size:13px">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.maxRevenueRange(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="form-group">
+                    {{ form.filter(class="btn btn-outline-info") }}
+                    {{ form.dailyDetail(class="btn btn-outline-success") }}
+                </div>
+                <hr>
+                <div class="form-group">
+                    {% if form.siteList.errors %}
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                <th scope="col">Date</th>
+                                <th scope="col">Event Count</th>
+                                <th scope="col">Staff Count</th>
+                                <th scope="col">Total Vists</th>
+                                <th scope="col">Total Revenue ($)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for choice in form.siteList %}
+                                <tr>
+                                    <td>{{choice}}&nbsp;{{ choice.label }}</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                {% endfor %} 
+                            </tbody>
+                        </table>
+                        <div style="color:red">
+                            {% for error in form.siteList.errors %}
+                                 <span style="font-size:13px">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                <th scope="col">Date</th>
+                                <th scope="col">Event Count</th>
+                                <th scope="col">Staff Count</th>
+                                <th scope="col">Total Vists</th>
+                                <th scope="col">Total Revenue ($)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for choice in form.siteList %}
+                                <tr>
+                                    <td>{{choice}}&nbsp;{{ choice.label }}</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                {% endfor %} 
+                            </tbody>
+                        </table>
+                        <div style="color:red">
+                            {% for error in form.siteList.errors %}
+                                 <span style="font-size:13px">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </fieldset>
+        </form>
+    </div>
+{% endblock content %}
