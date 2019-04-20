@@ -135,6 +135,7 @@ class ManageTransitForm(FlaskForm):
     maxPrice = DecimalField('Max Price')
     filter = SubmitField('Filter')
     edit = SubmitField('Edit')
+    delete = SubmitField('Delete')
 
 class ManageUser(FlaskForm): 
     username = StringField('Username')
@@ -172,19 +173,16 @@ class UserTakeTransit(FlaskForm):
     transportType = SelectField('Transport', choices = [('all','--All--'),('MARTA','MARTA'), ('Bus','Bus'),('Bike','Bike')],validators=[DataRequired()])
     minPrice = DecimalField('Min Price')
     maxPrice = DecimalField('Max Price')
-    routeList = RadioField('Routes', choices = [('816','816'),('102','102')])
     transitDate = DateField('Transit Date')
-    filter = SubmitField('Filter')
     logTransit = SubmitField('Log Transit')
+    filter = SubmitField('Filter')
 
 class TransitHistory(FlaskForm): 
-    transportType = SelectField('Transport', choices = [('ALL','ALL'),('marta','MARTA'), ('bus','Bus'),('bike','Bike')],validators=[DataRequired()])
-    containSite = SelectField('Contain Site', 
-        choices = [("Inman Park","Inman Park")])
-    route = StringField('Route', validators=[DataRequired()])
+    transportType = SelectField('Transport', choices = [('all','--All--'),('MARTA','MARTA'), ('Bus','Bus'),('Bike','Bike')],validators=[DataRequired()])
+    route = StringField('Route')
     startDate = DateField('Start Date')
     endDate = DateField('End Date')
-    submit = SubmitField('Filter')
+    filter = SubmitField('Filter')
 
 class ManageStaff(FlaskForm): 
     site = SelectField('Site', 

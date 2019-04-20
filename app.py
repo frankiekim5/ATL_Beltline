@@ -388,15 +388,50 @@ def take_transit():
     form = UserTakeTransit()
     all_transits = get_all_transits()
     all_sites = get_all_sites()
+    filtered_transits = []
+    username = request.args['username']
 
     if form.logTransit.data:
         if 'transit' not in request.form:
             flash('Please select a transit to take', 'danger')
         else:
             transit = request.form['transit']
-            return str(transit)
-            # return redirect(url_for('edit_transit', transit=transit, emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username')))
-    elif form.filter.data:
+            transit = transit.split()
+            transit_route = transit[0]
+            transit_type = transit[1]
+            transit_date = form.transitDate.data
+            
+            # Check if user selected a date
+            if transit_date == None:
+                flash('Please select a date to enter', 'danger')
+                return redirect(url_for('take_transit', userType=request.args.get('userType'), username=request.args.get('username')))
+
+            # Enter into take_transit table the data
+            # Create cursor
+            cur = mysql.connection.cursor()
+
+            # Check first if the attempted entry is a duplicate
+            # NOTE: user can only take the same transit once per day
+            cur.execute("SELECT * FROM take_transit")
+            results = cur.fetchall()
+            
+            for result in results:
+                if result['username'] == username and result['transit_type'] == transit_type and result['transit_route'] == transit_route and result['transit_date'] == transit_date:
+                    flash('Cannot take the same transit more than once per day', 'danger')
+                    return redirect(url_for('take_transit', userType=request.args.get('userType'), username=request.args.get('username')))
+
+
+            cur.execute("INSERT INTO take_transit(username, transit_type, transit_route, transit_date) VALUES(%s, %s, %s, %s)", (username, transit_type, transit_route, transit_date))            
+
+            # Commit to DB
+            mysql.connection.commit()
+
+            # Close connection
+            cur.close()
+            flash('Successfully Logged Transit', 'success')
+            return redirect(url_for('take_transit', userType=request.args.get('userType'), username=username))
+            
+    if form.filter.data:
         transportType = form.transportType.data
         minPrice = form.minPrice.data
         maxPrice = form.maxPrice.data
@@ -408,7 +443,7 @@ def take_transit():
         if maxPrice == None:
             maxPrice = 100000000
         
-        filtered_transits = []
+        
         containSite = request.form.get('contain_site')
         if containSite == 'all' and transportType == 'all':
             for transit in all_transits:
@@ -457,15 +492,134 @@ def take_transit():
                 for comparison in needed_transits:
                     if transit['transit_type'] == comparison['transit_type'] and transit['transit_price'] >= minPrice and transit['transit_price'] <= maxPrice:
                         filtered_transits.append(transit) 
-        return render_template('take_transit.html', sites=all_sites, transits=filtered_transits, title="Take Transit",legend="Take Transit",form=form, userType=request.args.get('userType'), username=request.args.get('username'))
-    return render_template('take_transit.html', sites=all_sites, transits=[], title="Take Transit",legend="Take Transit",form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+        return render_template('take_transit.html', sites=all_sites, transits=filtered_transits, title="Take Transit",legend="Take Transit",form=form, userType=request.args.get('userType'), username=username)
+    return render_template('take_transit.html', sites=all_sites, transits=filtered_transits, title="Take Transit",legend="Take Transit",form=form, userType=request.args.get('userType'), username=username)
 
+# Helper method to query transit history for user
+def get_transit_history(username):
+    # Create cursor
+    cur = mysql.connection.cursor()
+
+    # Retrieve information from take_transit
+    cur.execute("SELECT transit_type, transit_route, transit_date FROM take_transit WHERE username=%s", (username,))
+    transits = cur.fetchall()
+
+    # Retrieve the transit price from transit
+    transit_history = []
+    for transit in transits:
+        history_entry = {}
+        cur.execute("SELECT transit_price FROM transit WHERE transit_type=%s and transit_route=%s", (transit['transit_type'], transit['transit_route']))
+        transit_price = cur.fetchone()
+        history_entry['transit_type'] = transit['transit_type']
+        history_entry['transit_route'] = transit['transit_route']
+        history_entry['transit_price'] = transit_price['transit_price']
+        history_entry['transit_date'] = transit['transit_date']
+        transit_history.append(history_entry)
+
+    # Commit to DB
+    mysql.connection.commit()
+
+    # Close connection
+    cur.close()
+    return transit_history
 
 ## SCREEN 16 
 @app.route('/transit_history', methods=['GET', 'POST'])
 def transit_history(): 
     form = TransitHistory()
-    return render_template('transit_history.html', title="Transit History",legend="Transit History",form=form)    
+    username = request.args['username']
+    transit_history = get_transit_history(username)
+    all_sites = get_all_sites()
+
+    if form.filter.data:
+        transportType = form.transportType.data
+        route = form.route.data
+        startDate = form.startDate.data
+        endDate = form.endDate.data
+
+        # Check if min price field was left blank. Default to 0
+        if minPrice == None:
+            minPrice = 0
+        # Check if max price field was left blank. Default to large number
+        if maxPrice == None:
+            maxPrice = 100000000
+        
+        filtered_transits = []
+        containSite = request.form.get('contain_site')
+        if containSite == 'all' and transportType == 'all':
+            if route == "":
+                for transit in all_transits:
+                    if transit['transit_price'] >= minPrice and transit['transit_price'] <= maxPrice:
+                        filtered_transits.append(transit)
+            else:
+                for transit in all_transits:
+                    if transit['transit_route'] == route and transit['transit_price'] >= minPrice and transit['transit_price'] <= maxPrice:
+                        filtered_transits.append(transit)
+        elif containSite == 'all' and transportType != 'all':
+            if route == "":
+                for transit in all_transits:
+                    if transit['transit_type'] == transportType and transit['transit_price'] >= minPrice and transit['transit_price'] <= maxPrice:
+                        filtered_transits.append(transit)
+            else:
+                for transit in all_transits:
+                    if transit['transit_type'] == transportType and transit['transit_route'] == route and transit['transit_price'] >= minPrice and transit['transit_price'] <= maxPrice:
+                        filtered_transits.append(transit)
+        elif containSite != 'all' and transportType == 'all':
+            # Create cursor
+            cur = mysql.connection.cursor()
+
+            # Query the transits that have this site.
+            cur.execute("SELECT transit_type, transit_route FROM connect WHERE site_name=%s", (containSite,))
+            transit_sites = cur.fetchall()
+
+            needed_transits = []
+            if route == "":
+                for transit in transit_sites:
+                    needed_transits.append(transit)
+            else:
+                for transit in transit_sites:
+                    if transit['transit_route'] == route:
+                        needed_transits.append(transit)
+            for transit in all_transits:
+                for comparison in needed_transits:
+                    if transit['transit_route'] == comparison['transit_route'] and transit['transit_type'] == comparison['transit_type'] and transit['transit_price'] >= minPrice and transit['transit_price'] <= maxPrice:
+                        filtered_transits.append(transit)            
+                
+            # Commit to DB
+            mysql.connection.commit()
+
+            # Close connection
+            cur.close()
+        else:
+            # Create cursor
+            cur = mysql.connection.cursor()
+
+            # Query the transits that have this site.
+            cur.execute("SELECT transit_type, transit_route FROM connect WHERE site_name=%s", (containSite,))
+            transit_sites = cur.fetchall()
+
+            needed_transits = []
+            if route == "":
+                for transit in transit_sites:
+                    if transit['transit_type'] == transportType:
+                        needed_transits.append(transit)
+            else:
+                for transit in transit_sites:
+                    if transit['transit_route'] == route and transit['transit_type'] == transportType:
+                        needed_transits.append(transit)
+            for transit in all_transits:
+                for comparison in needed_transits:
+                    if transit['transit_route'] == comparison['transit_route'] and transit['transit_type'] == comparison['transit_type'] and transit['transit_price'] >= minPrice and transit['transit_price'] <= maxPrice:
+                        filtered_transits.append(transit)                
+            # Commit to DB
+            mysql.connection.commit()
+
+            # Close connection
+            cur.close()
+                
+        return render_template('manage_transit.html', form=form, sites=all_sites, transits=filtered_transits, title='Manage Transit', legend='Manage Transit', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+
+    return render_template('transit_history.html', sites=all_sites, transits=transit_history, title="Transit History",legend="Transit History",form=form, userType=request.args.get('userType'), username=username)
 
 # Helper method to deal with email modifications
 @app.route('/remove_email/<email>', methods=['GET', 'POST'])
@@ -912,6 +1066,7 @@ def manage_site():
 
                 # Close connection
                 cur.close()
+                flash('Successfully Deleted Site', 'success')
                 return redirect(url_for('manage_site', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username')))
     return render_template('manage_site.html', form=form, sites=sites, sitesList=sites, title='Manage Navigation', legend='Manage Site', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
 
@@ -944,6 +1099,7 @@ def create_site():
 
         # Close connection
         cur.close()
+        flash('Successfully Created Site', 'success')
         return redirect(url_for('manage_site', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username')))
     return render_template("create_site.html", title='Create Site', form=form, legend='Create Site', unassigned_managers=managers, emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
 
@@ -1039,6 +1195,28 @@ def manage_transit():
         else:
             transit = request.form['transit']
             return redirect(url_for('edit_transit', transit=transit, emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username')))
+    elif form.delete.data:
+        if 'transit' not in request.form:
+            flash('Please select a transit to delete', 'danger')
+        else:
+            transit = request.form['transit']
+            transit = transit.split()
+            transit_route = transit[0]
+            transit_type = transit[1]
+
+            # Create cursor
+            cur = mysql.connection.cursor()
+
+            # Delete transit from transit table
+            cur.execute("DELETE FROM transit WHERE transit_route=%s and transit_type=%s", (transit_route, transit_type))
+            
+            # Commit to DB
+            mysql.connection.commit()
+
+            # Close connection
+            cur.close()
+            flash('Successfully Deleted Transit', 'success')
+            return redirect(url_for('manage_transit', userType=request.args.get('userType'), username=request.args.get('username')))
     elif form.filter.data:
         transportType = form.transportType.data
         route = form.route.data
@@ -1158,6 +1336,7 @@ def create_transit():
 
         # Close connection
         cur.close()
+        flash('Successfully Created Transit', 'success')
         return redirect(url_for('manage_transit', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username')))
     return render_template("create_transit.html", all_sites=all_sites, title='Create Transit', form=form, legend='Create Transit', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
 
