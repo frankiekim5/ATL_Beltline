@@ -36,6 +36,7 @@
                             <a class="nav-item nav-link" href="/about">Staff</a>
                         {% elif userType == 'Administrator' %}
                             <a class="nav-item nav-link" href="{{ url_for('main', emails=emails, userType=userType, username=username) }}">Home</a>
+                            <a class="nav-item nav-link" href="{{ url_for('take_transit', emails=emails, userType=userType, username=username) }}">Take Transit</a>
                             <a class="nav-item nav-link" href="{{ url_for('manage_transit', emails=emails, userType=userType, username=username) }}">Transits</a>
                             <a class="nav-item nav-link" href="{{ url_for('manage_site', emails=emails, userType=userType, username=username) }}">Sites</a>
                             <a class="nav-item nav-link" href="{{ url_for('manage_user', emails=emails, userType=userType, username=username) }}">Users</a>
@@ -61,25 +62,25 @@
                             <a class="nav-item nav-link" href="{{ url_for('profile', emails=emails, userType=userType, username=username) }}">{{ username }}</a>
                             <a class="nav-item nav-link" href="/logout">Logout</a>
                         {% elif userType == 'Manager' %}
-                        <a class="nav-item nav-link" href="{{ url_for('employee_profile', emails=emails, userType=userType, username=username) }}">{{ username }}</a>
+                        <a class="nav-item nav-link" href="{{ url_for('manage_profile', emails=emails, userType=userType, username=username) }}">{{ username }}</a>
                             <a class="nav-item nav-link" href="/logout">Logout</a>
                         {% elif userType == 'Staff' %}
-                        <a class="nav-item nav-link" href="{{ url_for('employee_profile', emails=emails, userType=userType, username=username) }}">{{ username }}</a>
+                        <a class="nav-item nav-link" href="{{ url_for('manage_profile', emails=emails, userType=userType, username=username) }}">{{ username }}</a>
                             <a class="nav-item nav-link" href="/logout">Logout</a>
                         {% elif userType == 'Administrator' %}
-                        <a class="nav-item nav-link" href="{{ url_for('employee_profile', emails=emails, userType=userType, username=username) }}">{{ username }}</a>
+                        <a class="nav-item nav-link" href="{{ url_for('manage_profile', emails=emails, userType=userType, username=username) }}">{{ username }}</a>
                             <a class="nav-item nav-link" href="/logout">Logout</a>
                         {% elif userType == 'Visitor' %}
                         <a class="nav-item nav-link" href="{{ url_for('profile', emails=emails, userType=userType, username=username) }}">{{ username }}</a>
                             <a class="nav-item nav-link" href="/logout">Logout</a>
                         {% elif userType == 'Manager-Visitor' %}
-                        <a class="nav-item nav-link" href="{{ url_for('employee_profile', emails=emails, userType=userType, username=username) }}">{{ username }}</a>
+                        <a class="nav-item nav-link" href="{{ url_for('manage_profile', emails=emails, userType=userType, username=username) }}">{{ username }}</a>
                             <a class="nav-item nav-link" href="/logout">Logout</a>
                         {% elif userType == 'Staff-Visitor' %}
-                        <a class="nav-item nav-link" href="{{ url_for('employee_profile', emails=emails, userType=userType, username=username) }}">{{ username }}</a>
+                        <a class="nav-item nav-link" href="{{ url_for('manage_profile', emails=emails, userType=userType, username=username) }}">{{ username }}</a>
                             <a class="nav-item nav-link" href="/logout">Logout</a>
                         {% elif userType == 'Administrator-Visitor' %}
-                        <a class="nav-item nav-link" href="{{ url_for('employee_profile', emails=emails, userType=userType, username=username) }}">{{ username }}</a>
+                        <a class="nav-item nav-link" href="{{ url_for('manage_profile', emails=emails, userType=userType, username=username) }}">{{ username }}</a>
                             <a class="nav-item nav-link" href="/logout">Logout</a>
                         {% else %}
                             <a class="nav-item nav-link" href="/login">Login</a>
