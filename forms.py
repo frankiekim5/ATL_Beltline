@@ -211,3 +211,12 @@ class SiteReport(FlaskForm):
     siteList = RadioField('Sites', choices = [('Inman Park','Inman Park'),('PCM','PCM')])
     filter = SubmitField("Filter")
     dailyDetail = SubmitField("Daily Detail")
+
+class ViewSchedule(FlaskForm): 
+    eventName = StringField("Event Name")
+    descriptionKeyword = StringField("Description Keyword")
+    startDate = DateField('Start Date')
+    endDate = DateField('End Date')
+    eventList = RadioField('Events', choices = [('Eastside Trail','Eastside Trail'),('Westside Trail','Westside Trail')])
+    filter = SubmitField("Filter")
+    viewEvent = SubmitField("View Event")

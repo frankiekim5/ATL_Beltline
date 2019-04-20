@@ -1,6 +1,6 @@
 from flask import Flask, render_template, url_for, flash, redirect, session, request, jsonify
 from flask_mysqldb import MySQL
-from forms import UserRegistrationForm, LoginForm, VisitorRegistrationForm, EmployeeRegistrationForm, EmployeeVisitorRegistrationForm, TransitForm, EmailRegistrationForm, TransitForm, SiteForm, EventForm, ManageSiteForm, ManageTransitForm, ManageUser, ManageEvent, EditEvent, UserTakeTransit, TransitHistory, EmployeeProfileForm, ManageStaff, SiteReport
+from forms import UserRegistrationForm, LoginForm, VisitorRegistrationForm, EmployeeRegistrationForm, EmployeeVisitorRegistrationForm, TransitForm, EmailRegistrationForm, TransitForm, SiteForm, EventForm, ManageSiteForm, ManageTransitForm, ManageUser, ManageEvent, EditEvent, UserTakeTransit, TransitHistory, EmployeeProfileForm, ManageStaff, SiteReport, ViewSchedule
 from passlib.hash import sha256_crypt
 from random import randint
 
@@ -1120,5 +1120,12 @@ def site_report():
 @app.route('/daily_detail', methods=["GET", "POST"])
 def daily_detail(): 
     return render_template("daily_detail.html", title="Daily Detail", legend="Daily Detail")
+
+## SCREEN 31
+@app.route('/view_schedule', methods=["GET", "POST"])
+def view_schedule(): 
+    form = ViewSchedule()
+    return render_template("view_schedule.html", title="View Schedule", legend="View Schedule", form=form)
+
 if __name__ == '__main__':
     app.run(debug=True)
