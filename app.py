@@ -36,10 +36,10 @@ def profile():
     else:
         return render_template('profile.html', form=form, emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
 
-@app.route('/employee_profile', methods=['GET', 'POST'])
-def employee_profile():
-    form = EmployeeProfileForm()
-    return render_template('employee_profile.html', form=form, emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+# @app.route('/employee_profile', methods=['GET', 'POST'])
+# def employee_profile():
+#     form = EmployeeProfileForm()
+#     return render_template('employee_profile.html', form=form, emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
 
 @app.route('/registerNav')
 def registerNav():
@@ -186,7 +186,8 @@ def login():
         password_candidate = form.password.data
         
         cur = mysql.connection.cursor()
-        # Get the user via username
+        # Get the user via username 
+        # NOTE: If user enters an email not in user_email, return an error
         result = cur.execute("SELECT * FROM user_email WHERE email = %s", [email])
         username = cur.fetchone()['username']
         cur.execute("SELECT * FROM user WHERE username=%s", [username])
@@ -249,6 +250,7 @@ def login():
                     elif adminResult > 0:
                         # User is an admin. Redirect to homepage with admin's functionalities
                         session['userType'] = 'Administrator'
+                    first = 'True'
                     return redirect(url_for('main', emails=session['emails'], userType=session['userType'], username=session['username']))
                 
                 flash('You have been logged in', 'success')
@@ -336,25 +338,257 @@ def view_all_users():
     cur.close()
     return all_users
     
+# Helper method to retrieve all transits
+# NOTE: Used again for manage_transit
+def get_all_transits():
+    # Create cursor
+    cur = mysql.connection.cursor()
+
+    # Execute queries
+    cur.execute("SELECT * FROM transit")
+    transits = cur.fetchall()
+
+    # Calculate # connected sites
+    for transit in transits:
+        cur.execute("SELECT COUNT(*) FROM connect WHERE transit_type=%s and transit_route=%s", (transit['transit_type'], transit['transit_route']))
+        num_connected = cur.fetchone()
+        transit['connected_sites'] = num_connected['COUNT(*)']
+
+    # Commit to DB
+    mysql.connection.commit()
+
+    # Close connection
+    cur.close()
+    return transits
+
+# Retrieves all the sites
+# NOTE: Used again for manage_transit
+def get_all_sites():
+    # Create cursor
+    cur = mysql.connection.cursor()
+
+    # Retrieve all of the sites
+    cur.execute("SELECT site_name FROM site")
+    sites = cur.fetchall()
+    
+    all_sites = []
+    for site in sites:
+        all_sites.append(site['site_name'])
+
+    # Commit to DB
+    mysql.connection.commit()
+
+    # Close connection
+    cur.close()
+    return all_sites
+
 ## SCREEN 15 
 @app.route('/take_transit', methods=['GET', 'POST'])
-def take_transit(): 
+def take_transit():
     form = UserTakeTransit()
-    return render_template('take_transit.html', title="Take Transit",legend="Take Transit",form=form)
+    all_transits = get_all_transits()
+    all_sites = get_all_sites()
+
+    if form.logTransit.data:
+        if 'transit' not in request.form:
+            flash('Please select a transit to take', 'danger')
+        else:
+            transit = request.form['transit']
+            return str(transit)
+            # return redirect(url_for('edit_transit', transit=transit, emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username')))
+    elif form.filter.data:
+        transportType = form.transportType.data
+        minPrice = form.minPrice.data
+        maxPrice = form.maxPrice.data
+
+        # Check if min price field was left blank. Default to 0
+        if minPrice == None:
+            minPrice = 0
+        # Check if max price field was left blank. Default to large number
+        if maxPrice == None:
+            maxPrice = 100000000
+        
+        filtered_transits = []
+        containSite = request.form.get('contain_site')
+        if containSite == 'all' and transportType == 'all':
+            for transit in all_transits:
+                if transit['transit_price'] >= minPrice and transit['transit_price'] <= maxPrice:
+                    filtered_transits.append(transit)
+        elif containSite == 'all' and transportType != 'all':
+            for transit in all_transits:
+                if transit['transit_type'] == transportType and transit['transit_price'] >= minPrice and transit['transit_price'] <= maxPrice:
+                    filtered_transits.append(transit)
+        elif containSite != 'all' and transportType == 'all':
+            # Create cursor
+            cur = mysql.connection.cursor()
+
+            # Query the transits that have this site.
+            cur.execute("SELECT transit_type, transit_route FROM connect WHERE site_name=%s", (containSite,))
+            transit_sites = cur.fetchall()
+
+            needed_transits = []
+
+            for transit in transit_sites:
+                needed_transits.append(transit)
+
+            for transit in all_transits:
+                for comparison in needed_transits:
+                    if transit['transit_type'] == comparison['transit_type'] and transit['transit_price'] >= minPrice and transit['transit_price'] <= maxPrice and transit not in filtered_transits:
+                        filtered_transits.append(transit)            
+                
+            # Commit to DB
+            mysql.connection.commit()
+
+            # Close connection
+            cur.close()
+        else:
+            # Create cursor
+            cur = mysql.connection.cursor()
+
+            # Query the transits that have this site.
+            cur.execute("SELECT transit_type, transit_route FROM connect WHERE site_name=%s", (containSite,))
+            transit_sites = cur.fetchall()
+
+            needed_transits = []
+            for transit in transit_sites:
+                if transit['transit_type'] == transportType:
+                    needed_transits.append(transit)
+            for transit in all_transits:
+                for comparison in needed_transits:
+                    if transit['transit_type'] == comparison['transit_type'] and transit['transit_price'] >= minPrice and transit['transit_price'] <= maxPrice:
+                        filtered_transits.append(transit) 
+        return render_template('take_transit.html', sites=all_sites, transits=filtered_transits, title="Take Transit",legend="Take Transit",form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+    return render_template('take_transit.html', sites=all_sites, transits=[], title="Take Transit",legend="Take Transit",form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+
 
 ## SCREEN 16 
 @app.route('/transit_history', methods=['GET', 'POST'])
 def transit_history(): 
     form = TransitHistory()
-    return render_template('transit_history.html', title="Transit History",legend="Transit History",form=form)
- 
+    return render_template('transit_history.html', title="Transit History",legend="Transit History",form=form)    
+
+# Helper method to deal with email modifications
+@app.route('/remove_email/<email>', methods=['GET', 'POST'])
+def remove_email(email):
+    username = request.args['username']
+    # Create cursor
+    cur = mysql.connection.cursor()
+
+    # Check if user is trying to remove his or her only email
+    cur.execute("SELECT COUNT(*) FROM user_email WHERE username=%s", (username,))
+    emails = cur.fetchone()
+
+    email_count = emails['COUNT(*)']
+    if email_count == 1:
+        flash('You must have at least one email', 'danger')
+        return redirect(url_for('manage_profile', userType=request.args.get('userType'), username=username))
+
+    # Remove the email from the user_emails table
+    cur.execute("DELETE FROM user_email WHERE email=%s", (email,))
+
+    # Commit to DB
+    mysql.connection.commit()
+
+    # Close connection
+    cur.close()
+    return redirect(url_for('manage_profile', userType=request.args.get('userType'), username=username))
+
 ## SCREEN 17 
 @app.route('/manage_profile', methods=['GET','POST'])
-def manage_profile(): 
+def manage_profile():
     form = EmployeeProfileForm()
-    ## email QUERY
-    emails = ["timmywu@email.com", "timmylovesfrankie@gmail.com","timmy.wu@bobalover.com"]
-    return render_template("employee_profile.html", title="Manage Profile", legend="Manage Profile", form=form, emails = emails)
+    profile = {}
+    username = request.args['username']
+    userType = request.args['userType']
+    emails = []
+
+    # Create cursor
+    cur = mysql.connection.cursor()
+
+    # Add email to user_email table
+    if form.validate_on_submit():
+        if form.addEmail.data:
+            email = form.email.data
+
+            # Insert the email into the table
+            cur.execute("INSERT INTO user_email(username, email) VALUES(%s, %s)", (username, email))
+            # Commit to DB
+            mysql.connection.commit()
+
+            # Close connection
+            cur.close()
+
+        return redirect(url_for('manage_profile', userType=request.args.get('userType'), username=request.args.get('username')))
+
+    elif form.update.data:
+        firstname = form.firstName.data
+        lastname = form.lastName.data
+        phone = form.phone.data
+
+        # Update firstname and lastname
+        cur.execute("UPDATE user SET firstname=%s, lastname=%s WHERE username=%s", (firstname, lastname, username))
+
+        # Update phone number
+        cur.execute("UPDATE employee SET phone=%s WHERE username=%s", (phone, username))
+
+        # Commit to DB
+        mysql.connection.commit()
+
+        # Close connection
+        cur.close()
+
+        return redirect(url_for('manage_profile', userType=request.args.get('userType'), username=request.args.get('username')))
+
+    # Retrieve all information for the employee and store in profile
+
+    # Retrieve first name and last name for employee
+    cur.execute("SELECT firstname, lastname FROM user WHERE username=%s", (username,))
+    name = cur.fetchone()
+
+    profile['firstname'] = name['firstname']
+    profile['lastname'] = name['lastname']
+
+    # Retrieve site name if employee is a manager
+    if userType == 'Manager' or userType == 'Manager-Visitor':
+        cur.execute("SELECT site_name FROM site WHERE manager_username=%s", (username,))
+        site_name = cur.fetchone()
+        if site_name == None:
+            profile['site_name'] = "None"
+        else:
+            profile['site_name'] = site_name['site_name']
+    else:
+        profile['site_name'] = "None"
+    
+    # Retrieve Employee ID, set to None if account is not approved
+    cur.execute("SELECT employee_id, phone, address, city, state, zipcode FROM employee WHERE username=%s", (username,))
+    employee_info = cur.fetchone()
+    if employee_info['employee_id'] == None:
+        profile['employee_id'] = "None"
+    else:
+        profile['employee_id'] = employee_info['employee_id']
+    profile['phone'] = employee_info['phone']
+    profile['address'] = employee_info['address'] + ", " + employee_info['city'] + ", " + employee_info['state'] + ", " + employee_info['zipcode']
+    
+    form.firstName.data = profile['firstname']
+    form.lastName.data = profile['lastname']
+    form.phone.data = profile['phone']
+    
+
+    # Retrieve all emails from the user_email table
+    cur.execute("SELECT email FROM user_email WHERE username=%s", (username,))
+    user_emails = cur.fetchall()
+    
+    # Condense all user's emails into a list
+    
+    for email in user_emails:
+        emails.append(email['email'])
+
+    # Commit to DB
+    mysql.connection.commit()
+
+    # Close connection
+    cur.close()
+    return render_template("employee_profile.html", profile=profile, title="Manage Profile", legend="Manage Profile", form=form, emails=emails, userType=request.args.get('userType'), username=username)
 
 ## SCREEN 18 
 @app.route('/manage_user', methods=['GET', 'POST'])
@@ -793,48 +1027,6 @@ def edit_site(site_name):
 
         return render_template("create_site.html", title="Edit Site", unassigned_managers=managers, form=form, legend="Edit Site",  emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
 
-# Helper method to retrieve all transits
-def get_all_transits():
-    # Create cursor
-    cur = mysql.connection.cursor()
-
-    # Execute queries
-    cur.execute("SELECT * FROM transit")
-    transits = cur.fetchall()
-
-    # Calculate # connected sites
-    for transit in transits:
-        cur.execute("SELECT COUNT(*) FROM connect WHERE transit_type=%s and transit_route=%s", (transit['transit_type'], transit['transit_route']))
-        num_connected = cur.fetchone()
-        transit['connected_sites'] = num_connected['COUNT(*)']
-
-    # Commit to DB
-    mysql.connection.commit()
-
-    # Close connection
-    cur.close()
-    return transits
-
-# Retrieves all the sites
-def get_all_sites():
-    # Create cursor
-    cur = mysql.connection.cursor()
-
-    # Retrieve all of the sites
-    cur.execute("SELECT site_name FROM site")
-    sites = cur.fetchall()
-    
-    all_sites = []
-    for site in sites:
-        all_sites.append(site['site_name'])
-
-    # Commit to DB
-    mysql.connection.commit()
-
-    # Close connection
-    cur.close()
-    return all_sites
-
 ## SCREEN 22 
 @app.route('/manage_transit', methods=['GET', 'POST'])
 def manage_transit():
@@ -843,7 +1035,7 @@ def manage_transit():
     all_sites = get_all_sites()
     if form.edit.data:
         if 'transit' not in request.form:
-            flash('Please select a site to edit', 'danger')
+            flash('Please select a transit to edit', 'danger')
         else:
             transit = request.form['transit']
             return redirect(url_for('edit_transit', transit=transit, emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username')))

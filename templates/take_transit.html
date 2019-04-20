@@ -7,17 +7,13 @@
                     <legend class="border-bottom mb-4" style="font-size:35px">{{legend}}</legend>
                     <div class="row">
                         <div class="form-group col-md-3">
-                            {{ form.containSite.label(class="form-control-label") }}
-                            {% if form.containSite.errors %}
-                                {{ form.containSite(class="form-control form-control-lg is-invalid") }}
-                                <div style="color:red">
-                                    {% for error in form.containSite.errors %}
-                                    <span style="font-size:13px">{{ error }}</span>
-                                    {% endfor %}
-                                </div>
-                            {% else %}
-                                {{ form.containSite(class="form-control form-control-lg") }}
-                            {% endif %}
+                            <label for="contain_site" class="form-control-label">Contain Site</label>
+                            <select name="contain_site" class="form-control form-control-lg" id="contain_site" required>
+                                <option value="all">--All--</option>
+                                {% for site in sites %}
+                                    <option value="{{site}}">{{ site }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
                         <div class="form-group col-md-3">
                             {{ form.transportType.label(class="form-control-label") }}
@@ -60,11 +56,10 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        {{ form.submit(class="btn btn-outline-info") }}
+                        {{ form.filter(class="btn btn-outline-info") }}
                     </div>
                     <hr>
                     <div class="form-group">
-                        {% if form.routeList.errors %}
                             <table class="table table-bordered">
                                 <thead>
                                     <tr>
@@ -75,57 +70,39 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for choice in form.routeList %}
+                                    {% for transit in transits %}
                                     <tr>
-                                        <td>{{choice}}&nbsp;{{ choice.label }}</td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
+                                        <td>
+                                            <input type="radio" name="transit" value="{{transit['transit_route'] + ' ' + transit['transit_type']}}">
+                                            <label for="transit_route">{{ transit['transit_route'] }}</label>
+                                        </td>
+                                        <td>
+                                            <label for="transit_route">{{ transit['transit_type'] }}</label>
+                                        </td>
+                                        <td>
+                                            <label for="transit_route">{{ transit['transit_price'] }}</label>
+                                        </td>
+                                        <td>
+                                            <label for="transit_route">{{ transit['connected_sites'] }}</label>
+                                        </td>
                                     </tr>
                                     {% endfor %}
                                     
                                 </tbody>
                             </table>
-                            <div style="color:red">
-                                {% for error in form.routeList.errors %}
-                                        <span style="font-size:13px">{{ error }}</span>
-                                {% endfor %}
-                            </div>
-                        {% else %}
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                    <th scope="col">Route</th>
-                                    <th scope="col">Transport Type</th>
-                                    <th scope="col">Price</th>
-                                    <th scope="col"># Connected Sites</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for choice in form.routeList %}
-                                    <tr>
-                                        <td>{{choice}}&nbsp;{{ choice.label }}</td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        {% endif %}
                     </div>
                     <div class="row">
                         <div class="form-group col-md-6">
-                            {{ form.logTransit.label(class="form-control-label") }}
-                            {% if form.logTransit.errors %}
-                                {{ form.logTransit(class="form-control form-control-lg is-invalid", type="date") }}
+                            {{ form.transitDate.label(class="form-control-label") }}
+                            {% if form.transitDate.errors %}
+                                {{ form.transitDate(class="form-control form-control-lg is-invalid", type="date") }}
                                 <div style="color:red">
-                                    {% for error in form.logTransit.errors %}
+                                    {% for error in form.transitDate.errors %}
                                     <span style="font-size:13px">{{ error }}</span>
                                     {% endfor %}
                                 </div>
                             {% else %}
-                                {{ form.logTransit(class="form-control form-control-lg", type="date") }}
+                                {{ form.transitDate(class="form-control form-control-lg", type="date") }}
                             {% endif %}
                         </div>
                     </div>
