@@ -1,0 +1,207 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-section">
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4" style="font-size:35px">{{legend}}</legend>
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        {{ form.eventName.label(class="form-control-label") }}
+                        {% if form.eventName.errors %}
+                            {{ form.eventName(class="form-control form-control-lg is-invalid") }}
+                            <div style="color:red">
+                                {% for error in form.eventName.errors %}
+                                    <span style="font-size:13px">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.eventName(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group col-md-4">
+                        {{ form.descriptionKeyword.label(class="form-control-label") }}
+                        {% if form.descriptionKeyword.errors %}
+                            {{ form.descriptionKeyword(class="form-control form-control-lg is-invalid") }}
+                            <div style="color:red">
+                                {% for error in form.descriptionKeyword.errors %}
+                                    <span style="font-size:13px">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.descriptionKeyword(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group col-md-4">
+                        {{ form.siteName.label(class="form-control-label") }}
+                        {% if form.siteName.errors %}
+                            {{ form.siteName(class="form-control form-control-lg is-invalid") }}
+                            <div style="color:red">
+                                {% for error in form.siteName.errors %}
+                                    <span style="font-size:13px">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.siteName(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class="form-group col-md-6">
+                        {{ form.startDate.label(class="form-control-label") }}
+                        {% if form.startDate.errors %}
+                            {{ form.startDate(class="form-control form-control-lg is-invalid") }}
+                            <div style="color:red">
+                                {% for error in form.startDate.errors %}
+                                    <span style="font-size:13px">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.startDate(class="form-control form-control-lg", type="date") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group col-md-6">
+                        {{ form.endDate.label(class="form-control-label") }}
+                        {% if form.endDate.errors %}
+                            {{ form.endDate(class="form-control form-control-lg is-invalid") }}
+                            <div style="color:red">
+                                {% for error in form.endDate.errors %}
+                                    <span style="font-size:13px">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.endDate(class="form-control form-control-lg", type="date") }}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-3">
+                        {{ form.minVisitsRange.label(class="form-control-label") }}
+                        {% if form.minVisitsRange.errors %}
+                            {{ form.minVisitsRange(class="form-control form-control-lg is-invalid") }}
+                            <div style="color:red">
+                                {% for error in form.minVisitsRange.errors %}
+                                    <span style="font-size:13px">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.minVisitsRange(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group col-md-3">
+                        {{ form.maxVisitsRange.label(class="form-control-label") }}
+                        {% if form.maxVisitsRange.errors %}
+                            {{ form.maxVisitsRange(class="form-control form-control-lg is-invalid") }}
+                            <div style="color:red">
+                                {% for error in form.maxVisitsRange.errors %}
+                                    <span style="font-size:13px">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.maxVisitsRange(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group col-md-3">
+                        {{ form.minPriceRange.label(class="form-control-label") }}
+                        {% if form.minPriceRange.errors %}
+                            {{ form.minPriceRange(class="form-control form-control-lg is-invalid") }}
+                            <div style="color:red">
+                                {% for error in form.minPriceRange.errors %}
+                                    <span style="font-size:13px">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.minPriceRange(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group col-md-3">
+                        {{ form.maxPriceRange.label(class="form-control-label") }}
+                        {% if form.maxPriceRange.errors %}
+                            {{ form.maxPriceRange(class="form-control form-control-lg is-invalid") }}
+                            <div style="color:red">
+                                {% for error in form.maxPriceRange.errors %}
+                                    <span style="font-size:13px">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.maxPriceRange(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                </div>   
+                <div class="form-check form-check-inline col-md-3">
+                        {{ form.includeVisited(class="form-check-input", type="checkbox") }}
+                        {{ form.includeVisited.label(class="form-check-label") }}
+                </div>    
+                <div class="form-check form-check-inline col-md-3">
+                        {{ form.includeSoldOutEvent(class="form-check-input", type="checkbox") }}
+                        {{ form.includeSoldOutEvent.label(class="form-check-label") }}
+                </div> 
+            </fieldset>
+            <div class="form-group">
+                {{ form.filter(class="btn btn-outline-info") }}
+            </div>
+            <hr>
+            <div class="form-group">
+                {% if form.eventList.errors %}
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                            <th scope="col">Event Name</th>
+                            <th scope="col">Site Name</th>
+                            <th scope="col">Ticket Price</th>
+                            <th scope="col">Tickets Remaining</th>
+                            <th scope="col">Total Visits</th>
+                            <th scope="col">My Visits</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for choice in form.eventList %}
+                            <tr>
+                                <td>{{choice}}&nbsp;{{ choice.label }}</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            {% endfor %} 
+                        </tbody>
+                    </table>
+                    <div style="color:red">
+                        {% for error in form.eventList.errors %}
+                                <span style="font-size:13px">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                        <th scope="col">Event Name</th>
+                        <th scope="col">Site Name</th>
+                        <th scope="col">Ticket Price</th>
+                        <th scope="col">Tickets Remaining</th>
+                        <th scope="col">Total Visits</th>
+                        <th scope="col">My Visits</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for choice in form.eventList %}
+                        <tr>
+                            <td>{{choice}}&nbsp;{{ choice.label }}</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        {% endfor %} 
+                    </tbody>
+                </table>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.eventDetail(class="btn btn-outline-success") }}
+            </div>
+        </form>
+    </div>
+{% endblock content %}

@@ -1,0 +1,129 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-section">
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4" style="font-size:35px">{{legend}}</legend>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        {{ form.eventName.label(class="form-control-label") }}
+                        {% if form.eventName.errors %}
+                            {{ form.eventName(class="form-control form-control-lg is-invalid") }}
+                            <div style="color:red">
+                                {% for error in form.eventName.errors %}
+                                <span style="font-size:13px">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.eventName(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group col-md-6">
+                        {{ form.descriptionKeyword.label(class="form-control-label") }}
+                        {% if form.descriptionKeyword.errors %}
+                            {{ form.descriptionKeyword(class="form-control form-control-lg is-invalid") }}
+                            <div style="color:red">
+                                {% for error in form.descriptionKeyword.errors %}
+                                <span style="font-size:13px">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.descriptionKeyword(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class="form-group col-md-6">
+                        {{ form.startDate.label(class="form-control-label") }}
+                        {% if form.startDate.errors %}
+                            {{ form.startDate(class="form-control form-control-lg is-invalid") }}
+                            <div style="color:red">
+                                {% for error in form.startDate.errors %}
+                                    <span style="font-size:13px">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.startDate(class="form-control form-control-lg", type="date") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group col-md-6">
+                        {{ form.endDate.label(class="form-control-label") }}
+                        {% if form.endDate.errors %}
+                            {{ form.endDate(class="form-control form-control-lg is-invalid") }}
+                            <div style="color:red">
+                                {% for error in form.endDate.errors %}
+                                    <span style="font-size:13px">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.endDate(class="form-control form-control-lg", type="date") }}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="row justify-content-md-center">
+                    <div class="form-group col-md-2">
+                        {{ form.filter(class="btn btn-outline-info") }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.viewEvent(class="btn btn-outline-success") }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    {% if form.eventList.errors %}
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Event Name</th>
+                                    <th scope="col">Site Name</th>
+                                    <th scope="col">Start Date</th>
+                                    <th scope="col">End Date</th>
+                                    <th scope="col">Staff Count)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for choice in form.eventList %}
+                                <tr>
+                                    <td>{{choice}}&nbsp;{{ choice.label }}</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                {% endfor %} 
+                            </tbody>
+                        </table>
+                        <div style="color:red">
+                            {% for error in form.eventList.errors %}
+                                 <span style="font-size:13px">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                            <th scope="col">Event Name</th>
+                            <th scope="col">Site Name</th>
+                            <th scope="col">Start Date</th>
+                            <th scope="col">End Date</th>
+                            <th scope="col">Staff Count)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for choice in form.eventList %}
+                            <tr>
+                                <td>{{choice}}&nbsp;{{ choice.label }}</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            {% endfor %} 
+                        </tbody>
+                    </table>
+                    {% endif %}
+                </div>
+            </fieldset>
+        </form>
+    </div>
+{% endblock content %}

@@ -1,6 +1,6 @@
 from flask import Flask, render_template, url_for, flash, redirect, session, request, jsonify
 from flask_mysqldb import MySQL
-from forms import UserRegistrationForm, LoginForm, VisitorRegistrationForm, EmployeeRegistrationForm, EmployeeVisitorRegistrationForm, TransitForm, EmailRegistrationForm, TransitForm, SiteForm, EventForm, ManageSiteForm, ManageTransitForm, ManageUser, ManageEvent, EditEvent, UserTakeTransit, TransitHistory, EmployeeProfileForm, ManageStaff
+from forms import UserRegistrationForm, LoginForm, VisitorRegistrationForm, EmployeeRegistrationForm, EmployeeVisitorRegistrationForm, TransitForm, EmailRegistrationForm, TransitForm, SiteForm, EventForm, ManageSiteForm, ManageTransitForm, ManageUser, ManageEvent, EditEvent, UserTakeTransit, TransitHistory, EmployeeProfileForm, ManageStaff, SiteReport, ViewSchedule, ExploreEvent, VisitorEventDetail
 from passlib.hash import sha256_crypt
 from random import randint
 
@@ -1302,6 +1302,60 @@ def manage_staff():
     staff = [("Peter Han", 3), ("Timmy Wu", 2)]
     return render_template("manage_staff.html", title="Manage Staff", legend="Manage Staff", form=form, staff=staff)
 
+## SCREEN 29 
+@app.route('/site_report', methods=['GET', 'POST'])
+def site_report(): 
+    form = SiteReport()
+    return render_template("site_report.html", title="Site Report", legend="Site Report", form=form)
+
+## SCREEN 30 
+@app.route('/daily_detail', methods=["GET", "POST"])
+def daily_detail(): 
+    return render_template("daily_detail.html", title="Daily Detail", legend="Daily Detail")
+
+## SCREEN 31
+@app.route('/view_schedule', methods=["GET", "POST"])
+def view_schedule(): 
+    form = ViewSchedule()
+    return render_template("view_schedule.html", title="View Schedule", legend="View Schedule", form=form)
+
+## SCREEN 32 
+@app.route('/staff_event_detail', methods=["GET", "POST"])
+def staff_event_detail(): 
+    event = {
+            "eventName": "Walking Tour",
+            "site": "Inman Park",
+            "startDate": "2019-02-02",
+            "endDate": "2019-02-02",
+            "durationDays":1, 
+            "staffAssigned": "Peter Han",
+            "capacity":20, 
+            "price":0,
+            "description":"walking tour with Peter Han - very dangerous"
+            }
+    return render_template("staff_event_detail.html", title="Event Detail", legend="Event Detail", event=event)
+
+## SCREEN 33 
+@app.route('/explore_event', methods=['GET','POST'])
+def explore_event(): 
+    form = ExploreEvent()
+    return render_template("explore_event.html", title="Explore Event", legend="Explore Event", form=form)
+
+## SCREEN 34 
+@app.route('/visitor_event_detail', methods=["GET","POST"])
+def visitor_event_detail(): 
+    form = VisitorEventDetail()
+    event = {
+            "eventName": "Walking Tour",
+            "site": "Inman Park",
+            "startDate": "2019-02-02",
+            "endDate": "2019-02-02",
+            "staffAssigned": "Peter Han", 
+            "price":0,
+            "ticketsRemaining":0,
+            "description":"walking tour with Peter Han - very dangerous"
+            }
+    return render_template("visitor_event_detail.html", title="Event Detail", legend="Event Detail", form=form, event=event)
 
 if __name__ == '__main__':
     app.run(debug=True)
