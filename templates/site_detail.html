@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-section">   
+    <legend class="border-bottom mb-4" style="font-size:35px">{{legend}}</legend>      
+    <div class="row">
+        <div class="col-md-6">
+            <label class="font-weight-bold">Site</label>
+            <p class="font-italic">HARDCODED </p>
+        </div>
+        <div class="col-md-6">
+            <label class="font-weight-bold">Open Everyday</label>
+            <p class="font-italic">HARCODED</p>
+        </div>
+    </div>
+
+    <div class="">
+        <label class="font-weight-bold">Address</label>
+        <p class="font-italic">HARDCODED</p>
+    </div>
+        
+    <hr>
+    <form method="POST" action="">
+        {{ form.visitDate.label(class="form-control-label font-weight-bold") }}
+        <div class="input-group mb-3">
+            {% if form.visitDate.errors %}
+                {{ form.visitDate(class="form-control form-control-md is-invalid col-md-3", type="date") }}
+                <div style="color:red">
+                    {% for error in form.visitDate.errors %}
+                    <span style="font-size:13px">{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ form.visitDate(class="form-control form-control-md col-md-3", type="date") }}
+            {% endif %}
+            <div class="input-group-append">
+                {{ form.logVisit(class="btn btn-outline-secondary form-inline") }}
+            </div>
+        </div>  
+    </form>
+    <a class="btn btn-info" href="{{ url_for('explore_event') }}">Back</a>
+</div>
+{% endblock content %}

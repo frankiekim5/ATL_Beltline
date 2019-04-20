@@ -1,6 +1,6 @@
 from flask import Flask, render_template, url_for, flash, redirect, session, request, jsonify
 from flask_mysqldb import MySQL
-from forms import UserRegistrationForm, LoginForm, VisitorRegistrationForm, EmployeeRegistrationForm, EmployeeVisitorRegistrationForm, TransitForm, EmailRegistrationForm, TransitForm, SiteForm, EventForm, ManageSiteForm, ManageTransitForm, ManageUser, ManageEvent, EditEvent, UserTakeTransit, TransitHistory, EmployeeProfileForm, ManageStaff, SiteReport, ViewSchedule, ExploreEvent, VisitorEventDetail, ExploreSite
+from forms import UserRegistrationForm, LoginForm, VisitorRegistrationForm, EmployeeRegistrationForm, EmployeeVisitorRegistrationForm, TransitForm, EmailRegistrationForm, TransitForm, SiteForm, EventForm, ManageSiteForm, ManageTransitForm, ManageUser, ManageEvent, EditEvent, UserTakeTransit, TransitHistory, EmployeeProfileForm, ManageStaff, SiteReport, ViewSchedule, ExploreEvent, VisitorEventDetail, ExploreSite, TransitDetail, SiteDetail, VisitHistory
 from passlib.hash import sha256_crypt
 from random import randint
 
@@ -1362,6 +1362,24 @@ def visitor_event_detail():
 def explore_site(): 
     form = ExploreSite()
     return render_template("explore_site.html", title="Explore Site", legend="Explore Site", form = form)
+
+## SCREEN 36 
+@app.route('/transit_detail', methods=["GET","POST"])
+def transit_detail(): 
+    form = TransitDetail()
+    return render_template("transit_detail.html", title="Transit Detail", legend="Transit Detail", form=form)
+
+## SCREEN 37 
+@app.route('/site_detail', methods=["GET","POST"])
+def site_detail(): 
+    form = SiteDetail() 
+    return render_template("site_detail.html", title="Site Detail", legend="Site Detail", form=form)
+
+## SCREEN 38 
+@app.route('/visit_history', methods=['GET','POST'])
+def visit_history(): 
+    form = VisitHistory()
+    return render_template("visit_history.html", title="Visit History", legend="Visit History", form=form)
 
 if __name__ == '__main__':
     app.run(debug=True)
