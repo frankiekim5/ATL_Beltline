@@ -125,7 +125,6 @@
             </div>
             <hr>
             <div class="form-group">
-                {% if form.siteList.errors %}
                     <table class="table table-bordered">
                         <thead>
                             <tr>
@@ -136,43 +135,21 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for choice in form.siteList %}
+                            {% for site in sites %}
                             <tr>
-                                <td>{{choice}}&nbsp;{{ choice.label }}</td>
-                                <td></td>
+                                <td>
+                                    <input type="radio" name="site_name" value="{{site['site_name']}}">
+                                    <label for="site_name">{{ site['site_name'] }}</label>
+                                </td>
+                                <td>
+                                    <label for="event_count">{{ site['event_count'] }}</label>
+                                </td>
                                 <td></td>
                                 <td></td>
                             </tr>
                             {% endfor %} 
                         </tbody>
                     </table>
-                    <div style="color:red">
-                        {% for error in form.siteList.errors %}
-                                <span style="font-size:13px">{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                            <th scope="col">Site Name</th>
-                            <th scope="col">Event Count</th>
-                            <th scope="col">Total Visits</th>
-                            <th scope="col">My Visits</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for choice in form.siteList %}
-                            <tr>
-                                <td>{{choice}}&nbsp;{{ choice.label }}</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            {% endfor %} 
-                        </tbody>
-                    </table>
-                {% endif %}
             </div>
             <div class="form-group">
                 {{ form.siteDetail(class="btn btn-outline-success") }}

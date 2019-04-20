@@ -1481,11 +1481,49 @@ def edit_transit(transit):
         cur.close()
         return render_template("create_transit.html", all_sites=all_sites_list, all_connected=all_connected, title='Edit Transit', form=form, legend='Edit Transit', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username')) 
 
+# Helper method to retrieve all events
+def get_all_events():
+    # Create cursor
+    cur = mysql.connection.cursor()
+
+    # Query event information from event table
+    cur.execute("SELECT * FROM event")
+    events = cur.fetchall()
+    
+    # Retrieve needed information
+    for event in events:
+        event['duration'] = event['end_date'] - event['start_date']
+        split = str(event['duration']).split()
+        duration = int(split[0]) + 1
+        event['duration'] = duration
+        cur.execute("SELECT COUNT(*) FROM assign_to WHERE event_name=%s and start_date=%s and site_name=%s", (event['event_name'], event['start_date'], event['site_name']))
+        staff_count = cur.fetchone()
+        staff_count = staff_count['COUNT(*)']
+        event['staff_count'] = staff_count
+
+    # Commit to DB
+    mysql.connection.commit()
+
+    # Close connection
+    cur.close()
+    return events
+
 ## SCREEN 25 
 @app.route('/manage_event', methods=["GET", "POST"])
 def manage_event():
     form = ManageEvent()
-    if form.validate_on_submit(): 
+    all_events = get_all_events()
+    filtered_events = []
+
+    if form.viewEdit.data:
+        if 'event_name' not in request.form:
+            flash('Please select an event to edit', 'danger')
+        else:
+            event_name = request.form['event_name']
+            start_date = request.form['start_date']
+            site_name = request.form['site_name']
+            return redirect(url_for('edit_event', event_name=event_name, start_date=start_date, site_name=site_name, emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username')))
+    elif form.validate_on_submit():
         name = form.name.data
         descriptionKeyword = form.descriptionKeyword.data
         startDate = form.startDate.data 
@@ -1496,13 +1534,162 @@ def manage_event():
         maxVisitsRange = form.maxVisitsRange.data 
         minRevenueRange = form.minRevenueRange.data 
         maxRevenueRange = form.maxRevenueRange.data
-    return render_template('manage_event.html', title="Manage Event", legend="Manage Event", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+    return render_template('manage_event.html', events=all_events, title="Manage Event", legend="Manage Event", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
 
 ## SCREEN 26 
 @app.route('/edit_event', methods=["GET", "POST"])
 def edit_event(): 
     form = EditEvent()
-    if form.validate_on_submit(): 
+    event_name = request.args['event_name']
+    start_date = request.args['start_date']
+    site_name = request.args['site_name']
+    
+    # Create cursor
+    cur = mysql.connection.cursor()
+
+    # Retrieve all of this event's information
+    cur.execute("SELECT * FROM event WHERE event_name=%s and start_date=%s and site_name=%s", (event_name, start_date, site_name))
+    event = cur.fetchone()
+
+    # Commit to DB
+    mysql.connection.commit()
+
+    # Close connection
+    cur.close()
+    
+    staff_list = []
+    if request.method == 'GET':
+        form.description.data = event['description']
+    startDate = event['start_date']
+    endDate = event['end_date']
+    minStaff = event['min_staff_req']
+
+    # Create cursor
+    cur = mysql.connection.cursor()
+
+    # Staff available
+    cur.execute("SELECT username FROM staff WHERE username NOT IN (SELECT staff_username FROM assign_to)")
+    unassigned_staff = cur.fetchall()
+    
+    temp_staff = []
+    for staff in unassigned_staff:
+        temp_staff.append(staff['username'])
+    
+    # Retrieve first and last name of unassigned staff members
+    for staff in temp_staff:
+        cur.execute("SELECT firstname, lastname from user WHERE username=%s", (staff,))
+        name = cur.fetchone()                
+        fullName = name['firstname'] + " " + name['lastname']
+        staff_list.append(fullName)                            
+
+    # Find staff assigned
+    cur.execute("SELECT * FROM assign_to")
+    staff_assigned = cur.fetchall()
+    
+    # Find availability of staff assigned to other events
+    assigned_staff = []
+    possible_duplicates = []
+    for staff in staff_assigned:
+        member = {}
+        # Retrieve first and last name of assigned staff members
+        cur.execute("SELECT firstname, lastname from user WHERE username=%s", (staff['staff_username'],))
+        name = cur.fetchone()                
+        fullName = name['firstname'] + " " + name['lastname']
+        member['name'] = fullName
+        member['start_date'] = staff['start_date']
+        # Find the end date of the event the staff is assigned to
+        cur.execute("SELECT end_date FROM event WHERE event_name=%s and start_date=%s and site_name=%s", (staff['event_name'], staff['start_date'], staff['site_name']))
+        end_date = cur.fetchone()
+        member['end_date'] = end_date['end_date']
+        if fullName not in possible_duplicates:
+            assigned_staff.append(member)
+        possible_duplicates.append(fullName)
+    
+    # See if staff members in assigned_staff are available for this new event
+    for assigned in assigned_staff:
+        if startDate > assigned['end_date'] or endDate < assigned['start_date']:
+            staff_list.append(assigned['name'])
+
+    selected_staff = []
+    # Select currently assigned staff
+    cur.execute("SELECT staff_username FROM assign_to WHERE event_name=%s and start_date=%s and site_name=%s", (event['event_name'], event['start_date'], event['site_name']))
+    event_staff = cur.fetchall()
+    for staff in event_staff:
+        # Retrieve first and last name of assigned staff members
+        cur.execute("SELECT firstname, lastname from user WHERE username=%s", (staff['staff_username'],))
+        name = cur.fetchone()                
+        fullName = name['firstname'] + " " + name['lastname']
+        selected_staff.append(fullName)
+        staff_list.append(fullName)
+
+    # if len(staff_list) < minStaff:
+    #     flash('Not enough available staff members', 'danger')
+    #     return redirect(url_for('manage_event', userType=request.args.get('userType'), username=request.args.get('username')))
+
+    # Commit to DB
+    mysql.connection.commit()
+
+    # Close connection
+    cur.close()
+
+    if form.update.data:
+        description = form.description.data
+        minStaff = event['min_staff_req']
+        assign_staff = request.form.getlist('assign_staff')
+
+        # Check if len of staff is greater than min staff required
+        if len(assign_staff) < minStaff:
+            flash('Cannot assign number of staff under the Minimum Staff Required', 'danger')
+            return render_template("edit_event.html", event=event, assigned_staff=selected_staff, staff_list=staff_list, title="Create Event", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+        
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        # Update event information
+        cur.execute("UPDATE event SET description=%s WHERE event_name=%s and start_date=%s and site_name=%s", (description, event['event_name'], event['start_date'], event['site_name']))        
+
+        # Update assign_to information for staff members
+        cur.execute("SELECT staff_username FROM assign_to WHERE event_name=%s and start_date=%s and site_name=%s", (event['event_name'], event['start_date'], event['site_name']))
+        event_staff = cur.fetchall()
+        
+        # Staff assigned to the event
+        staff_names = []
+        for staff in event_staff:
+            # Retrieve first and last name of assigned staff members
+            cur.execute("SELECT firstname, lastname from user WHERE username=%s", (staff['staff_username'],))
+            name = cur.fetchone()
+            fullName = name['firstname'] + " " + name['lastname']
+            staff_names.append(fullName)
+
+        # If a staff member in the event is not in the assign_to table, insert the member into the assign_to table
+        for staff in assign_staff:
+            staff_name = staff.split()
+            firstname = staff_name[0]
+            lastname = staff_name[1]
+            if staff not in staff_names:
+                cur.execute("SELECT username FROM user WHERE firstname=%s and lastname=%s", (firstname, lastname))
+                staff_username = cur.fetchone()
+                cur.execute("INSERT INTO assign_to(staff_username, event_name, start_date, site_name) VALUES(%s, %s, %s, %s)", (staff_username['username'], event['event_name'], event['start_date'], event['site_name']))
+        # If a staff member is de-selected, remove the member from assign_to
+        for staff in staff_names:
+            staff_name = staff.split()
+            firstname = staff_name[0]
+            lastname = staff_name[1]
+            if staff not in assign_staff:
+                cur.execute("SELECT username FROM user WHERE firstname=%s and lastname=%s", (firstname, lastname))
+                staff_username = cur.fetchone()
+                cur.execute("DELETE FROM assign_to WHERE staff_username=%s and event_name=%s and start_date=%s and site_name=%s", (staff_username['username'], event['event_name'], event['start_date'], event['site_name']))
+
+        # Commit to DB
+        mysql.connection.commit()
+
+        # Close connection
+        cur.close()
+        flash('Successfully Updated Event', 'success')
+        # return render_template("edit_event.html", event=event, staff_list=staff_list, assigned_staff=selected_staff, title="Edit Event", legend ="Edit Event", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+        return redirect(url_for('edit_event', event_name=event_name, start_date=start_date, site_name=site_name ,userType=request.args.get('userType'), username=request.args.get('username')))
+        # return redir("edit_event.html", event=event, assigned_staff=selected_staff, staff_list=staff_list, title="Create Event", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+    elif form.filter.data:
         name = form.name.data 
         price = form.price.data
         capacity = form.capacity.data
@@ -1515,10 +1702,7 @@ def edit_event():
         maxVisitsRange = form.maxVisitsRange.data 
         minRevenueRange = form.minRevenueRange.data 
         maxRevenueRange = form.maxRevenueRange.data
-    return render_template("edit_event.html", title="Edit Event", legend ="Edit Event", form=form)
-
-# Helper method to retrieve all available staff by first and last name
-
+    return render_template("edit_event.html", event=event, staff_list=staff_list, assigned_staff=selected_staff, title="Edit Event", legend ="Edit Event", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
 
 ## SCREEN 27 
 @app.route('/create_event', methods=['GET', 'POST'])
@@ -1698,51 +1882,222 @@ def staff_event_detail():
             }
     return render_template("staff_event_detail.html", title="Event Detail", legend="Event Detail", event=event)
 
+# Helper method to calculate the total visits, tickets remaining, and my visits for the user
+def get_event_derived(all_events, username):
+    # Create cursor
+    cur = mysql.connection.cursor()
+
+    for event in all_events:
+        # Calculate my visits for each event
+        cur.execute("SELECT COUNT(*) FROM visit_event WHERE visitor_username=%s and event_name=%s and start_date=%s and site_name=%s", (username, event['event_name'], event['start_date'], event['site_name']))
+        my_visits = cur.fetchone()['COUNT(*)']
+        event['my_visits'] = my_visits
+
+        # Calculate total visits for each event
+        cur.execute("SELECT COUNT(*) FROM visit_event WHERE event_name=%s and start_date=%s and site_name=%s", (event['event_name'], event['start_date'], event['site_name']))
+        total_visits = cur.fetchone()['COUNT(*)']
+        event['total_visits'] = total_visits
+
+        # Calculate tickets remaining for each event
+        event['tickets_remaining'] = event['capacity'] - event['total_visits']
+
+    # Commit to DB
+    mysql.connection.commit()
+
+    # Close connection
+    cur.close()
+    return all_events
+
 ## SCREEN 33 
 @app.route('/explore_event', methods=['GET','POST'])
 def explore_event(): 
     form = ExploreEvent()
-    return render_template("explore_event.html", title="Explore Event", legend="Explore Event", form=form)
+    username = request.args['username']
+    all_events = get_all_events()
+    all_events = get_event_derived(all_events, username)
+    # return str(event_derived)
+    if form.eventDetail.data:
+        if 'event_name' not in request.form:
+            flash('Please select an event to view details', 'danger')
+        else:
+            event_name = request.form['event_name']
+            query = "start_date " + event_name 
+            start_date = request.form[query]
+            query2 = "site_name " + event_name
+            site_name = request.form[query2]
+
+
+            # Find tickets remaining for this event
+            tickets_remaining = 0
+            for event in all_events:
+                if event['event_name'] == event_name and str(event['start_date']) == start_date and event['site_name'] == site_name:
+                    tickets_remaining = event['tickets_remaining']
+
+            return redirect(url_for('visitor_event_detail', tickets_remaining=tickets_remaining, event_name=event_name, start_date=start_date, site_name=site_name, emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username')))
+    return render_template("explore_event.html", events=all_events, title="Explore Event", legend="Explore Event", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
 
 ## SCREEN 34 
 @app.route('/visitor_event_detail', methods=["GET","POST"])
 def visitor_event_detail(): 
     form = VisitorEventDetail()
-    event = {
-            "eventName": "Walking Tour",
-            "site": "Inman Park",
-            "startDate": "2019-02-02",
-            "endDate": "2019-02-02",
-            "staffAssigned": "Peter Han", 
-            "price":0,
-            "ticketsRemaining":0,
-            "description":"walking tour with Peter Han - very dangerous"
-            }
-    return render_template("visitor_event_detail.html", title="Event Detail", legend="Event Detail", form=form, event=event)
+    event_name = request.args['event_name']
+    start_date = request.args['start_date']
+    site_name = request.args['site_name']
+    username = request.args['username']
+    tickets_remaining = request.args['tickets_remaining']
+
+    # Create cursor
+    cur = mysql.connection.cursor()
+
+    # Retrieve event information
+    cur.execute("SELECT * FROM event WHERE event_name=%s and start_date=%s and site_name=%s", (event_name, start_date, site_name))
+    event = cur.fetchone()
+
+    # Commit to DB
+    mysql.connection.commit()
+
+    # Close connection
+    cur.close()
+
+    if form.logVisit.data:
+        visitDate = form.visitDate.data
+        if visitDate < event['start_date'] or visitDate > event['end_date']:
+            flash('Please select a date in which the event is held', 'danger')
+            return render_template("visitor_event_detail.html", title="Event Detail", legend="Event Detail", form=form, event=event, tickets_remaining=tickets_remaining, userType=request.args.get('userType'), username=request.args.get('username'))
+
+        if tickets_remaining == '0':
+            flash('This event has sold out', 'danger')
+            return render_template("visitor_event_detail.html", title="Event Detail", legend="Event Detail", form=form, event=event, tickets_remaining=tickets_remaining, userType=request.args.get('userType'), username=request.args.get('username'))
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        # Check for duplicate entry
+        cur.execute("SELECT COUNT(*) FROM visit_event WHERE visitor_username=%s and event_name=%s and start_date=%s and site_name=%s and visit_event_date=%s", (username, event_name, event['start_date'], site_name, visitDate))
+        possible_duplicate = cur.fetchone()['COUNT(*)']
+        if possible_duplicate > 0:
+            flash('Cannot log visit to the same event on the same date', 'danger')
+            return render_template("visitor_event_detail.html", title="Event Detail", legend="Event Detail", form=form, event=event, tickets_remaining=tickets_remaining, userType=request.args.get('userType'), username=request.args.get('username'))
+
+        # Insert information into visit_event table
+        cur.execute("INSERT INTO visit_event(visitor_username, event_name, start_date, site_name, visit_event_date) VALUES(%s, %s, %s, %s, %s)", (username, event_name, event['start_date'], site_name, visitDate))
+
+        # Commit to DB
+        mysql.connection.commit()
+
+        # Close connection
+        cur.close()
+        flash('Successfully Logged Visit to Event', 'success')
+        return redirect(url_for('explore_event', userType=request.args.get('userType'), username=request.args.get('username')))
+    return render_template("visitor_event_detail.html", title="Event Detail", legend="Event Detail", form=form, event=event, tickets_remaining=tickets_remaining, userType=request.args.get('userType'), username=request.args.get('username'))
+
+# Helper method to retrieve
+def site_derived(all_sites):
+
+    sites_information = []
+    for site in all_sites:
+        info = {}
+        info['site_name'] = site
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        # Find the number of events hosted at each site
+        cur.execute("SELECT COUNT(*) FROM event WHERE site_name=%s", (site,))
+        event_count = cur.fetchone()['COUNT(*)']
+        info['event_count'] = event_count
+
+        sites_information.append(info)
+
+    # Commit to DB
+    mysql.connection.commit()
+
+    # Close connection
+    cur.close()
+    return sites_information
+
 
 ## SCREEN 35 
 @app.route('/explore_site', methods=["GET", "POST"])
 def explore_site(): 
     form = ExploreSite()
-    return render_template("explore_site.html", title="Explore Site", legend="Explore Site", form = form)
+    all_sites = get_all_sites()
+    all_sites = site_derived(all_sites)
+    if form.siteDetail.data:
+        if 'site_name' not in request.form:
+            flash('Please select an site to view details', 'danger')
+        else:
+            site_name = request.form['site_name']
+            return redirect(url_for('site_detail', site_name=site_name, userType=request.args.get('userType'), username=request.args.get('username')))
+    elif form.transitDetail.data:
+        if 'site_name' not in request.form:
+            flash('Please select a site to view transit details', 'danger')
+        else:
+            site_name = request.form['site_name']
+            return redirect(url_for('transit_detail', site_name=site_name, userType=request.args.get('userType'), username=request.args.get('username')))
+    return render_template("explore_site.html", sites=all_sites, title="Explore Site", legend="Explore Site", form = form, userType=request.args.get('userType'), username=request.args.get('username'))
 
 ## SCREEN 36 
 @app.route('/transit_detail', methods=["GET","POST"])
 def transit_detail(): 
     form = TransitDetail()
-    return render_template("transit_detail.html", title="Transit Detail", legend="Transit Detail", form=form)
+    username = request.args['username']
+    site_name = request.args['site_name']
+    return render_template("transit_detail.html", site_name=site_name, title="Transit Detail", legend="Transit Detail", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
 
 ## SCREEN 37 
 @app.route('/site_detail', methods=["GET","POST"])
 def site_detail(): 
-    form = SiteDetail() 
-    return render_template("site_detail.html", title="Site Detail", legend="Site Detail", form=form)
+    username = request.args['username']
+    form = SiteDetail()
+    site_name = request.args['site_name']
+    # Create cursor
+    cur = mysql.connection.cursor()
+
+    # Query information for the site
+    cur.execute("SELECT open_everyday, address, zipcode FROM site WHERE site_name=%s", (site_name,))
+    site_information = cur.fetchone()
+
+    if site_information['open_everyday'] == 0:
+        site_information['open_everyday'] = 'No'
+    else:
+        site_information['open_everyday'] = 'Yes'
+
+    # Commit to DB
+    mysql.connection.commit()
+
+    # Close connection
+    cur.close()
+
+    if form.logVisit.data:
+        visitDate = form.visitDate.data
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        # Check for duplicate entry
+        cur.execute("SELECT COUNT(*) FROM visit_site WHERE visitor_username=%s and site_name=%s and visit_start_date=%s", (username, site_name, visitDate))
+        possible_duplicate = cur.fetchone()['COUNT(*)']
+        if possible_duplicate > 0:
+            flash('Cannot log visit to the same site on the same date', 'danger')
+            return redirect(url_for('site_detail', site_name=site_name, userType=request.args.get('userType'), username=request.args.get('username')))
+
+        # Insert information into visit_event table
+        cur.execute("INSERT INTO visit_site(visitor_username, site_name, visit_start_date) VALUES(%s, %s, %s)", (username, site_name, visitDate))
+
+        # Commit to DB
+        mysql.connection.commit()
+
+        # Close connection
+        cur.close()
+        flash('Successfully Logged Visit to Site', 'success')
+        return redirect(url_for('explore_site', userType=request.args.get('userType'), username=request.args.get('username')))
+    return render_template("site_detail.html", site_name=site_name, site_information=site_information, title="Site Detail", legend="Site Detail", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
 
 ## SCREEN 38 
 @app.route('/visit_history', methods=['GET','POST'])
 def visit_history(): 
     form = VisitHistory()
-    return render_template("visit_history.html", title="Visit History", legend="Visit History", form=form)
+    return render_template("visit_history.html", title="Visit History", legend="Visit History", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
 
 if __name__ == '__main__':
     app.run(debug=True)
