@@ -5,17 +5,17 @@
     <div class="row">
         <div class="col-md-6">
             <label class="font-weight-bold">Site</label>
-            <p class="font-italic">HARDCODED </p>
+            <p class="font-italic">{{site_name}} </p>
         </div>
         <div class="col-md-6">
             <label class="font-weight-bold">Open Everyday</label>
-            <p class="font-italic">HARCODED</p>
+            <p class="font-italic">{{site_information['open_everyday']}}</p>
         </div>
     </div>
 
     <div class="">
         <label class="font-weight-bold">Address</label>
-        <p class="font-italic">HARDCODED</p>
+        <p class="font-italic">{{site_information['address']}}, {{site_information['zipcode']}}</p>
     </div>
         
     <hr>
@@ -37,6 +37,6 @@
             </div>
         </div>  
     </form>
-    <a class="btn btn-info" href="{{ url_for('explore_event') }}">Back</a>
+    <a class="btn btn-info" href="{{ url_for('explore_site', userType=userType, username=username) }}">Back</a>
 </div>
 {% endblock content %}
