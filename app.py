@@ -1116,6 +1116,9 @@ def site_report():
     form = SiteReport()
     return render_template("site_report.html", title="Site Report", legend="Site Report", form=form)
 
-
+## SCREEN 30 
+@app.route('/daily_detail', methods=["GET", "POST"])
+def daily_detail(): 
+    return render_template("daily_detail.html", title="Daily Detail", legend="Daily Detail")
 if __name__ == '__main__':
     app.run(debug=True)
