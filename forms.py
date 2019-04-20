@@ -112,14 +112,13 @@ class SiteForm(FlaskForm):
 
 class EventForm(FlaskForm): 
     name = StringField('Name', validators=[DataRequired()])
-    price = DecimalField('Price', validators=[DataRequired()])
-    capacity = IntegerField('Capacity', validators=[DataRequired()])
-    minStaff = IntegerField('Minimum Staff Required', validators=[DataRequired()])
+    price = DecimalField('Price', validators=[DataRequired(), NumberRange(min=0.01, max=None, message="Positive Price Only")])
+    capacity = IntegerField('Capacity', validators=[DataRequired(), NumberRange(min=1, max=None, message="Positive Capacity Only")])
+    minStaff = IntegerField('Minimum Staff Required', validators=[DataRequired(), NumberRange(min=1, max=None, message="Positive Number Only")])
     startDate = DateField('Start Date', validators=[DataRequired()])
     endDate = DateField('End Date', validators=[DataRequired()])
     description = TextAreaField('Description', validators=[DataRequired()])
-    assignStaff = SelectField('Assign Staff', validators=[DataRequired()], 
-        choices = [('Timmy Wu', 'Timmy Wu')])
+    updateStaff = SubmitField('Update Staff List')
     submit = SubmitField('Submit')
 
 class ManageSiteForm(FlaskForm): 
@@ -135,6 +134,7 @@ class ManageTransitForm(FlaskForm):
     maxPrice = DecimalField('Max Price')
     filter = SubmitField('Filter')
     edit = SubmitField('Edit')
+    delete = SubmitField('Delete')
 
 class ManageUser(FlaskForm): 
     username = StringField('Username')
@@ -172,19 +172,16 @@ class UserTakeTransit(FlaskForm):
     transportType = SelectField('Transport', choices = [('all','--All--'),('MARTA','MARTA'), ('Bus','Bus'),('Bike','Bike')],validators=[DataRequired()])
     minPrice = DecimalField('Min Price')
     maxPrice = DecimalField('Max Price')
-    routeList = RadioField('Routes', choices = [('816','816'),('102','102')])
     transitDate = DateField('Transit Date')
-    filter = SubmitField('Filter')
     logTransit = SubmitField('Log Transit')
+    filter = SubmitField('Filter')
 
 class TransitHistory(FlaskForm): 
-    transportType = SelectField('Transport', choices = [('ALL','ALL'),('marta','MARTA'), ('bus','Bus'),('bike','Bike')],validators=[DataRequired()])
-    containSite = SelectField('Contain Site', 
-        choices = [("Inman Park","Inman Park")])
-    route = StringField('Route', validators=[DataRequired()])
+    transportType = SelectField('Transport', choices = [('all','--All--'),('MARTA','MARTA'), ('Bus','Bus'),('Bike','Bike')],validators=[DataRequired()])
+    route = StringField('Route')
     startDate = DateField('Start Date')
     endDate = DateField('End Date')
-    submit = SubmitField('Filter')
+    filter = SubmitField('Filter')
 
 class ManageStaff(FlaskForm): 
     site = SelectField('Site', 
