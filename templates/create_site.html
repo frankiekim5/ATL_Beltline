@@ -72,7 +72,7 @@
             </fieldset>
             <div class="form-group">
                 {{ form.submit(class="btn btn-outline-info float-right") }}
-                <a class="btn btn-outline-info" href="{{ url_for('manage_site') }}">Back</a>
+                <a class="btn btn-outline-info" href="{{ url_for('manage_site', emails=emails, userType=userType, username=username) }}">Back</a>
             </div>
         </form>
     </div>

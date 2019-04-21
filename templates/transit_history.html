@@ -88,7 +88,7 @@
                                 {% for transit in transits %}
                                 <tr>
                                     <td>
-                                        <input type="radio" name="transit" value="{{transit['transit_route'] + ' ' + transit['transit_type']}}">
+                                        <!-- <input type="radio" name="transit" value="{{transit['transit_route'] + ' ' + transit['transit_type']}}"> -->
                                         <label for="transit_date">{{ transit['transit_date'] }}</label>
                                     </td>
                                     <td>
@@ -107,5 +107,6 @@
                     </div>
                 </fieldset>
             </form>
+            <a class="btn btn-outline-info mb-3" href="{{ url_for('main', emails=emails, userType=userType, username=username) }}">Back</a>
     </div>
 {% endblock content %}
