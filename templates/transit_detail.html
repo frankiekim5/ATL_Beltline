@@ -25,6 +25,9 @@
                     </div>
                 </div>     
             </fieldset>
+            <div class="form-group">
+                {{ form.filter(class="btn btn-outline-info") }}
+            </div>
             <hr>
             <div class="form-group">
                     <table class="table table-bordered">
@@ -37,12 +40,21 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for choice in form.routeList %}
+                            {% for transit in transits %}
                             <tr>
-                                <td>{{choice}}&nbsp;{{ choice.label }}</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                                <td>
+                                    <input type="radio" name="transit" value="{{transit['transit_route'] + ' ' + transit['transit_type']}}">
+                                    <label for="transit_route">{{ transit['transit_route'] }}</label>
+                                </td>
+                                <td>
+                                    <label for="transit_type">{{ transit['transit_type'] }}</label>
+                                </td>
+                                <td>
+                                    <label for="transit_price">{{ transit['transit_price'] }}</label>
+                                </td>
+                                <td>
+                                    <label for="connected_sites">{{ transit['connected_sites'] }}</label>
+                                </td>
                             </tr>
                             {% endfor %} 
                         </tbody>

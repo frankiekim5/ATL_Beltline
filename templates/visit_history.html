@@ -20,17 +20,13 @@
                             {% endif %}
                         </div>
                         <div class="form-group col-md-6">
-                            {{ form.site.label(class="form-control-label") }}
-                            {% if form.site.errors %}
-                                {{ form.site(class="form-control form-control-lg is-invalid") }}
-                                <div style="color:red">
-                                    {% for error in form.site.errors %}
-                                    <span style="font-size:13px">{{ error }}</span>
-                                    {% endfor %}
-                                </div>
-                            {% else %}
-                                {{ form.site(class="form-control form-control-lg") }}
-                            {% endif %}
+                            <label for="contain_site" class="form-control-label">Contain Site</label>
+                            <select name="contain_site" class="form-control form-control-lg" id="contain_site" required>
+                                <option value="all">--All--</option>
+                                {% for site in sites %}
+                                    <option value="{{site}}">{{ site }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
                     </div>
                     <div class='row'>
@@ -75,14 +71,26 @@
                                 <th scope="col">Price</th>
                                 </tr>
                             </thead>
+                            {% for event in events %}
                             <tbody>
                                 <tr>
-                                    <td>HARDCODED</td>
-                                    <td>HARDCODED</td>
-                                    <td>HARDCODED</td>
-                                    <td>HARDCODED</td>
+                                    <td>{{event['visit_event_date']}}</td>
+                                    <td>{{event['event_name']}}</td>
+                                    <td>{{event['site_name']}}</td>
+                                    <td>{{event['price']}}</td>
                                 </tr>
                             </tbody>
+                            {% endfor %}
+                            {% for site in sitesList %}
+                            <tbody>
+                                <tr>
+                                    <td>{{site['visit_start_date']}}</td>
+                                    <td></td>
+                                    <td>{{site['site_name']}}</td>
+                                    <td>0</td>
+                                </tr>
+                            </tbody>
+                            {% endfor %}
                         </table>
                     </div>
                 </fieldset>
