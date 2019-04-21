@@ -48,7 +48,7 @@
                         {{ form.description(class="form-control form-control-lg") }}
                     {% endif %}
                 </div>
-                <div class="form-group col-md-8" id="inputType">
+                <div class="form-group" id="inputType">
                     <label for="assign_staff" class="form-control-label">Assign Staff</label>
                     <select multiple name="assign_staff" class="form-control form-control-lg" id="assign_staff">
                         {% for staff in staff_list %}
@@ -59,6 +59,9 @@
                             {% endif %}
                         {% endfor %}
                     </select>
+                </div>
+                <div class="form-group">
+                    {{ form.update(class="btn btn-outline-info") }}
                 </div>
                 <hr>
                 <div class="row">
@@ -115,6 +118,9 @@
                         {% endif %}
                     </div>
                 </div>
+                <div class="form-group">
+                    {{ form.filter(class="btn btn-outline-info") }}
+                </div>
             </fieldset>
             <table class="table table-bordered">
                 <thead>
@@ -132,10 +138,7 @@
                     </tr> 
                 </tbody>
             </table>
-            <div class="form-group">
-                {{ form.filter(class="btn btn-outline-info") }}
-                {{ form.update(class="btn btn-outline-info") }}
-            </div>
         </form>
+        <a class="btn btn-outline-info mt-2 mb-3" href="{{ url_for('manage_event', emails=emails, userType=userType, username=username) }}">Back</a>
     </div>
 {% endblock content %}

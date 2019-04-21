@@ -62,6 +62,7 @@
                 </div>
             </fieldset>
             <div class="form-group">
+                <a class="btn btn-outline-info" href="{{ url_for('manage_transit', emails=emails, userType=userType, username=username) }}">Back</a>
                 {{ form.submit(class="btn btn-outline-info") }}
             </div>
         </form>

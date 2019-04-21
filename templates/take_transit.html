@@ -91,25 +91,25 @@
                                 </tbody>
                             </table>
                     </div>
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            {{ form.transitDate.label(class="form-control-label") }}
-                            {% if form.transitDate.errors %}
-                                {{ form.transitDate(class="form-control form-control-lg is-invalid", type="date") }}
-                                <div style="color:red">
-                                    {% for error in form.transitDate.errors %}
-                                    <span style="font-size:13px">{{ error }}</span>
-                                    {% endfor %}
-                                </div>
-                            {% else %}
-                                {{ form.transitDate(class="form-control form-control-lg", type="date") }}
-                            {% endif %}
+                    
+                    {{ form.transitDate.label(class="form-control-label") }}
+                    <div class="input-group mb-1">
+                        {% if form.transitDate.errors %}
+                            {{ form.transitDate(class="form-control form-control-lg is-invalid col-lg-3", type="date") }}
+                            <div style="color:red">
+                                {% for error in form.transitDate.errors %}
+                                <span style="font-size:13px">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.transitDate(class="form-control form-control-lg col-lg-3", type="date") }}
+                        {% endif %}
+                        <div class="input-group-append">
+                            {{ form.logTransit(class="btn btn-outline-info form-inline") }}
                         </div>
                     </div>
-                    <div class="form-group">
-                        {{ form.logTransit(class="btn btn-outline-info") }}
-                    </div>
                 </fieldset>
+                <a class="btn btn-outline-info mb-3" href="{{ url_for('main', emails=emails, userType=userType, username=username) }}">Back</a>
             </form>
     </div>
 {% endblock content %}

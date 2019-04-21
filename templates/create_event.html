@@ -113,7 +113,8 @@
                 </div>
             </fieldset>
             <div class="form-group">
-                    {{ form.submit(class="btn btn-outline-info") }}
+                <a class="btn btn-outline-info mr-2" href="{{ url_for('manage_event', emails=emails, userType=userType, username=username) }}">Back</a>
+                {{ form.submit(class="btn btn-outline-info") }}
             </div>
         </form>
     </div>

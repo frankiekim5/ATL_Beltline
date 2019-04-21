@@ -1490,7 +1490,7 @@ def get_all_events():
     # Query event information from event table
     cur.execute("SELECT * FROM event")
     events = cur.fetchall()
-    
+
     # Retrieve needed information
     for event in events:
         event['duration'] = event['end_date'] - event['start_date']

@@ -138,7 +138,8 @@
                 </div> 
             </fieldset>
             <div class="form-group">
-                {{ form.filter(class="btn btn-outline-info") }}
+                {{ form.filter(class="btn btn-outline-info mr-3") }}
+                {{ form.eventDetail(class="btn btn-outline-success") }}
             </div>
             <hr>
             <div class="form-group">
@@ -182,9 +183,7 @@
                         </tbody>
                     </table>
             </div>
-            <div class="form-group">
-                {{ form.eventDetail(class="btn btn-outline-success") }}
-            </div>
         </form>
+        <a class="btn btn-outline-info mb-3" href="{{ url_for('main', emails=emails, userType=userType, username=username) }}">Back</a>
     </div>
 {% endblock content %}

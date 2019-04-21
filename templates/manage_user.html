@@ -47,6 +47,12 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        {{ form.filter(class="btn btn-outline-info") }}
+                        {{ form.approve(class="btn btn-outline-info float-right") }}
+                        {{ form.decline(class="btn btn-outline-info float-right mr-3") }}
+                    </div>
+                    <hr>
+                    <div class="form-group">
                             <table class="table table-bordered">
                                 <thead>
                                     <tr>
@@ -79,11 +85,7 @@
                             </table>
                     </div>
                 </fieldset>
-                <div class="form-group">
-                    {{ form.filter(class="btn btn-outline-info") }}
-                    {{ form.approve(class="btn btn-outline-info") }}
-                    {{ form.decline(class="btn btn-outline-info") }}
-                </div>
             </form>
+            <a class="btn btn-outline-info mb-3" href="{{ url_for('main', emails=emails, userType=userType, username=username) }}">Back</a>
     </div>
 {% endblock content %}
