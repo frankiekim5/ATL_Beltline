@@ -917,7 +917,7 @@ def manage_user():
                                 filtered_users.append(user)
                             elif status == 'approved' and user['user_type'] == 'Approved':
                                 filtered_users.append(user)
-                            elif status == 'declind' and user['user_type'] == 'Declined':
+                            elif status == 'declined' and user['user_type'] == 'Declined':
                                 filtered_users.append(user)
                 return render_template('manage_user.html', all_users=filtered_users, title="Manage User", legend="Manage User", form=form, emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))                    
         elif form.approve.data:
@@ -2036,13 +2036,86 @@ def explore_site():
             return redirect(url_for('transit_detail', site_name=site_name, userType=request.args.get('userType'), username=request.args.get('username')))
     return render_template("explore_site.html", sites=all_sites, title="Explore Site", legend="Explore Site", form = form, userType=request.args.get('userType'), username=request.args.get('username'))
 
+# Helper method to retrieve transits for site
+def transits_for_site(site_name):
+    # Create cursor
+    cur = mysql.connection.cursor()
+
+    # Retrieve transits for this site
+    cur.execute("SELECT transit_type, transit_route FROM connect WHERE site_name=%s", (site_name,))
+    transits = cur.fetchall()
+
+    # Find the price of the transit
+    for transit in transits:
+        cur.execute("SELECT transit_price FROM transit WHERE transit_type=%s and transit_route=%s", (transit['transit_type'], transit['transit_route']))
+        transit['transit_price'] = cur.fetchone()['transit_price']
+
+        # Find # connected sites for transit
+        cur.execute("SELECT COUNT(*) FROM connect WHERE transit_type=%s and transit_route=%s", (transit['transit_type'], transit['transit_route']))
+        transit['connected_sites'] = cur.fetchone()['COUNT(*)']
+
+    # Commit to DB
+    mysql.connection.commit()
+
+    # Close connection
+    cur.close()
+    return transits
+
 ## SCREEN 36 
 @app.route('/transit_detail', methods=["GET","POST"])
 def transit_detail(): 
     form = TransitDetail()
     username = request.args['username']
     site_name = request.args['site_name']
-    return render_template("transit_detail.html", site_name=site_name, title="Transit Detail", legend="Transit Detail", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+    all_transits = transits_for_site(site_name)
+    filtered_transits = []
+
+    if form.filter.data:
+        transportType = form.transportType.data
+        if transportType == 'all':
+            filtered_transits = all_transits
+        else:
+            for transit in all_transits:
+                if transit['transit_type'] == transportType:
+                    filtered_transits.append(transit)
+    elif form.logTransit.data:
+        if 'transit' not in request.form:
+            flash('Please select a transit to log a date for', 'danger')
+            return render_template("transit_detail.html", site_name=site_name, transits=filtered_transits, title="Transit Detail", legend="Transit Detail", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+        else:
+            transit = request.form['transit']
+        transit = transit.split()
+        transit_route = transit[0]
+        transit_type = transit[1]
+        transitDate = form.transitDate.data
+        if transitDate == None:
+            flash('Please select a valid date to log transit', 'danger')
+            return render_template("transit_detail.html", site_name=site_name, transits=filtered_transits, title="Transit Detail", legend="Transit Detail", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+    
+        # Check first if the attempted entry is a duplicate
+        # NOTE: user can only take the same transit once per day
+        cur.execute("SELECT * FROM take_transit")
+        results = cur.fetchall()
+        
+        for result in results:
+            if result['username'] == username and result['transit_type'] == transit_type and result['transit_route'] == transit_route and result['transit_date'] == transitDate:
+                flash('Cannot take the same transit more than once per day', 'danger')
+                return render_template("transit_detail.html", site_name=site_name, transits=filtered_transits, title="Transit Detail", legend="Transit Detail", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+
+        # insert information into take_transit table
+        cur.execute("INSERT INTO take_transit(username, transit_type, transit_route, transit_date) VALUES(%s, %s, %s, %s)", (username, transit_type, transit_route, transitDate))
+        
+        # Commit to DB
+        mysql.connection.commit()
+
+        # Close connection
+        cur.close()
+        flash('Successfully logged transit', 'success')
+        return redirect(url_for('explore_site', userType=request.args.get('userType'), username=request.args.get('username')))
+    return render_template("transit_detail.html", site_name=site_name, transits=filtered_transits, title="Transit Detail", legend="Transit Detail", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
 
 ## SCREEN 37 
 @app.route('/site_detail', methods=["GET","POST"])
@@ -2093,11 +2166,138 @@ def site_detail():
         return redirect(url_for('explore_site', userType=request.args.get('userType'), username=request.args.get('username')))
     return render_template("site_detail.html", site_name=site_name, site_information=site_information, title="Site Detail", legend="Site Detail", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
 
+# Helper method to retrieve the visit sites and visit events for user
+def get_visits(username):
+    # Create cursor
+    cur = mysql.connection.cursor()
+
+    # Retrieve visit events
+    cur.execute("SELECT event_name, start_date, site_name, visit_event_date FROM visit_event WHERE visitor_username=%s", (username,))
+    events = cur.fetchall()
+
+    # Retrieve price or each event
+    for event in events:
+        cur.execute("SELECT price FROM event WHERE event_name=%s and start_date=%s and site_name=%s", (event['event_name'], event['start_date'], event['site_name']))
+        event['price'] = cur.fetchone()['price']
+
+    # Retrieve visit sites
+    cur.execute("SELECT site_name, visit_start_date FROM visit_site WHERE visitor_username=%s", (username,))
+    sites = cur.fetchall()
+
+    # Commit to DB
+    mysql.connection.commit()
+
+    # Close connection
+    cur.close()
+    visits = {'events': events, 'sites':sites}
+    return visits
+
 ## SCREEN 38 
 @app.route('/visit_history', methods=['GET','POST'])
 def visit_history(): 
+    username = request.args['username']
     form = VisitHistory()
-    return render_template("visit_history.html", title="Visit History", legend="Visit History", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+    all_sites = get_all_sites()
+    visits = get_visits(username)
+    events = visits['events']
+    sites = visits['sites']
+
+    filtered_events = []
+    filtered_sites = []
+    if form.filter.data:
+        event_name = form.event.data
+        startDate = form.startDate.data
+        endDate = form.endDate.data        
+        site = request.form.get('contain_site')
+
+        if endDate != None and startDate != None and endDate < startDate:
+            flash('End Date cannot be before Start Date', 'danger')
+            return render_template("visit_history.html", sites=all_sites, events=filtered_events, sitesList=filtered_sites, title="Visit History", legend="Visit History", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+        
+        if site == 'all':
+            if event_name == "":
+                if startDate == None and endDate == None:
+                    filtered_events = events
+                    filtered_sites = sites
+                elif startDate != None and endDate == None:
+                    for event in events:
+                        if event['visit_event_date'] >= startDate:
+                            filtered_events.append(event)
+                    for site in sites:
+                        if site['visit_start_date'] >= startDate:
+                            filtered_sites.append(site)
+                elif startDate == None and endDate != None:
+                    for event in events:
+                        if event['visit_event_date'] <= endDate:
+                            filtered_events.append(event)
+                    for site in sites:
+                        if site['visit_start_date'] <= endDate:
+                            filtered_sites.append(site)
+                else:
+                    for event in events:
+                        if event['visit_event_date'] >= startDate and event['visit_event_date'] <= endDate:
+                            filtered_events.append(event)
+                    for site in sites:
+                        if site['visit_start_date'] >= startDate and site['visit_start_date'] <= endDate:
+                            filtered_sites.append(site)
+            else:
+                for event in events:
+                    if event['event_name'] == event_name:
+                        if startDate == None and endDate == None:
+                            filtered_events.append(event)
+                        elif startDate != None and endDate == None:
+                            if event['visit_event_date'] >= startDate:
+                                filtered_events.append(event)
+                        elif startDate == None and endDate != None:
+                            if event['visit_event_date'] <= endDate:
+                                filtered_events.append(event)
+                        else:
+                            if event['visit_event_date'] >= startDate and event['visit_event_date'] <= endDate:
+                                filtered_events.append(event)
+        else:
+            for each_site in sites:
+                if each_site['site_name'] == site:
+                    if startDate == None and endDate == None:
+                        filtered_sites.append(each_site)
+                    elif startDate != None and endDate == None:
+                        if each_site['visit_start_date'] >= startDate:
+                            filtered_sites.append(each_site)
+                    elif startDate == None and endDate != None:
+                        if each_site['visit_start_date'] <= endDate:
+                            filtered_sites.append(site)
+                    else:
+                        if each_site['visit_start_date'] >= startDate and each_site['visit_start_date'] <= endDate:
+                            filtered_sites.append(site)     
+                    filtered_sites.append(each_site)
+            if event_name == "":
+                for event in events:
+                    if startDate == None and endDate == None:
+                        filtered_events.append(event)
+                    elif startDate != None and endDate == None:
+                        if event['visit_event_date'] >= startDate:
+                            filtered_events.append(event)
+                    elif startDate == None and endDate != None:
+                        if event['visit_event_date'] <= endDate:
+                            filtered_events.append(event)
+                    else:
+                        if event['visit_event_date'] >= startDate and event['visit_event_date'] <= endDate:
+                            filtered_events.append(event)                          
+            else:
+                for event in events:
+                    if event['event_name'] == event_name:
+                        if startDate == None and endDate == None:
+                            filtered_events.append(event)
+                        elif startDate != None and endDate == None:
+                            if event['visit_event_date'] >= startDate:
+                                filtered_events.append(event)
+                        elif startDate == None and endDate != None:
+                            if event['visit_event_date'] <= endDate:
+                                filtered_events.append(event)
+                        else:
+                            if event['visit_event_date'] >= startDate and event['visit_event_date'] <= endDate:
+                                filtered_events.append(event)
+
+    return render_template("visit_history.html", sites=all_sites, events=filtered_events, sitesList=filtered_sites, title="Visit History", legend="Visit History", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
 
 if __name__ == '__main__':
     app.run(debug=True)

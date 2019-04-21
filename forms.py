@@ -255,8 +255,9 @@ class ExploreSite(FlaskForm):
 class TransitDetail(FlaskForm): 
     transportType = SelectField('Transport', choices = [('all','--All--'),('MARTA','MARTA'), ('Bus','Bus'),('Bike','Bike')],validators=[DataRequired()])
     routeList = RadioField('Routes', choices = [('816','816'),('102','102')], validators=[DataRequired()])
-    transitDate = DateField('Transit Date', validators=[DataRequired()])
+    transitDate = DateField('Transit Date')
     logTransit = SubmitField('Log Transit')
+    filter = SubmitField('Filter')
 
 class SiteDetail(FlaskForm): 
     visitDate = DateField('Visit Date', validators=[DataRequired()])
@@ -264,8 +265,6 @@ class SiteDetail(FlaskForm):
 
 class VisitHistory(FlaskForm): 
     event = StringField("Event")
-    site = SelectField('Site Name', 
-        choices = [("all","--All--"),("Inman Park","Inman Park")])
     startDate = DateField('Start Date')
     endDate = DateField('End Date')
     filter = SubmitField('Filter')
