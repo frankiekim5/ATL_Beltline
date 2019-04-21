@@ -26,34 +26,28 @@
                 <div class="collapse navbar-collapse" id="navbarToggle">
                     <div class="navbar-nav mr-auto">
                         {% if userType == 'User' %}
-                            <a class="nav-item nav-link" href="{{ url_for('main', emails=emails, userType=userType, username=username) }}">Home</a>
                             <a class="nav-item nav-link" href="{{ url_for('take_transit', emails=emails, userType=userType, username=username) }}">Take Transit</a>
                             <a class="nav-item nav-link" href="{{ url_for('transit_history', emails=emails, userType=userType, username=username) }}">Transit History</a>
                         {% elif userType == 'Manager' %}
-                            <a class="nav-item nav-link" href="{{ url_for('main', emails=emails, userType=userType, username=username) }}">Home</a>
                             <a class="nav-item nav-link" href="{{ url_for('take_transit', emails=emails, userType=userType, username=username) }}">Take Transit</a>
                             <a class="nav-item nav-link" href="{{ url_for('transit_history', emails=emails, userType=userType, username=username) }}">Transit History</a>
                             <a class="nav-item nav-link" href="{{ url_for('manage_event', emails=emails, userType=userType, username=username) }}">Events</a>
                         {% elif userType == 'Staff' %}
-                            <a class="nav-item nav-link" href="{{ url_for('main', emails=emails, userType=userType, username=username) }}">Home</a>
                             <a class="nav-item nav-link" href="{{ url_for('take_transit', emails=emails, userType=userType, username=username) }}">Take Transit</a>
                             <a class="nav-item nav-link" href="{{ url_for('transit_history', emails=emails, userType=userType, username=username) }}">Transit History</a>
                         {% elif userType == 'Administrator' %}
-                            <a class="nav-item nav-link" href="{{ url_for('main', emails=emails, userType=userType, username=username) }}">Home</a>
                             <a class="nav-item nav-link" href="{{ url_for('take_transit', emails=emails, userType=userType, username=username) }}">Take Transit</a>
                             <a class="nav-item nav-link" href="{{ url_for('transit_history', emails=emails, userType=userType, username=username) }}">Transit History</a>
                             <a class="nav-item nav-link" href="{{ url_for('manage_transit', emails=emails, userType=userType, username=username) }}">Transits</a>
                             <a class="nav-item nav-link" href="{{ url_for('manage_site', emails=emails, userType=userType, username=username) }}">Sites</a>
                             <a class="nav-item nav-link" href="{{ url_for('manage_user', emails=emails, userType=userType, username=username) }}">Users</a>
                         {% elif userType == 'Visitor' %}
-                            <a class="nav-item nav-link" href="{{ url_for('main', emails=emails, userType=userType, username=username) }}">Home</a>
                             <a class="nav-item nav-link" href="{{ url_for('take_transit', emails=emails, userType=userType, username=username) }}">Take Transit</a>
                             <a class="nav-item nav-link" href="{{ url_for('transit_history', emails=emails, userType=userType, username=username) }}">Transit History</a>
                             <a class="nav-item nav-link" href="{{ url_for('explore_event', emails=emails, userType=userType, username=username) }}">Explore Event</a>
                             <a class="nav-item nav-link" href="{{ url_for('explore_site', emails=emails, userType=userType, username=username) }}">Explore Site</a>
                             <a class="nav-item nav-link" href="{{ url_for('visit_history', emails=emails, userType=userType, username=username) }}">Visit History</a>
                         {% elif userType == 'Manager-Visitor' %}
-                            <a class="nav-item nav-link" href="{{ url_for('main', emails=emails, userType=userType, username=username) }}">Home</a>
                             <a class="nav-item nav-link" href="{{ url_for('take_transit', emails=emails, userType=userType, username=username) }}">Take Transit</a>
                             <a class="nav-item nav-link" href="{{ url_for('transit_history', emails=emails, userType=userType, username=username) }}">Transit History</a>
                             <a class="nav-item nav-link" href="{{ url_for('manage_event', emails=emails, userType=userType, username=username) }}">Events</a>
@@ -61,14 +55,12 @@
                             <a class="nav-item nav-link" href="{{ url_for('explore_site', emails=emails, userType=userType, username=username) }}">Explore Site</a>
                             <a class="nav-item nav-link" href="{{ url_for('visit_history', emails=emails, userType=userType, username=username) }}">Visit History</a>
                         {% elif userType == 'Staff-Visitor' %}
-                            <a class="nav-item nav-link" href="{{ url_for('main', emails=emails, userType=userType, username=username) }}">Home</a>
                             <a class="nav-item nav-link" href="{{ url_for('take_transit', emails=emails, userType=userType, username=username) }}">Take Transit</a>
                             <a class="nav-item nav-link" href="{{ url_for('transit_history', emails=emails, userType=userType, username=username) }}">Transit History</a>
                             <a class="nav-item nav-link" href="{{ url_for('explore_event', emails=emails, userType=userType, username=username) }}">Explore Event</a>
                             <a class="nav-item nav-link" href="{{ url_for('explore_site', emails=emails, userType=userType, username=username) }}">Explore Site</a>
                             <a class="nav-item nav-link" href="{{ url_for('visit_history', emails=emails, userType=userType, username=username) }}">Visit History</a>
                         {% elif userType == 'Administrator-Visitor' %}
-                            <a class="nav-item nav-link" href="{{ url_for('main', emails=emails, userType=userType, username=username) }}">Home</a>
                             <a class="nav-item nav-link" href="{{ url_for('take_transit', emails=emails, userType=userType, username=username) }}">Take Transit</a>
                             <a class="nav-item nav-link" href="{{ url_for('transit_history', emails=emails, userType=userType, username=username) }}">Transit History</a>
                             <a class="nav-item nav-link" href="{{ url_for('explore_event', emails=emails, userType=userType, username=username) }}">Explore Event</a>

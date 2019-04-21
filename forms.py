@@ -96,7 +96,7 @@ class TransitForm(FlaskForm):
         choices = [('MARTA','MARTA'), ('Bus','Bus'),('Bike','Bike')], validators=[DataRequired()])
     route = StringField('Route', validators=[DataRequired()])
     price = DecimalField('Price', validators=[DataRequired(), NumberRange(min=0.01, max=None, message="Positive Price Only")])
-    submit = SubmitField('Create')
+    submit = SubmitField('Submit')
 
 class SiteForm(FlaskForm):
     siteName = StringField('Name', validators=[DataRequired()])
