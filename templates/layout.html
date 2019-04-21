@@ -32,6 +32,8 @@
                             <a class="nav-item nav-link" href="{{ url_for('take_transit', emails=emails, userType=userType, username=username) }}">Take Transit</a>
                             <a class="nav-item nav-link" href="{{ url_for('transit_history', emails=emails, userType=userType, username=username) }}">Transit History</a>
                             <a class="nav-item nav-link" href="{{ url_for('manage_event', emails=emails, userType=userType, username=username) }}">Events</a>
+                            <a class="nav-item nav-link" href="{{ url_for('manage_staff', emails=emails, userType=userType, username=username) }}">Staff</a>
+                            <a class="nav-item nav-link" href="{{ url_for('site_report', emails=emails, userType=userType, username=username) }}">Site Report</a>
                         {% elif userType == 'Staff' %}
                             <a class="nav-item nav-link" href="{{ url_for('take_transit', emails=emails, userType=userType, username=username) }}">Take Transit</a>
                             <a class="nav-item nav-link" href="{{ url_for('transit_history', emails=emails, userType=userType, username=username) }}">Transit History</a>

@@ -185,8 +185,6 @@ class TransitHistory(FlaskForm):
     filter = SubmitField('Filter')
 
 class ManageStaff(FlaskForm): 
-    site = SelectField('Site', 
-        choices = [("Inman Park","Inman Park")])
     firstName = StringField('First Name')
     lastName = StringField('Last Name')
     startDate = DateField('Start Date')
@@ -194,8 +192,8 @@ class ManageStaff(FlaskForm):
     filter = SubmitField('Filter')
 
 class SiteReport(FlaskForm): 
-    startDate = DateField('Start Date')
-    endDate = DateField('End Date')
+    startDate = DateField('Start Date', validators=[DataRequired()])
+    endDate = DateField('End Date', validators=[DataRequired()])
     minEventCount = IntegerField('Min Event Count')
     maxEventCount = IntegerField('Max Event Count')
     minStaffCount = IntegerField('Min Staff Count')
@@ -204,7 +202,6 @@ class SiteReport(FlaskForm):
     maxVisitsRange = IntegerField('Max Visits')
     minRevenueRange = IntegerField('Min Revenue')
     maxRevenueRange = IntegerField('Max Revenue')
-    siteList = RadioField('Sites', choices = [('Inman Park','Inman Park'),('PCM','PCM')])
     filter = SubmitField("Filter")
     dailyDetail = SubmitField("Daily Detail")
 
