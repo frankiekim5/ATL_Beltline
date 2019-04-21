@@ -10,7 +10,7 @@ class UserRegistrationForm(FlaskForm): # inherits from FlaskForm
     password = PasswordField('Password', validators=[DataRequired(), Length(min=8)])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     email = StringField('Email', validators=[DataRequired(), Email()])
-    submit = SubmitField('Sign Up')
+    submit = SubmitField('Register')
 
 class VisitorRegistrationForm(FlaskForm): # inherits from FlaskForm
     firstName = StringField('First Name', validators=[DataRequired()])
@@ -19,7 +19,7 @@ class VisitorRegistrationForm(FlaskForm): # inherits from FlaskForm
     password = PasswordField('Password', validators=[DataRequired(), Length(min=8)])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     email = StringField('Email', validators=[DataRequired(), Email()])
-    submit = SubmitField('Sign Up')
+    submit = SubmitField('Register')
 
 class EmployeeRegistrationForm(FlaskForm): # inherits from FlaskForm
     firstName = StringField('First Name', validators=[DataRequired()])
@@ -45,7 +45,7 @@ class EmployeeRegistrationForm(FlaskForm): # inherits from FlaskForm
     )
     zipcode = StringField('Zipcode', validators=[DataRequired(), Length(min=5, max=5, message="Zipcode must be 5 digits.")])
     email = StringField('Email', validators=[DataRequired(), Email()])
-    submit = SubmitField('Sign Up')
+    submit = SubmitField('Register')
 
 class EmployeeVisitorRegistrationForm(FlaskForm): # inherits from FlaskForm
     firstName = StringField('First Name', validators=[DataRequired()])
@@ -71,7 +71,7 @@ class EmployeeVisitorRegistrationForm(FlaskForm): # inherits from FlaskForm
     )
     zipcode = StringField('Zipcode', validators=[DataRequired(), Length(min=5, max=5, message="Zipcode must be 5 digits.")])
     email = StringField('Email', validators=[DataRequired(), Email()])
-    submit = SubmitField('Sign Up')
+    submit = SubmitField('Register')
 
 class EmailRegistrationForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])

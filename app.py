@@ -9,7 +9,7 @@ app = Flask(__name__)
 # Config MySQL
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'Frankie1999!'
+app.config['MYSQL_PASSWORD'] = 'Frankie1999!' ## Frankie1999! 
 app.config['MYSQL_DB'] = 'atlbeltline'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 # Init MySQL
@@ -1847,7 +1847,7 @@ def create_event():
 def manage_staff(): 
     form = ManageStaff()
     staff = []
-    
+
     # Create cursor
     cur = mysql.connection.cursor()
 
