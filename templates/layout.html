@@ -19,7 +19,7 @@
     <header class="site-header">
             <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
                 <div class="container">
-                <a class="navbar-brand mr-4" href="/">Atlanta Beltline</a>
+                <a class="navbar-brand mr-4" href="{{ url_for('main', emails=emails, userType=userType, username=username) }}">Atlanta Beltline</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -53,6 +53,7 @@
                         {% elif userType == 'Manager-Visitor' %}
                             <a class="nav-item nav-link" href="{{ url_for('main', emails=emails, userType=userType, username=username) }}">Home</a>
                             <a class="nav-item nav-link" href="{{ url_for('take_transit', emails=emails, userType=userType, username=username) }}">Take Transit</a>
+                            <a class="nav-item nav-link" href="{{ url_for('manage_event', emails=emails, userType=userType, username=username) }}">Events</a>
                             <a class="nav-item nav-link" href="{{ url_for('explore_event', emails=emails, userType=userType, username=username) }}">Explore Event</a>
                             <a class="nav-item nav-link" href="{{ url_for('explore_site', emails=emails, userType=userType, username=username) }}">Explore Site</a>
                             <a class="nav-item nav-link" href="{{ url_for('visit_history', emails=emails, userType=userType, username=username) }}">Visit History</a>
