@@ -2087,13 +2087,50 @@ def site_report():
 ## SCREEN 30 
 @app.route('/daily_detail', methods=["GET", "POST"])
 def daily_detail(): 
-    return render_template("daily_detail.html", title="Daily Detail", legend="Daily Detail")
+    username = request.args['username']
+
+    cur = mysql.connection.cursor() 
+
+    
+    cur.execute('SELECT event_name, start_date FROM event WHERE site_name = (SELECT site_name FROM site WHERE manager_username = %s)',(username,))
+    events = cur.fetchall()
+    
+    dailyDetail = []
+
+    for event in events: 
+        cur.execute("SELECT count(*) as num FROM visit_event WHERE event_name = %s and start_date = %s", (event['event_name'], event['start_date']))
+        visits = cur.fetchone()
+        visits = visits['num']
+        event['visits'] = visits
+
+        cur.execute("SELECT price FROM event WHERE event_name = %s and start_date = %s", (event['event_name'], event['start_date']))
+        price = cur.fetchone()
+        price = price['price'] 
+        event['revenue'] = visits * price
+
+        cur.execute("SELECT CONCAT(firstname, ' ', lastname) as fullname FROM user WHERE username in (SELECT staff_username FROM assign_to WHERE event_name = %s and start_date = %s) ORDER BY firstname ASC",(event['event_name'], event['start_date']))
+        staff = cur.fetchall()
+        staffList = [] 
+        for s in staff: 
+            staffList.append(s['fullname'])
+        event['staffList'] = staffList
+        dailyDetail.append(event)
+
+    #return str(events)
+
+    # Commit to DB
+    mysql.connection.commit()
+
+    # Close connection
+    cur.close()
+
+    return render_template("daily_detail.html", title="Daily Detail", legend="Daily Detail", events = events, userType=request.args.get('userType'), username=request.args.get('username'))
 
 ## SCREEN 31
 @app.route('/view_schedule', methods=["GET", "POST"])
 def view_schedule(): 
     form = ViewSchedule()
-    return render_template("view_schedule.html", title="View Schedule", legend="View Schedule", form=form)
+    return render_template("view_schedule.html", title="View Schedule", legend="View Schedule", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
 
 ## SCREEN 32 
 @app.route('/staff_event_detail', methods=["GET", "POST"])
