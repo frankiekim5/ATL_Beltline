@@ -12,12 +12,18 @@
             </tr>
         </thead>
         <tbody>
+            {% for event in events%}
             <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td>{{ event['event_name']}}</td>
+                <td>
+                    {% for name in event['staffList'] %}
+                    <p>{{name}}</p>
+                    {% endfor %}
+                </td>
+                <td>{{ event['visits'] }}</td>
+                <td>{{ event['revenue'] }}</td>
             </tr>
+            {% endfor %}
         </tbody>
     </table>
     <a class="btn btn-outline-info mb-3" href="{{ url_for('main', emails=emails, userType=userType, username=username) }}">Back</a>

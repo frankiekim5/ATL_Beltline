@@ -131,11 +131,13 @@
                     </tr>
                 </thead>
                 <tbody>
+                    {% for date in results %}
                     <tr>
-                        <td>HARDCODED</td>
-                        <td>HARDCODED</td>
-                        <td>HARDCODED</td>
+                        <td>{{ date['visit_event_date'] }}</td>
+                        <td>{{ date['visits'] }}</td>
+                        <td>{{ date['price'] }}</td>
                     </tr> 
+                    {% endfor %}
                 </tbody>
             </table>
         </form>
