@@ -162,10 +162,10 @@ class EditEvent(FlaskForm):
     staffAssigned = SelectMultipleField('Staff Assigned', 
         choices = [('Timmy Wu', 'Timmy Wu'),("Danny Lee", "Danny Lee"),('Frankie Kim','Frankie Kim')])
     description = TextAreaField('Description', validators=[DataRequired()])
-    minVisitsRange = IntegerField('Min Visits')
-    maxVisitsRange = IntegerField('Max Visits')
-    minRevenueRange = IntegerField('Min Revenue')
-    maxRevenueRange = IntegerField('Max Revenue')
+    minVisitsRange = IntegerField('Min Daily Visits')
+    maxVisitsRange = IntegerField('Max Daily Visits')
+    minRevenueRange = IntegerField('Min Daily Revenue')
+    maxRevenueRange = IntegerField('Max Daily Revenue')
     filter = SubmitField('Filter')
     update = SubmitField('Update')
 

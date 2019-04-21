@@ -10,7 +10,7 @@ app = Flask(__name__)
 # Config MySQL
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'Frankie1999!' ## Frankie1999! 
+app.config['MYSQL_PASSWORD'] = '@SanDiego26' ## Frankie1999! 
 app.config['MYSQL_DB'] = 'atlbeltline'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 # Init MySQL
@@ -1627,6 +1627,15 @@ def edit_event():
     #     flash('Not enough available staff members', 'danger')
     #     return redirect(url_for('manage_event', userType=request.args.get('userType'), username=request.args.get('username')))
 
+    cur.execute("SELECT visit_event_date, count(*) as visits FROM visit_event WHERE event_name=%s GROUP BY visit_event_date", (event['event_name'],))
+    dailyResults = cur.fetchall()
+    cur.execute("SELECT price FROM event WHERE event_name=%s",(event['event_name'],))
+    price = cur.fetchone()
+    price = price['price']
+
+    for day in dailyResults: 
+        day['price'] = day['visits'] * price
+
     # Commit to DB
     mysql.connection.commit()
 
@@ -1641,7 +1650,7 @@ def edit_event():
         # Check if len of staff is greater than min staff required
         if len(assign_staff) < minStaff:
             flash('Cannot assign number of staff under the Minimum Staff Required', 'danger')
-            return render_template("edit_event.html", event=event, assigned_staff=selected_staff, staff_list=staff_list, title="Create Event", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+            return render_template("edit_event.html", results = dailyResults, event=event, assigned_staff=selected_staff, staff_list=staff_list, title="Create Event", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
         
         # Create cursor
         cur = mysql.connection.cursor()
@@ -1688,22 +1697,61 @@ def edit_event():
         cur.close()
         flash('Successfully Updated Event', 'success')
         # return render_template("edit_event.html", event=event, staff_list=staff_list, assigned_staff=selected_staff, title="Edit Event", legend ="Edit Event", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
-        return redirect(url_for('edit_event', event_name=event_name, start_date=start_date, site_name=site_name ,userType=request.args.get('userType'), username=request.args.get('username')))
+        return redirect(url_for('edit_event', results = dailyResults, event_name=event_name, start_date=start_date, site_name=site_name ,userType=request.args.get('userType'), username=request.args.get('username')))
         # return redir("edit_event.html", event=event, assigned_staff=selected_staff, staff_list=staff_list, title="Create Event", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
     elif form.filter.data:
-        name = form.name.data 
-        price = form.price.data
-        capacity = form.capacity.data
-        minStaff = form.minStaff.data 
-        startDate = form.startDate.data
-        endDate = form.endDate.data 
-        staffAssigned = form.staffAssigned.data
-        description = form.description.data
+        # name = form.name.data 
+        # price = form.price.data
+        # capacity = form.capacity.data
+        # minStaff = form.minStaff.data 
+        # startDate = form.startDate.data
+        # endDate = form.endDate.data 
+        # staffAssigned = form.staffAssigned.data
+        # description = form.description.data
         minVisitsRange = form.minVisitsRange.data 
         maxVisitsRange = form.maxVisitsRange.data 
         minRevenueRange = form.minRevenueRange.data 
         maxRevenueRange = form.maxRevenueRange.data
-    return render_template("edit_event.html", event=event, staff_list=staff_list, assigned_staff=selected_staff, title="Edit Event", legend ="Edit Event", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+        newResults = []
+        if minVisitsRange != None and maxVisitsRange != None and minRevenueRange == None and maxRevenueRange == None: 
+            for item in dailyResults: 
+                if item['visits'] >= int(minVisitsRange) and item['visits'] <= int(maxVisitsRange): 
+                    newResults.append(item)
+        elif minVisitsRange == None and maxVisitsRange == None and minRevenueRange != None and maxRevenueRange != None:  
+            for item in dailyResults: 
+                if item['price'] >= float(minRevenueRange) and item['price'] <= float(maxRevenueRange): 
+                    newResults.append(item)
+        elif minVisitsRange != None and maxVisitsRange == None and minRevenueRange == None and maxRevenueRange == None:  
+            for item in dailyResults: 
+                if item['price'] >= float(minRevenueRange): 
+                    newResults.append(item)
+        elif minVisitsRange == None and maxVisitsRange != None and minRevenueRange == None and maxRevenueRange == None:  
+            for item in dailyResults: 
+                if item['price'] <= float(maxRevenueRange): 
+                    newResults.append(item)
+        elif minVisitsRange == None and maxVisitsRange == None and minRevenueRange != None and maxRevenueRange == None:  
+            for item in dailyResults: 
+                if item['price'] >= float(minRevenueRange): 
+                    newResults.append(item)
+        elif minVisitsRange == None and maxVisitsRange == None and minRevenueRange == None and maxRevenueRange != None:  
+            for item in dailyResults: 
+                if item['price'] <= float(maxRevenueRange): 
+                    newResults.append(item)
+        elif minVisitsRange != None and maxVisitsRange != None and minRevenueRange != None and maxRevenueRange != None:  
+            for item in dailyResults: 
+                if item['price'] >= float(minRevenueRange) and item['price'] <= float(maxRevenueRange) and item['visits'] >= int(minVisitsRange) and item['visits'] <= int(maxVisitsRange): 
+                    newResults.append(item)
+        elif minVisitsRange == None and maxVisitsRange == None and minRevenueRange == None and maxRevenueRange == None:  
+            for item in dailyResults: 
+                newResults.append(item)
+        
+        form.minVisitsRange.data = minVisitsRange
+        form.maxVisitsRange.data = maxVisitsRange
+        form.minRevenueRange.data = minRevenueRange
+        form.maxRevenueRange.data = maxRevenueRange
+
+        return render_template("edit_event.html", results = newResults, event=event, staff_list=staff_list, assigned_staff=selected_staff, title="Edit Event", legend ="Edit Event", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+    return render_template("edit_event.html", results = dailyResults, event=event, staff_list=staff_list, assigned_staff=selected_staff, title="Edit Event", legend ="Edit Event", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
 
 ## SCREEN 27 
 @app.route('/create_event', methods=['GET', 'POST'])
