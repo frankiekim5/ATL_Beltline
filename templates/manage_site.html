@@ -56,12 +56,14 @@
                                 </th>
                                 <th scope="col">Manager
                                 <div class="input-group-append" style="float:right">
-                                    <button name="manager_sort" class="btn btn-outline-info">Sort</button>
+                                    {{ form.managerUpSort(class="btn btn-outline-info form-inline") }}              
+                                    {{ form.managerDownSort(class="btn btn-outline-info form-inline") }}
                                 </div>
                                 </th>
                                 <th scope="col">Open Everyday
                                 <div class="input-group-append" style="float:right">
-                                    <button name="open_sort" class="btn btn-outline-info">Sort</button>
+                                    {{ form.openUpSort(class="btn btn-outline-info form-inline") }}              
+                                    {{ form.openDownSort(class="btn btn-outline-info form-inline") }}
                                 </div>
                                 </th>
                                 </tr>

@@ -11,7 +11,7 @@ app = Flask(__name__)
 # Config MySQL
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = '@SanDiego26' ## Frankie1999! 
+app.config['MYSQL_PASSWORD'] = 'Frankie1999!' ## Frankie1999! 
 app.config['MYSQL_DB'] = 'atlbeltline'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 # Init MySQL
@@ -1094,6 +1094,134 @@ def manage_site():
         cur.close()
         
         return render_template('manage_site.html', form=form, sites=sites, sitesList=filtered_sites, title='Manage Navigation', legend='Manage Site', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+    if form.managerUpSort.data:
+        sitesList = request.form['site_name']
+        sitesList = ast.literal_eval(sitesList)
+        temp_managers = []
+        for site in sitesList:
+            temp_managers.append(site['manager'])
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+
+        cur.execute("SELECT site_name, manager_username, open_everyday FROM site ORDER BY manager_username ASC")
+        results = cur.fetchall()
+
+        for result in results:
+            if result['open_everyday'] == 1:
+                result['open_everyday'] = 'Yes'
+            else:
+                result['open_everyday'] = "No"
+            cur.execute("SELECT firstname, lastname FROM user WHERE username=%s", (result['manager_username'],))
+            name = cur.fetchone()
+            fullName = name['firstname'] + " " + name['lastname']
+            result['manager'] = fullName
+            if result['manager'] in temp_managers:
+                result['site'] = result['site_name']
+                filtered_sites.append(result)
+        
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        return render_template('manage_site.html', form=form, sites=sites, sitesList=filtered_sites, title='Manage Navigation', legend='Manage Site', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+    if form.managerDownSort.data:
+        sitesList = request.form['site_name']
+        sitesList = ast.literal_eval(sitesList)
+        temp_managers = []
+        for site in sitesList:
+            temp_managers.append(site['manager'])
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+
+        cur.execute("SELECT site_name, manager_username, open_everyday FROM site ORDER BY manager_username DESC")
+        results = cur.fetchall()
+
+        for result in results:
+            if result['open_everyday'] == 1:
+                result['open_everyday'] = 'Yes'
+            else:
+                result['open_everyday'] = "No"
+            cur.execute("SELECT firstname, lastname FROM user WHERE username=%s", (result['manager_username'],))
+            name = cur.fetchone()
+            fullName = name['firstname'] + " " + name['lastname']
+            result['manager'] = fullName
+            if result['manager'] in temp_managers:
+                result['site'] = result['site_name']
+                filtered_sites.append(result)
+        
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        return render_template('manage_site.html', form=form, sites=sites, sitesList=filtered_sites, title='Manage Navigation', legend='Manage Site', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+    if form.openUpSort.data:
+        sitesList = request.form['site_name']
+        sitesList = ast.literal_eval(sitesList)
+        temp_managers = []
+        for site in sitesList:
+            temp_managers.append(site['manager'])
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+
+        cur.execute("SELECT site_name, manager_username, open_everyday FROM site ORDER BY open_everyday ASC")
+        results = cur.fetchall()
+
+        for result in results:
+            if result['open_everyday'] == 1:
+                result['open_everyday'] = 'Yes'
+            else:
+                result['open_everyday'] = "No"
+            cur.execute("SELECT firstname, lastname FROM user WHERE username=%s", (result['manager_username'],))
+            name = cur.fetchone()
+            fullName = name['firstname'] + " " + name['lastname']
+            result['manager'] = fullName
+            if result['manager'] in temp_managers:
+                result['site'] = result['site_name']
+                filtered_sites.append(result)
+        
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        return render_template('manage_site.html', form=form, sites=sites, sitesList=filtered_sites, title='Manage Navigation', legend='Manage Site', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+    if form.openDownSort.data:
+        sitesList = request.form['site_name']
+        sitesList = ast.literal_eval(sitesList)
+        temp_managers = []
+        for site in sitesList:
+            temp_managers.append(site['manager'])
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+
+        cur.execute("SELECT site_name, manager_username, open_everyday FROM site ORDER BY open_everyday DESC")
+        results = cur.fetchall()
+
+        for result in results:
+            if result['open_everyday'] == 1:
+                result['open_everyday'] = 'Yes'
+            else:
+                result['open_everyday'] = "No"
+            cur.execute("SELECT firstname, lastname FROM user WHERE username=%s", (result['manager_username'],))
+            name = cur.fetchone()
+            fullName = name['firstname'] + " " + name['lastname']
+            result['manager'] = fullName
+            if result['manager'] in temp_managers:
+                result['site'] = result['site_name']
+                filtered_sites.append(result)
+        
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        return render_template('manage_site.html', form=form, sites=sites, sitesList=filtered_sites, title='Manage Navigation', legend='Manage Site', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
     if form.validate_on_submit():
         if form.filter.data:
             site = request.form['sitesDrop']
@@ -2156,9 +2284,6 @@ def site_report():
 ## SCREEN 30 
 @app.route('/daily_detail', methods=["GET", "POST"])
 def daily_detail(): 
-<<<<<<< HEAD
-    return render_template("daily_detail.html", title="Daily Detail", legend="Daily Detail", userType=request.args.get('userType'), username=request.args.get('username'))
-=======
     username = request.args['username']
 
     cur = mysql.connection.cursor() 
@@ -2197,7 +2322,6 @@ def daily_detail():
     cur.close()
 
     return render_template("daily_detail.html", title="Daily Detail", legend="Daily Detail", events = events, userType=request.args.get('userType'), username=request.args.get('username'))
->>>>>>> f55e29b510979e6f10b645b322e73981ca24640e
 
 ## SCREEN 31
 @app.route('/view_schedule', methods=["GET", "POST"])
