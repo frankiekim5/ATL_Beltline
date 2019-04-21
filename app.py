@@ -4,6 +4,7 @@ from forms import UserRegistrationForm, LoginForm, VisitorRegistrationForm, Empl
 from passlib.hash import sha256_crypt
 from random import randint
 from datetime import datetime
+import ast
 
 app = Flask(__name__)
 
@@ -1024,12 +1025,80 @@ def managers_assigned_and_sites():
 def manage_site():
     form = ManageSiteForm()
     sites = managers_assigned_and_sites()
+
+    filtered_sites = []
+    if form.upSort.data:
+        sitesList = request.form['site_name']
+        sitesList = ast.literal_eval(sitesList)
+        temp_sites = []
+        for site in sitesList:
+            temp_sites.append(site['site'])
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+
+        cur.execute("SELECT site_name, manager_username, open_everyday FROM site ORDER BY site_name")
+        results = cur.fetchall()
+        for result in results:
+            if result['open_everyday'] == 1:
+                result['open_everyday'] = 'Yes'
+            else:
+                result['open_everyday'] = "No"
+            cur.execute("SELECT firstname, lastname FROM user WHERE username=%s", (result['manager_username'],))
+            name = cur.fetchone()
+            fullName = name['firstname'] + " " + name['lastname']
+            result['manager'] = fullName
+            if result['site_name'] in temp_sites:
+                result['site'] = result['site_name']
+                filtered_sites.append(result)
+        
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template('manage_site.html', form=form, sites=sites, sitesList=filtered_sites, title='Manage Navigation', legend='Manage Site', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+    if form.downSort.data:
+        sitesList = request.form['site_name']
+        sitesList = ast.literal_eval(sitesList)
+        temp_sites = []
+        for site in sitesList:
+            temp_sites.append(site['site'])
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+
+        cur.execute("SELECT site_name, manager_username, open_everyday FROM site ORDER BY site_name DESC")
+        results = cur.fetchall()
+
+        for result in results:
+            if result['open_everyday'] == 1:
+                result['open_everyday'] = 'Yes'
+            else:
+                result['open_everyday'] = "No"
+            cur.execute("SELECT firstname, lastname FROM user WHERE username=%s", (result['manager_username'],))
+            name = cur.fetchone()
+            fullName = name['firstname'] + " " + name['lastname']
+            result['manager'] = fullName
+            if result['site_name'] in temp_sites:
+                result['site'] = result['site_name']
+                filtered_sites.append(result)
+        
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template('manage_site.html', form=form, sites=sites, sitesList=filtered_sites, title='Manage Navigation', legend='Manage Site', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
     if form.validate_on_submit():
         if form.filter.data:
             site = request.form['sitesDrop']
             managers = request.form.get('managers')
             openEveryDay = form.openEveryDay.data
-            filtered_sites = []
             # Filter based on site and manager being 'All'
             if site == 'all' and managers == 'all':
                 if openEveryDay == 'yes':
@@ -1122,7 +1191,7 @@ def manage_site():
                 cur.close()
                 flash('Successfully Deleted Site', 'success')
                 return redirect(url_for('manage_site', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username')))
-    return render_template('manage_site.html', form=form, sites=sites, sitesList=sites, title='Manage Navigation', legend='Manage Site', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+    return render_template('manage_site.html', form=form, sites=sites, sitesList=filtered_sites, title='Manage Navigation', legend='Manage Site', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
 
 
 ## SCREEN 21 
@@ -2039,13 +2108,13 @@ def site_report():
 ## SCREEN 30 
 @app.route('/daily_detail', methods=["GET", "POST"])
 def daily_detail(): 
-    return render_template("daily_detail.html", title="Daily Detail", legend="Daily Detail")
+    return render_template("daily_detail.html", title="Daily Detail", legend="Daily Detail", userType=request.args.get('userType'), username=request.args.get('username'))
 
 ## SCREEN 31
 @app.route('/view_schedule', methods=["GET", "POST"])
 def view_schedule(): 
     form = ViewSchedule()
-    return render_template("view_schedule.html", title="View Schedule", legend="View Schedule", form=form)
+    return render_template("view_schedule.html", title="View Schedule", legend="View Schedule", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
 
 ## SCREEN 32 
 @app.route('/staff_event_detail', methods=["GET", "POST"])
@@ -2061,7 +2130,7 @@ def staff_event_detail():
             "price":0,
             "description":"walking tour with Peter Han - very dangerous"
             }
-    return render_template("staff_event_detail.html", title="Event Detail", legend="Event Detail", event=event)
+    return render_template("staff_event_detail.html", title="Event Detail", legend="Event Detail", event=event, userType=request.args.get('userType'), username=request.args.get('username'))
 
 # Helper method to calculate the total visits, tickets remaining, and my visits for the user
 def get_event_derived(all_events, username):
