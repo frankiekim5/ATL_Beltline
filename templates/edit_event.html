@@ -8,31 +8,31 @@
                 <div class="row">
                     <div class="col-md-6"> 
                         <h5>Name:</h5>
-                        <p class="font-italic">Bus Tour (HARDCODED)</p>
+                        <p class="font-italic">{{event['event_name']}}</p>
                     </div>
                     <div class="col-md-6"> 
                         <h5>Price:</h5>
-                        <p class="font-italic">$25</p>
+                        <p class="font-italic">{{event['price']}}</p>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-6"> 
                         <h5>Start Date:</h5>
-                        <p class="font-italic">2019-02-01</p>
+                        <p class="font-italic">{{event['start_date']}}</p>
                     </div>
                     <div class="col-md-6"> 
                         <h5>End Date:</h5>
-                        <p class="font-italic">2019-02-04</p>
+                        <p class="font-italic">{{event['end_date']}}</p>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-6"> 
                         <h5>Min Staff Required:</h5>
-                        <p class="font-italic">4</p>
+                        <p class="font-italic">{{event['min_staff_req']}}</p>
                     </div>
                     <div class="col-md-6"> 
                         <h5>Capacity:</h5>
-                        <p class="font-italic">100</p>
+                        <p class="font-italic">{{event['capacity']}}</p>
                     </div>
                 </div>
                 <div class="form-group">
@@ -48,18 +48,17 @@
                         {{ form.description(class="form-control form-control-lg") }}
                     {% endif %}
                 </div>
-                <div class="form-group">
-                    {{ form.staffAssigned.label(class="form-control-label") }}
-                    {% if form.staffAssigned.errors %}
-                        {{ form.staffAssigned(class="form-control form-control-lg is-invalid") }}
-                        <div style="color:red">
-                            {% for error in form.staffAssigned.errors %}
-                                <span style="font-size:13px">{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ form.staffAssigned(class="form-control form-control-lg") }}
-                    {% endif %}
+                <div class="form-group col-md-8" id="inputType">
+                    <label for="assign_staff" class="form-control-label">Assign Staff</label>
+                    <select multiple name="assign_staff" class="form-control form-control-lg" id="assign_staff">
+                        {% for staff in staff_list %}
+                            {% if staff in assigned_staff %}
+                                <option value='{{staff}}' selected="selected">{{ staff }}</option>
+                            {% else %}
+                                <option value='{{staff}}'>{{ staff }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
                 </div>
                 <hr>
                 <div class="row">
@@ -134,8 +133,8 @@
                 </tbody>
             </table>
             <div class="form-group">
-                {{ form.submit(class="btn btn-outline-info") }}
-                <a class="btn btn-outline-info" href="">Update</a>
+                {{ form.filter(class="btn btn-outline-info") }}
+                {{ form.update(class="btn btn-outline-info") }}
             </div>
         </form>
     </div>

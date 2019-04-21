@@ -145,7 +145,6 @@
                 </div>
                 <hr>
                 <div class="form-group">
-                    {% if form.eventList.errors %}
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
@@ -157,52 +156,36 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for choice in form.eventList %}
+                                {% for event in events %}
                                 <tr>
-                                    <td>{{choice}}&nbsp;{{ choice.label }}</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
+                                    <td>
+                                        <input type="radio" name="event_name" value="{{event['event_name']}}">
+                                        <input type="hidden" name="start_date" value="{{event['start_date']}}">
+                                        <input type="hidden" name="site_name" value="{{event['site_name']}}">
+                                        <label for="event_name">{{ event['event_name'] }}</label>
+                                    </td>
+                                    <td>
+                                        <label for="staff_count">{{ event['staff_count'] }}</label>
+                                    </td>
+                                    <td>
+                                        <label for="duration">{{ event['duration'] }}</label>
+                                    </td>
+                                    <td>
+                                        <label for="total_visits">{{ event['event_name'] }}</label>
+                                    </td>
+                                    <td>
+                                        <label for="total_revenue">{{ event['event_name'] }}</label>
+                                    </td>
                                 </tr>
                                 {% endfor %} 
                             </tbody>
                         </table>
-                        <div style="color:red">
-                            {% for error in form.eventList.errors %}
-                                 <span style="font-size:13px">{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                            <th scope="col">Name</th>
-                            <th scope="col">Staff Count</th>
-                            <th scope="col">Duration (days)</th>
-                            <th scope="col">Total Vists</th>
-                            <th scope="col">Total Revenue ($)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for choice in form.eventList %}
-                            <tr>
-                                <td>{{choice}}&nbsp;{{ choice.label }}</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            {% endfor %} 
-                        </tbody>
-                    </table>
-                    {% endif %}
                 </div>
             </fieldset>
             <div class="form-group">
-                {{ form.submit(class="btn btn-outline-info") }}
+                {{ form.filter(class="btn btn-outline-info") }}
                 <a class="btn btn-outline-info" href="{{ url_for('create_event', userType=userType, username=username) }}">Create</a>
-                <a class="btn btn-outline-info" href="{{ url_for('edit_event') }}">View/Edit</a>
+                {{ form.viewEdit(class="btn btn-outline-info") }}
                 <a class="btn btn-outline-info" href="">Delete</a>
             </div>
         </form>

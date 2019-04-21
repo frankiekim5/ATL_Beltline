@@ -5,31 +5,31 @@
     <div class="row">
         <div class="col-md-6">
             <label class="font-weight-bold">Event Name</label>
-            <p class="font-italic">{{ event["eventName"] }} </p>
+            <p class="font-italic">{{ event["event_name"] }} </p>
         </div>
         <div class="col-md-6">
             <label class="font-weight-bold">Site</label>
-            <p class="font-italic">{{ event["site"] }} </p>
+            <p class="font-italic">{{ event["site_name"] }} </p>
         </div>
     </div>
     <div class="row">
         <div class="col-md-6">
             <label class="font-weight-bold">Start Date</label>
-            <p class="font-italic">{{ event["startDate"] }} </p>
+            <p class="font-italic">{{ event["start_date"] }} </p>
         </div>
         <div class="col-md-6">
             <label class="font-weight-bold">End Date</label>
-            <p class="font-italic">{{ event["endDate"] }} </p>
+            <p class="font-italic">{{ event["end_date"] }} </p>
         </div>
     </div>
     <div class="row">
         <div class="col-md-6">
-            <label class="font-weight-bold">Staffs Assigned</label>
+            <label class="font-weight-bold">Ticket Price($)</label>
             <p class="font-italic">{{ event["price"] }} </p>
         </div>
         <div class="col-md-6">
-            <label class="font-weight-bold">Capacity</label>
-            <p class="font-italic">{{ event["ticketsRemaining"] }} </p>
+            <label class="font-weight-bold">Tickets Remaining</label>
+            <p class="font-italic">{{ tickets_remaining }} </p>
         </div>
     </div>
     <div>
@@ -55,6 +55,6 @@
             </div>
         </div>  
     </form>
-    <a class="btn btn-info" href="{{ url_for('explore_event') }}">Back</a>
+    <a class="btn btn-info" href="{{ url_for('explore_event', username=username, userType=userType) }}">Back</a>
 </div>
 {% endblock content %}

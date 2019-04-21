@@ -155,8 +155,8 @@ class ManageEvent(FlaskForm):
     maxVisitsRange = IntegerField('Max Visits')
     minRevenueRange = IntegerField('Min Revenue')
     maxRevenueRange = IntegerField('Max Revenue')
-    eventList = RadioField('Events', choices = [('Bus Tour','Bus Tour'), ('Private Bus Tour','Private Bus Tour')])
-    submit = SubmitField('Filter')
+    filter = SubmitField('Filter')
+    viewEdit = SubmitField('View/Edit')
 
 class EditEvent(FlaskForm): 
     staffAssigned = SelectMultipleField('Staff Assigned', 
@@ -166,7 +166,8 @@ class EditEvent(FlaskForm):
     maxVisitsRange = IntegerField('Max Visits')
     minRevenueRange = IntegerField('Min Revenue')
     maxRevenueRange = IntegerField('Max Revenue')
-    submit = SubmitField('Filter')
+    filter = SubmitField('Filter')
+    update = SubmitField('Update')
 
 class UserTakeTransit(FlaskForm): 
     transportType = SelectField('Transport', choices = [('all','--All--'),('MARTA','MARTA'), ('Bus','Bus'),('Bike','Bike')],validators=[DataRequired()])
@@ -229,7 +230,6 @@ class ExploreEvent(FlaskForm):
     maxPriceRange = IntegerField('Max Price')
     includeVisited = BooleanField('Include Visited')
     includeSoldOutEvent = BooleanField('Include Sold Out Evet')
-    eventList = RadioField("Name", choices=[('Tour with Peter','Tour with Peter'),('Tour with Timmy','Tour with Timmy')])
     filter = SubmitField('Filter')
     eventDetail = SubmitField('Event Detail')
 
@@ -248,7 +248,6 @@ class ExploreSite(FlaskForm):
     minEventCount = IntegerField('Min Event Count')
     maxEventCount = IntegerField('Max Event Count')
     includeVisited = BooleanField('Include Visited')
-    siteList = RadioField("Sites", choices = [('Inman Park','Inman Park'),('PCM','PCM')])
     filter = SubmitField('Filter')
     siteDetail = SubmitField('Site Detail')
     transitDetail = SubmitField('Transit Detail')
