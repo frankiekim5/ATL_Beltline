@@ -1846,8 +1846,18 @@ def create_event():
 @app.route('/manage_staff', methods=['GET', 'POST'])
 def manage_staff(): 
     form = ManageStaff()
-    staff = [("Peter Han", 3), ("Timmy Wu", 2)]
-    return render_template("manage_staff.html", title="Manage Staff", legend="Manage Staff", form=form, staff=staff)
+    staff = []
+    
+    # Create cursor
+    cur = mysql.connection.cursor()
+
+    # Find the staff for 
+    # Commit to DB
+    mysql.connection.commit()
+
+    # Close connection
+    cur.close()
+    return render_template("manage_staff.html", title="Manage Staff", legend="Manage Staff", form=form, staff=staff, userType=request.args.get('userType'), username=request.args.get('username'))
 
 ## SCREEN 29 
 @app.route('/site_report', methods=['GET', 'POST'])
