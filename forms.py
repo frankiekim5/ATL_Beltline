@@ -126,6 +126,12 @@ class ManageSiteForm(FlaskForm):
     filter = SubmitField('Filter')
     edit = SubmitField('Edit')
     delete = SubmitField('Delete')
+    upSort = SubmitField('Up')
+    downSort = SubmitField('Down')
+    managerUpSort = SubmitField('Up')
+    managerDownSort = SubmitField('Down')
+    openUpSort = SubmitField('Up')
+    openDownSort = SubmitField('Down')
     
 class ManageTransitForm(FlaskForm): 
     transportType = SelectField('Transport', choices = [('all','--All--'),('MARTA','MARTA'), ('Bus','Bus'),('Bike','Bike')])

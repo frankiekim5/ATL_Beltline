@@ -48,9 +48,24 @@
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
-                                <th scope="col">Site</th>
-                                <th scope="col">Manager</th>
-                                <th scope="col">Open Everyday</th>
+                                <th scope="col">Site
+                                <div class="input-group-append" style="float:right">
+                                    {{ form.upSort(class="btn btn-outline-info form-inline") }}              
+                                    {{ form.downSort(class="btn btn-outline-info form-inline") }}              
+                                </div>
+                                </th>
+                                <th scope="col">Manager
+                                <div class="input-group-append" style="float:right">
+                                    {{ form.managerUpSort(class="btn btn-outline-info form-inline") }}              
+                                    {{ form.managerDownSort(class="btn btn-outline-info form-inline") }}
+                                </div>
+                                </th>
+                                <th scope="col">Open Everyday
+                                <div class="input-group-append" style="float:right">
+                                    {{ form.openUpSort(class="btn btn-outline-info form-inline") }}              
+                                    {{ form.openDownSort(class="btn btn-outline-info form-inline") }}
+                                </div>
+                                </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -59,6 +74,7 @@
                                     <td>
                                         <input type="radio" name="site" value="{{site['site']}}">
                                         <label for="site">{{ site['site'] }}</label>
+                                        <input type="hidden" name="site_name" value="{{sitesList}}">
                                     </td>
                                     <td>
                                         <label for="manager">{{ site['manager'] }}</label>
