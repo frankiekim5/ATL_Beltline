@@ -3,6 +3,7 @@ from flask_mysqldb import MySQL
 from forms import UserRegistrationForm, LoginForm, VisitorRegistrationForm, EmployeeRegistrationForm, EmployeeVisitorRegistrationForm, TransitForm, EmailRegistrationForm, TransitForm, SiteForm, EventForm, ManageSiteForm, ManageTransitForm, ManageUser, ManageEvent, EditEvent, UserTakeTransit, TransitHistory, EmployeeProfileForm, ManageStaff, SiteReport, ViewSchedule, ExploreEvent, VisitorEventDetail, ExploreSite, TransitDetail, SiteDetail, VisitHistory
 from passlib.hash import sha256_crypt
 from random import randint
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -1846,24 +1847,194 @@ def create_event():
 @app.route('/manage_staff', methods=['GET', 'POST'])
 def manage_staff(): 
     form = ManageStaff()
+    username = request.args['username']
     staff = []
 
     # Create cursor
     cur = mysql.connection.cursor()
 
-    # Find the staff for 
+    # Find the site for the manager
+    cur.execute("SELECT site_name FROM site WHERE manager_username=%s", (username,))
+    site_name = cur.fetchone()['site_name']
+
+    # Find the staff assigned to this site
+    cur.execute("SELECT staff_username FROM assign_to WHERE site_name=%s", (site_name,))
+    staff_usernames = cur.fetchall()
+    
+    staff_names = set()
+    for staff in staff_usernames:
+        cur.execute("SELECT firstname, lastname FROM user WHERE username=%s", (staff['staff_username'],))
+        name = cur.fetchone()
+        firstname = name['firstname']
+        lastname = name['lastname']
+        fullName = firstname + " " + lastname
+        staff_names.add(fullName)
+    
+    # Find the number of events the staff member is assigned to
+    all_staff = []
+    for staff in staff_names:
+        member = {}
+        staff_name = staff.split()
+        cur.execute("SELECT username FROM user WHERE firstname=%s and lastname=%s", (staff_name[0], staff_name[1]))
+        username = cur.fetchone()['username']
+        cur.execute("SELECT COUNT(*) FROM assign_to WHERE staff_username=%s", (username,))
+        event_count = cur.fetchone()['COUNT(*)']
+        member['name'] = staff
+        member['event_count'] = event_count
+        all_staff.append(member)
+
     # Commit to DB
     mysql.connection.commit()
 
     # Close connection
     cur.close()
-    return render_template("manage_staff.html", title="Manage Staff", legend="Manage Staff", form=form, staff=staff, userType=request.args.get('userType'), username=request.args.get('username'))
+    return render_template("manage_staff.html", all_staff=all_staff, site_name=site_name, title="Manage Staff", legend="Manage Staff", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+
+# Helper method to retrieve site_information
+def site_derived(all_sites):
+    sites_information = []
+    for site in all_sites:
+        info = {}
+        info['site_name'] = site
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        # Find the number of events hosted at each site
+        cur.execute("SELECT COUNT(*) FROM event WHERE site_name=%s", (site,))
+        event_count = cur.fetchone()['COUNT(*)']
+        info['event_count'] = event_count
+
+        sites_information.append(info)
+
+    # Commit to DB
+    mysql.connection.commit()
+
+    # Close connection
+    cur.close()
+    return sites_information
 
 ## SCREEN 29 
 @app.route('/site_report', methods=['GET', 'POST'])
 def site_report(): 
     form = SiteReport()
-    return render_template("site_report.html", title="Site Report", legend="Site Report", form=form)
+    username = request.args['username']
+    # Create cursor
+    cur = mysql.connection.cursor()
+
+    cur.execute("SELECT site_name from site WHERE manager_username=%s", (username,))
+    site_name = cur.fetchone()['site_name']
+
+    # Commit to DB
+    mysql.connection.commit()
+
+    # Close connection
+    cur.close()
+    # sites_info = site_derived(all_sites)
+    # return str(sites_info)
+    filtered = []
+    if form.filter.data:
+        startDate = form.startDate.data
+        endDate = form.endDate.data
+        difference = endDate - startDate
+        split = str(difference).split()
+        number_days = int(split[0]) + 1
+
+        if startDate > endDate:
+            flash("End Date cannot be before Start Date", 'danger')
+            return render_template("site_report.html", title="Site Report", legend="Site Report", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        # Find the event count
+        cur.execute("SELECT event_name, start_date, end_date FROM event WHERE site_name=%s", (site_name,))
+        events = cur.fetchall()
+        
+        increment_date = startDate
+        tableList = []
+        for i in range(number_days):
+            event_count = 0
+            row = {}
+            row['day'] = increment_date
+            cur.execute("SELECT DATE_ADD(%s, INTERVAL 1 DAY) AS Tomorrow", (increment_date,))
+            day = cur.fetchone()
+
+            event_visits = 0
+            total_revenue = 0
+            staff_count = 0
+            for event in events:
+                if increment_date >= event['start_date'] and increment_date <= event['end_date']:
+                    event_count += 1
+                    # Find staff count
+                    cur.execute("SELECT COUNT(*) FROM assign_to WHERE event_name=%s and start_date=%s and site_name=%s", (event['event_name'], event['start_date'], site_name))
+                    staff_count = cur.fetchone()['COUNT(*)']
+
+                    # Find total visits to that event
+                    cur.execute("SELECT COUNT(*) FROM visit_event WHERE event_name=%s and start_date=%s and site_name=%s and visit_event_date=%s", (event['event_name'], event['start_date'], site_name, increment_date))
+                    total_visits = cur.fetchone()
+                    event_visits += total_visits['COUNT(*)']
+
+                    # Find revenue from visits
+                    cur.execute("SELECT price FROM event WHERE event_name=%s and start_date=%s and site_name=%s", (event['event_name'], event['start_date'], site_name))
+                    price = cur.fetchone()['price']
+                    total_revenue += int(price) * event_visits
+            # Find total visits to site
+            cur.execute("SELECT COUNT(*) FROM visit_site WHERE site_name=%s and visit_start_date=%s", (site_name, increment_date))
+            site_visits = cur.fetchone()['COUNT(*)']
+            total_visits = event_visits + site_visits
+            row['event_count'] = event_count
+            row['staff_count'] = staff_count
+            row['total_visits'] = total_visits
+            row['total_revenue'] = total_revenue
+
+            increment_date = day['Tomorrow']
+            increment_date = datetime.strptime(increment_date, '%Y-%m-%d')
+            increment_date = increment_date.date()
+            tableList.append(row)
+        
+        # Filter
+        minEventCount = form.minEventCount.data
+        maxEventCount = form.maxEventCount.data
+        minStaffCount = form.minStaffCount.data
+        maxStaffCount = form.maxStaffCount.data
+        minVisitsRange = form.minVisitsRange.data
+        maxVisitsRange = form.maxVisitsRange.data
+        minRevenueRange = form.minRevenueRange.data
+        maxRevenueRange = form.maxRevenueRange.data
+
+        if minEventCount == None:
+            minEventCount = 0
+        if minStaffCount == None:
+            minStaffCount = 0
+        if minVisitsRange == None:
+            minVisitsRange = 0
+        if minRevenueRange == None:
+            minRevenueRange = 0
+        if maxEventCount == None:
+            maxEventCount = 100000000
+        if maxStaffCount == None:
+            maxStaffCount = 100000000
+        if maxVisitsRange == None:
+            maxVisitsRange = 100000000
+        if maxRevenueRange == None:
+            maxRevenueRange = 100000000
+
+
+        for site in tableList:
+            # Check site's event count
+            if site['event_count'] >= minEventCount and site['event_count'] <= maxEventCount:
+                if site['staff_count'] >= minStaffCount and site['event_count'] <= maxStaffCount:
+                    if site['total_visits'] >= minVisitsRange and site['total_visits'] <= maxVisitsRange:
+                        if site['total_revenue'] >= minRevenueRange and site['total_revenue'] <= maxRevenueRange:
+                            filtered.append(site)
+
+        # Commit to DB
+        mysql.connection.commit()
+
+        # Close connection
+        cur.close()
+        
+    return render_template("site_report.html", tableList=filtered, title="Site Report", legend="Site Report", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
 
 ## SCREEN 30 
 @app.route('/daily_detail', methods=["GET", "POST"])
@@ -2000,31 +2171,6 @@ def visitor_event_detail():
         flash('Successfully Logged Visit to Event', 'success')
         return redirect(url_for('explore_event', userType=request.args.get('userType'), username=request.args.get('username')))
     return render_template("visitor_event_detail.html", title="Event Detail", legend="Event Detail", form=form, event=event, tickets_remaining=tickets_remaining, userType=request.args.get('userType'), username=request.args.get('username'))
-
-# Helper method to retrieve
-def site_derived(all_sites):
-
-    sites_information = []
-    for site in all_sites:
-        info = {}
-        info['site_name'] = site
-        # Create cursor
-        cur = mysql.connection.cursor()
-
-        # Find the number of events hosted at each site
-        cur.execute("SELECT COUNT(*) FROM event WHERE site_name=%s", (site,))
-        event_count = cur.fetchone()['COUNT(*)']
-        info['event_count'] = event_count
-
-        sites_information.append(info)
-
-    # Commit to DB
-    mysql.connection.commit()
-
-    # Close connection
-    cur.close()
-    return sites_information
-
 
 ## SCREEN 35 
 @app.route('/explore_site', methods=["GET", "POST"])
