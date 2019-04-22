@@ -3482,6 +3482,7 @@ def explore_site():
 
     sites = []
 
+
     openEveryDay = form.openEveryDay.data
     startDate = form.startDate.data 
     endDate = form.endDate.data 
@@ -3498,27 +3499,107 @@ def explore_site():
                 if site['my_visits'] == 0: 
                     if site_name == 'all': 
                         if site['open_everyday'] == openEveryDay: 
-                            sites.append(site)
+                            if minEventCount != None and maxEventCount!= None: 
+                                if site['event_count'] >= minEventCount and site['event_count'] <= maxEventCount:
+                                    sites.append(site)
+                            elif minEventCount != None and maxEventCount == None: 
+                                if site['event_count'] >= minEventCount: 
+                                    sites.append(site)
+                            elif minEventCount == None and maxEventCount != None: 
+                                if site['event_count'] <= maxEventCount: 
+                                    sites.append(site)
+                            else: 
+                                sites.append(site)
                         elif openEveryDay == 'all': 
-                            sites.append(site)
+                            if minEventCount != None and maxEventCount!= None: 
+                                if site['event_count'] >= minEventCount and site['event_count'] <= maxEventCount:
+                                    sites.append(site)
+                            elif minEventCount != None and maxEventCount == None: 
+                                if site['event_count'] >= minEventCount: 
+                                    sites.append(site)
+                            elif minEventCount == None and maxEventCount != None: 
+                                if site['event_count'] <= maxEventCount: 
+                                    sites.append(site)
+                            else: 
+                                sites.append(site)
                     else: 
                         if site['site_name'] == site_name: 
                             if site['open_everyday'] == openEveryDay: 
-                                sites.append(site)
-                            elif openEveryDay == 'all':
-                                sites.append(site)
+                                if minEventCount != None and maxEventCount!= None: 
+                                    if site['event_count'] >= minEventCount and site['event_count'] <= maxEventCount:
+                                        sites.append(site)
+                                elif minEventCount != None and maxEventCount == None: 
+                                    if site['event_count'] >= minEventCount: 
+                                        sites.append(site)
+                                elif minEventCount == None and maxEventCount != None: 
+                                    if site['event_count'] <= maxEventCount: 
+                                        sites.append(site)
+                                else: 
+                                    sites.append(site)
+                            elif openEveryDay == 'all': 
+                                if minEventCount != None and maxEventCount!= None: 
+                                    if site['event_count'] >= minEventCount and site['event_count'] <= maxEventCount:
+                                        sites.append(site)
+                                elif minEventCount != None and maxEventCount == None: 
+                                    if site['event_count'] >= minEventCount: 
+                                        sites.append(site)
+                                elif minEventCount == None and maxEventCount != None: 
+                                    if site['event_count'] <= maxEventCount: 
+                                        sites.append(site)
+                                else: 
+                                    sites.append(site)
             else: 
                 if site_name == 'all': 
                     if site['open_everyday'] == openEveryDay: 
-                        sites.append(site)
+                        if minEventCount != None and maxEventCount!= None: 
+                            if site['event_count'] >= minEventCount and site['event_count'] <= maxEventCount:
+                                sites.append(site)
+                        elif minEventCount != None and maxEventCount == None: 
+                            if site['event_count'] >= minEventCount: 
+                                sites.append(site)
+                        elif minEventCount == None and maxEventCount != None: 
+                            if site['event_count'] <= maxEventCount: 
+                                sites.append(site)
+                        else: 
+                            sites.append(site)
                     elif openEveryDay == 'all': 
-                        sites.append(site)
+                        if minEventCount != None and maxEventCount!= None: 
+                            if site['event_count'] >= minEventCount and site['event_count'] <= maxEventCount:
+                                sites.append(site)
+                        elif minEventCount != None and maxEventCount == None: 
+                            if site['event_count'] >= minEventCount: 
+                                sites.append(site)
+                        elif minEventCount == None and maxEventCount != None: 
+                            if site['event_count'] <= maxEventCount: 
+                                sites.append(site)
+                        else: 
+                            sites.append(site)
                 else: 
                     if site['site_name'] == site_name: 
                         if site['open_everyday'] == openEveryDay: 
-                            sites.append(site)
-                        elif openEveryDay == 'all':
-                            sites.append(site)
+                            if minEventCount != None and maxEventCount!= None: 
+                                if site['event_count'] >= minEventCount and site['event_count'] <= maxEventCount:
+                                    sites.append(site)
+                            elif minEventCount != None and maxEventCount == None: 
+                                if site['event_count'] >= minEventCount: 
+                                    sites.append(site)
+                            elif minEventCount == None and maxEventCount != None: 
+                                if site['event_count'] <= maxEventCount: 
+                                    sites.append(site)
+                            else: 
+                                sites.append(site)
+                        elif openEveryDay == 'all': 
+                            if minEventCount != None and maxEventCount!= None: 
+                                if site['event_count'] >= minEventCount and site['event_count'] <= maxEventCount:
+                                    sites.append(site)
+                            elif minEventCount != None and maxEventCount == None: 
+                                if site['event_count'] >= minEventCount: 
+                                    sites.append(site)
+                            elif minEventCount == None and maxEventCount != None: 
+                                if site['event_count'] <= maxEventCount: 
+                                    sites.append(site)
+                            else: 
+                                sites.append(site)
                 
 
     form.openEveryDay.data = openEveryDay
