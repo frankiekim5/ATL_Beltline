@@ -804,6 +804,201 @@ def manage_profile():
 def manage_user(): 
     form = ManageUser()
     all_users = view_all_users()
+
+    filtered_users = []
+    ## SORTING ## 
+    if form.usernameUpSort.data:
+        userList = request.form['user_name']
+        userList = ast.literal_eval(userList)
+        temp_users = []
+        for user in userList:
+            temp_users.append(user['username'])
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT username, status, user_type FROM user ORDER BY username")
+        results = cur.fetchall()
+        for result in results:
+
+            cur.execute("SELECT COUNT(*) FROM user_email WHERE username=%s", (result['username'],))
+            email_count = cur.fetchone()
+            result['email_count'] = email_count['COUNT(*)']
+            if result['username'] in temp_users:
+                filtered_users.append(result)
+        
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template('manage_user.html', all_users=filtered_users, title="Manage User", legend="Manage User", form=form, emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+    if form.usernameDownSort.data:
+        userList = request.form['user_name']
+        userList = ast.literal_eval(userList)
+        temp_users = []
+        for user in userList:
+            temp_users.append(user['username'])
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT username, status, user_type FROM user ORDER BY username DESC")
+        results = cur.fetchall()
+        for result in results:
+
+            cur.execute("SELECT COUNT(*) FROM user_email WHERE username=%s", (result['username'],))
+            email_count = cur.fetchone()['COUNT(*)']
+            result['email_count'] = email_count
+            if result['username'] in temp_users:
+                filtered_users.append(result)
+        
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template('manage_user.html', all_users=filtered_users, title="Manage User", legend="Manage User", form=form, emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+    if form.emailUpSort.data:
+        userList = request.form['user_name']
+        userList = ast.literal_eval(userList)
+        temp_users = []
+        for user in userList:
+            temp_users.append(user['username'])
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        # cur.execute("SELECT username, status, user_type FROM user ORDER BY username")
+        cur.execute("SELECT username, status, user_type FROM user ORDER BY username")
+        results = cur.fetchall()
+        for result in results:
+
+            cur.execute("SELECT COUNT(*) FROM user_email WHERE username=%s", (result['username'],))
+            email_count = cur.fetchone()
+            result['email_count'] = email_count['COUNT(*)']
+            if result['username'] in temp_users:
+                filtered_users.append(result)
+        
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template('manage_user.html', all_users=filtered_users, title="Manage User", legend="Manage User", form=form, emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+    if form.typeUpSort.data:
+        userList = request.form['user_name']
+        userList = ast.literal_eval(userList)
+        temp_users = []
+        for user in userList:
+            temp_users.append(user['username'])
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        # cur.execute("SELECT username, status, user_type FROM user ORDER BY username")
+        cur.execute("SELECT username, status, user_type FROM user ORDER BY user_type")
+        results = cur.fetchall()
+        for result in results:
+
+            cur.execute("SELECT COUNT(*) FROM user_email WHERE username=%s", (result['username'],))
+            email_count = cur.fetchone()
+            result['email_count'] = email_count['COUNT(*)']
+            if result['username'] in temp_users:
+                filtered_users.append(result)
+        
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template('manage_user.html', all_users=filtered_users, title="Manage User", legend="Manage User", form=form, emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+    if form.typeDownSort.data:
+        userList = request.form['user_name']
+        userList = ast.literal_eval(userList)
+        temp_users = []
+        for user in userList:
+            temp_users.append(user['username'])
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT username, status, user_type FROM user ORDER BY user_type DESC")
+        results = cur.fetchall()
+        for result in results:
+
+            cur.execute("SELECT COUNT(*) FROM user_email WHERE username=%s", (result['username'],))
+            email_count = cur.fetchone()['COUNT(*)']
+            result['email_count'] = email_count
+            if result['username'] in temp_users:
+                filtered_users.append(result)
+        
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template('manage_user.html', all_users=filtered_users, title="Manage User", legend="Manage User", form=form, emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+    if form.statusUpSort.data:
+        userList = request.form['user_name']
+        userList = ast.literal_eval(userList)
+        temp_users = []
+        for user in userList:
+            temp_users.append(user['username'])
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        # cur.execute("SELECT username, status, user_type FROM user ORDER BY username")
+        cur.execute("SELECT username, status, user_type FROM user ORDER BY status")
+        results = cur.fetchall()
+        for result in results:
+
+            cur.execute("SELECT COUNT(*) FROM user_email WHERE username=%s", (result['username'],))
+            email_count = cur.fetchone()
+            result['email_count'] = email_count['COUNT(*)']
+            if result['username'] in temp_users:
+                filtered_users.append(result)
+        
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template('manage_user.html', all_users=filtered_users, title="Manage User", legend="Manage User", form=form, emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+    if form.statusDownSort.data:
+        userList = request.form['user_name']
+        userList = ast.literal_eval(userList)
+        temp_users = []
+        for user in userList:
+            temp_users.append(user['username'])
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT username, status, user_type FROM user ORDER BY status DESC")
+        results = cur.fetchall()
+        for result in results:
+
+            cur.execute("SELECT COUNT(*) FROM user_email WHERE username=%s", (result['username'],))
+            email_count = cur.fetchone()['COUNT(*)']
+            result['email_count'] = email_count
+            if result['username'] in temp_users:
+                filtered_users.append(result)
+        
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template('manage_user.html', all_users=filtered_users, title="Manage User", legend="Manage User", form=form, emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
     if form.validate_on_submit():
         if form.filter.data:
             username = form.username.data
@@ -1440,6 +1635,7 @@ def manage_transit():
     form = ManageTransitForm()
     all_transits = get_all_transits()
     all_sites = get_all_sites()
+ 
     if form.edit.data:
         if 'transit' not in request.form:
             flash('Please select a transit to edit', 'danger')
@@ -1680,19 +1876,22 @@ def edit_transit(transit):
         return render_template("create_transit.html", all_sites=all_sites_list, all_connected=all_connected, title='Edit Transit', form=form, legend='Edit Transit', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username')) 
 
 # Helper method to retrieve all events
-def get_all_events():
+def get_all_events(username):
     # Create cursor
     cur = mysql.connection.cursor()
 
     # Query event information from event table
-    cur.execute("SELECT * FROM event")
+    cur.execute("SELECT * FROM event WHERE site_name IN (SELECT site_name FROM site WHERE manager_username=%s)", (username,))
     events = cur.fetchall()
 
     # Retrieve needed information
     for event in events:
         event['duration'] = event['end_date'] - event['start_date']
         split = str(event['duration']).split()
-        duration = int(split[0]) + 1
+        if split[0] != '0:00:00':
+            duration = int(split[0]) + 1
+        else:
+            duration = 1    
         event['duration'] = duration
         cur.execute("SELECT COUNT(*) FROM assign_to WHERE event_name=%s and start_date=%s and site_name=%s", (event['event_name'], event['start_date'], event['site_name']))
         staff_count = cur.fetchone()
@@ -1706,11 +1905,39 @@ def get_all_events():
     cur.close()
     return events
 
+def event_visits_revenue(all_events):
+    # Create cursor
+    cur = mysql.connection.cursor()
+
+    for event in all_events:
+        # Retrieve total visits
+        cur.execute("SELECT COUNT(*) FROM visit_event WHERE event_name=%s and start_date=%s and site_name=%s", (event['event_name'], event['start_date'], event['site_name']))
+        visit_count = cur.fetchone()['COUNT(*)']
+        
+        # Retrieve price for the event
+        cur.execute("SELECT price FROM event WHERE event_name=%s and start_date=%s and site_name=%s", (event['event_name'], event['start_date'], event['site_name']))
+        price = cur.fetchone()['price']
+
+        total_revenue = visit_count * price
+
+        event['total_visits'] = visit_count
+        event['total_revenue'] = total_revenue
+
+
+    # Commit to DB
+    mysql.connection.commit()
+
+    # Close connection
+    cur.close()
+    return all_events
+
 ## SCREEN 25 
 @app.route('/manage_event', methods=["GET", "POST"])
 def manage_event():
     form = ManageEvent()
-    all_events = get_all_events()
+    username = request.args['username']
+    all_events = get_all_events(username)
+    all_events = event_visits_revenue(all_events)
     filtered_events = []
 
     if form.viewEdit.data:
@@ -1718,21 +1945,92 @@ def manage_event():
             flash('Please select an event to edit', 'danger')
         else:
             event_name = request.form['event_name']
-            start_date = request.form['start_date']
-            site_name = request.form['site_name']
+            query = "start_date " + event_name 
+            start_date = request.form[query]
+            query2 = "site_name " + event_name
+            site_name = request.form[query2]
             return redirect(url_for('edit_event', event_name=event_name, start_date=start_date, site_name=site_name, emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username')))
-    elif form.validate_on_submit():
+    elif form.filter.data:
         name = form.name.data
         descriptionKeyword = form.descriptionKeyword.data
-        startDate = form.startDate.data 
-        endDate = form.endDate.data 
-        minDurationRange = form.minDurationRange.data 
-        maxDurationRange = form.maxDurationRange.data 
+        startDate = form.startDate.data
+        endDate = form.endDate.data
+        minDurationRange = form.minDurationRange.data
+        maxDurationRange = form.maxDurationRange.data
         minVisitsRange = form.minVisitsRange.data 
-        maxVisitsRange = form.maxVisitsRange.data 
-        minRevenueRange = form.minRevenueRange.data 
+        maxVisitsRange = form.maxVisitsRange.data
+        minRevenueRange = form.minRevenueRange.data
         maxRevenueRange = form.maxRevenueRange.data
-    return render_template('manage_event.html', events=all_events, title="Manage Event", legend="Manage Event", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+
+        if minDurationRange == None:
+            minDurationRange = 0
+        if minVisitsRange == None:
+            minVisitsRange = 0
+        if minRevenueRange == None:
+            minRevenueRange = 0
+        if maxDurationRange == None:
+            maxDurationRange = 100000000
+        if maxVisitsRange == None:
+            maxVisitsRange = 100000000
+        if maxRevenueRange == None:
+            maxRevenueRange = 100000000
+
+        for event in all_events:
+            if name == "":
+                if descriptionKeyword == "":
+                    if startDate == None and endDate == None:
+                        filtered_events = all_events
+                    elif startDate != None and endDate == None:
+                        if event['start_date'] >= startDate:
+                            filtered_events.append(event)
+                    elif startDate == None and endDate != None:
+                        if event['end_date'] <= endDate:
+                            filtered_events.append(event)
+                    else:
+                        if event['start_date'] >= startDate and event['end_date'] <= endDate:
+                            filtered_events.append(event)
+                else:
+                    if descriptionKeyword.lower() in event['description'].lower():
+                        if startDate == None and endDate == None:
+                            filtered_events.append(event)
+                        elif startDate != None and endDate == None:
+                            if event['start_date'] >= startDate:
+                                filtered_events.append(event)
+                        elif startDate == None and endDate != None:
+                            if event['end_date'] <= endDate:
+                                filtered_events.append(event)
+                        else:
+                            if event['start_date'] >= startDate and event['end_date'] <= endDate:
+                                filtered_events.append(event)
+            else:
+                if name.lower() in event['event_name'].lower():
+                    if descriptionKeyword == "":
+                        if startDate == None and endDate == None:
+                            filtered_events.append(event)
+                        elif startDate != None and endDate == None:
+                            if event['start_date'] >= startDate:
+                                filtered_events.append(event)
+                        elif startDate == None and endDate != None:
+                            if event['end_date'] <= endDate:
+                                filtered_events.append(event)
+                        else:
+                            if event['start_date'] >= startDate and event['end_date'] <= endDate:
+                                filtered_events.append(event)
+                    else:
+                        if descriptionKeyword.lower() in event['description'].lower():
+                            if startDate == None and endDate == None:
+                                filtered_events.append(event)
+                            elif startDate != None and endDate == None:
+                                if event['start_date'] >= startDate:
+                                    filtered_events.append(event)
+                            elif startDate == None and endDate != None:
+                                if event['end_date'] <= endDate:
+                                    filtered_events.append(event)
+                            else:
+                                if event['start_date'] >= startDate and event['end_date'] <= endDate:
+                                    filtered_events.append(event)
+
+    return render_template('manage_event.html', events=filtered_events, title="Manage Event", legend="Manage Event", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
 
 ## SCREEN 26 
 @app.route('/edit_event', methods=["GET", "POST"])
@@ -2279,22 +2577,34 @@ def site_report():
         # Close connection
         cur.close()
         
+    elif form.dailyDetail.data:
+        if 'date' not in request.form:
+            flash('Please select a date to view details', 'danger')
+        else:
+            date = request.form['date']
+            return redirect(url_for('daily_detail', date=date, userType=request.args.get('userType'), username=request.args.get('username')))
     return render_template("site_report.html", tableList=filtered, title="Site Report", legend="Site Report", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
 
 ## SCREEN 30 
 @app.route('/daily_detail', methods=["GET", "POST"])
 def daily_detail(): 
     username = request.args['username']
+    date = request.args['date']
+    increment_date = datetime.strptime(date, '%Y-%m-%d')
+    increment_date = increment_date.date()
 
-    cur = mysql.connection.cursor() 
+    cur = mysql.connection.cursor()
 
-    
-    cur.execute('SELECT event_name, start_date FROM event WHERE site_name = (SELECT site_name FROM site WHERE manager_username = %s)',(username,))
+    cur.execute('SELECT event_name, start_date, end_date FROM event WHERE site_name = (SELECT site_name FROM site WHERE manager_username = %s)',(username,))
     events = cur.fetchall()
+
+    filtered_daily = []
+    for event in events:
+        if increment_date >= event['start_date'] and increment_date <= event['end_date']:
+            filtered_daily.append(event)
     
     dailyDetail = []
-
-    for event in events: 
+    for event in filtered_daily: 
         cur.execute("SELECT count(*) as num FROM visit_event WHERE event_name = %s and start_date = %s", (event['event_name'], event['start_date']))
         visits = cur.fetchone()
         visits = visits['num']
@@ -2321,7 +2631,7 @@ def daily_detail():
     # Close connection
     cur.close()
 
-    return render_template("daily_detail.html", title="Daily Detail", legend="Daily Detail", events = events, userType=request.args.get('userType'), username=request.args.get('username'))
+    return render_template("daily_detail.html", title="Daily Detail", legend="Daily Detail", events=dailyDetail, userType=request.args.get('userType'), username=request.args.get('username'))
 
 ## SCREEN 31
 @app.route('/view_schedule', methods=["GET", "POST"])
@@ -2523,14 +2833,51 @@ def get_event_derived(all_events, username):
     cur.close()
     return all_events
 
+## Helper to get all events
+def get_events(username):
+    # Create cursor
+    cur = mysql.connection.cursor()
+
+    # Query event information from event table
+    cur.execute("SELECT * FROM event")
+    events = cur.fetchall()
+
+    # Retrieve needed information
+    for event in events:
+        event['duration'] = event['end_date'] - event['start_date']
+        split = str(event['duration']).split()
+        if split[0] != '0:00:00':
+            duration = int(split[0]) + 1
+        else:
+            duration = 1    
+        event['duration'] = duration
+        cur.execute("SELECT COUNT(*) FROM assign_to WHERE event_name=%s and start_date=%s and site_name=%s", (event['event_name'], event['start_date'], event['site_name']))
+        staff_count = cur.fetchone()
+        staff_count = staff_count['COUNT(*)']
+        event['staff_count'] = staff_count
+
+        cur.execute("SELECT COUNT(*) FROM visit_event WHERE visitor_username=%s and event_name=%s", (username, event['event_name']))
+        total_visits = cur.fetchone()['COUNT(*)']
+        event['total_visits'] = total_visits
+
+    # Commit to DB
+    mysql.connection.commit()
+
+    # Close connection
+    cur.close()
+    return events
+
 ## SCREEN 33 
 @app.route('/explore_event', methods=['GET','POST'])
 def explore_event(): 
     form = ExploreEvent()
     username = request.args['username']
-    all_events = get_all_events()
+    all_events = get_events(username)
     all_events = get_event_derived(all_events, username)
+    all_sites = get_all_sites()
     # return str(event_derived)
+    filtered_events = []
+
     if form.eventDetail.data:
         if 'event_name' not in request.form:
             flash('Please select an event to view details', 'danger')
@@ -2541,7 +2888,6 @@ def explore_event():
             query2 = "site_name " + event_name
             site_name = request.form[query2]
 
-
             # Find tickets remaining for this event
             tickets_remaining = 0
             for event in all_events:
@@ -2549,7 +2895,491 @@ def explore_event():
                     tickets_remaining = event['tickets_remaining']
 
             return redirect(url_for('visitor_event_detail', tickets_remaining=tickets_remaining, event_name=event_name, start_date=start_date, site_name=site_name, emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username')))
-    return render_template("explore_event.html", events=all_events, title="Explore Event", legend="Explore Event", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+    if form.filter.data:
+        eventName = form.eventName.data
+        descriptionKeyword = form.descriptionKeyword.data
+        startDate = form.startDate.data
+        endDate = form.endDate.data
+        siteName = request.form.get('sitesDrop')
+        minVisitsRange = form.minVisitsRange.data
+        maxVisitsRange = form.maxVisitsRange.data
+        minPriceRange = form.minPriceRange.data
+        maxPriceRange = form.maxPriceRange.data
+        includeVisited = form.includeVisited.data
+        includeSoldOutEvent = form.includeSoldOutEvent.data
+
+        if minVisitsRange == None:
+            minVisitsRange = 0
+        if minPriceRange == None:
+            minRevenueRange = 0
+        if maxVisitsRange == None:
+            maxVisitsRange = 100000000
+        if maxPriceRange == None:
+            maxPriceRange = 100000000
+
+        for event in all_events:
+            if eventName == "":
+                if descriptionKeyword == "":
+                    if siteName == "all":
+                        if startDate == None and endDate == None:
+                            if event['total_visits'] >= minVisitsRange and event['total_visits'] <= maxVisitsRange:
+                                if includeVisited == False and includeSoldOutEvent == False:
+                                    filtered_events = all_events
+                                elif includeVisited == True and includeSoldOutEvent == False:
+                                    if event['my_visits'] > 0:
+                                        filtered_events.append(event)
+                                elif includeVisited == False and includeSoldOutEvent == True:
+                                    if event['tickets_remaining'] == 0:
+                                        filtered_events.append(event)
+                                else:
+                                    if event['my_visits'] > 0 and event['tickets_remaining'] == 0:
+                                        filtered_events.append(event)
+                        elif startDate != None and endDate == None:
+                            if event['start_date'] >= startDate:
+                                if event['total_visits'] >= minVisitsRange and event['total_visits'] <= maxVisitsRange:
+                                    if includeVisited == False and includeSoldOutEvent == False:
+                                        filtered_events.append(event)
+                                    elif includeVisited == True and includeSoldOutEvent == False:
+                                        if event['my_visits'] > 0:
+                                            filtered_events.append(event)
+                                    elif includeVisited == False and includeSoldOutEvent == True:
+                                        if event['tickets_remaining'] == 0:
+                                            filtered_events.append(event)
+                                    else:
+                                        if event['my_visits'] > 0 and event['tickets_remaining'] == 0:
+                                            filtered_events.append(event)
+                        elif startDate == None and endDate != None:
+                            if event['end_date'] <= endDate:
+                                if event['total_visits'] >= minVisitsRange and event['total_visits'] <= maxVisitsRange:
+                                    if includeVisited == False and includeSoldOutEvent == False:
+                                        filtered_events.append(event)
+                                    elif includeVisited == True and includeSoldOutEvent == False:
+                                        if event['my_visits'] > 0:
+                                            filtered_events.append(event)
+                                    elif includeVisited == False and includeSoldOutEvent == True:
+                                        if event['tickets_remaining'] == 0:
+                                            filtered_events.append(event)
+                                    else:
+                                        if event['my_visits'] > 0 and event['tickets_remaining'] == 0:
+                                            filtered_events.append(event)
+                        else:
+                            if event['end_date'] <= endDate and event['start_date'] >= startDate:
+                                if event['total_visits'] >= minVisitsRange and event['total_visits'] <= maxVisitsRange:
+                                    if includeVisited == False and includeSoldOutEvent == False:
+                                        filtered_events.append(event)
+                                    elif includeVisited == True and includeSoldOutEvent == False:
+                                        if event['my_visits'] > 0:
+                                            filtered_events.append(event)
+                                    elif includeVisited == False and includeSoldOutEvent == True:
+                                        if event['tickets_remaining'] == 0:
+                                            filtered_events.append(event)
+                                    else:
+                                        if event['my_visits'] > 0 and event['tickets_remaining'] == 0:
+                                            filtered_events.append(event)
+                    else:
+                        if siteName.lower() in event['site_name'].lower():
+                            if startDate == None and endDate == None:
+                                if event['total_visits'] >= minVisitsRange and event['total_visits'] <= maxVisitsRange:
+                                    if includeVisited == False and includeSoldOutEvent == False:
+                                        filtered_events.append(event)
+                                    elif includeVisited == True and includeSoldOutEvent == False:
+                                        if event['my_visits'] > 0:
+                                            filtered_events.append(event)
+                                    elif includeVisited == False and includeSoldOutEvent == True:
+                                        if event['tickets_remaining'] == 0:
+                                            filtered_events.append(event)
+                                    else:
+                                        if event['my_visits'] > 0 and event['tickets_remaining'] == 0:
+                                            filtered_events.append(event)
+                                elif startDate != None and endDate == None:
+                                    if event['start_date'] >= startDate:
+                                        if event['total_visits'] >= minVisitsRange and event['total_visits'] <= maxVisitsRange:
+                                            if includeVisited == False and includeSoldOutEvent == False:
+                                                filtered_events.append(event)
+                                            elif includeVisited == True and includeSoldOutEvent == False:
+                                                if event['my_visits'] > 0:
+                                                    filtered_events.append(event)
+                                            elif includeVisited == False and includeSoldOutEvent == True:
+                                                if event['tickets_remaining'] == 0:
+                                                    filtered_events.append(event)
+                                            else:
+                                                if event['my_visits'] > 0 and event['tickets_remaining'] == 0:
+                                                    filtered_events.append(event)
+                                elif startDate == None and endDate != None:
+                                    if event['end_date'] <= endDate:
+                                        if event['total_visits'] >= minVisitsRange and event['total_visits'] <= maxVisitsRange:
+                                            if includeVisited == False and includeSoldOutEvent == False:
+                                                filtered_events.append(event)
+                                            elif includeVisited == True and includeSoldOutEvent == False:
+                                                if event['my_visits'] > 0:
+                                                    filtered_events.append(event)
+                                            elif includeVisited == False and includeSoldOutEvent == True:
+                                                if event['tickets_remaining'] == 0:
+                                                    filtered_events.append(event)
+                                            else:
+                                                if event['my_visits'] > 0 and event['tickets_remaining'] == 0:
+                                                    filtered_events.append(event)
+                                else:
+                                    if event['end_date'] <= endDate and event['start_date'] >= startDate:
+                                        if event['total_visits'] >= minVisitsRange and event['total_visits'] <= maxVisitsRange:
+                                            if includeVisited == False and includeSoldOutEvent == False:
+                                                filtered_events.append(event)
+                                            elif includeVisited == True and includeSoldOutEvent == False:
+                                                if event['my_visits'] > 0:
+                                                    filtered_events.append(event)
+                                            elif includeVisited == False and includeSoldOutEvent == True:
+                                                if event['tickets_remaining'] == 0:
+                                                    filtered_events.append(event)
+                                            else:
+                                                if event['my_visits'] > 0 and event['tickets_remaining'] == 0:
+                                                    filtered_events.append(event)
+                else:
+                    if descriptionKeyword.lower() in event['description'].lower():
+                        if siteName == "all":
+                            if startDate == None and endDate == None:
+                                if event['total_visits'] >= minVisitsRange and event['total_visits'] <= maxVisitsRange:
+                                    if includeVisited == False and includeSoldOutEvent == False:
+                                        filtered_events = all_events
+                                    elif includeVisited == True and includeSoldOutEvent == False:
+                                        if event['my_visits'] > 0:
+                                            filtered_events.append(event)
+                                    elif includeVisited == False and includeSoldOutEvent == True:
+                                        if event['tickets_remaining'] == 0:
+                                            filtered_events.append(event)
+                                    else:
+                                        if event['my_visits'] > 0 and event['tickets_remaining'] == 0:
+                                            filtered_events.append(event)
+                            elif startDate != None and endDate == None:
+                                if event['start_date'] >= startDate:
+                                    if event['total_visits'] >= minVisitsRange and event['total_visits'] <= maxVisitsRange:
+                                        if includeVisited == False and includeSoldOutEvent == False:
+                                            filtered_events.append(event)
+                                        elif includeVisited == True and includeSoldOutEvent == False:
+                                            if event['my_visits'] > 0:
+                                                filtered_events.append(event)
+                                        elif includeVisited == False and includeSoldOutEvent == True:
+                                            if event['tickets_remaining'] == 0:
+                                                filtered_events.append(event)
+                                        else:
+                                            if event['my_visits'] > 0 and event['tickets_remaining'] == 0:
+                                                filtered_events.append(event)
+                            elif startDate == None and endDate != None:
+                                if event['end_date'] <= endDate:
+                                    if event['total_visits'] >= minVisitsRange and event['total_visits'] <= maxVisitsRange:
+                                        if includeVisited == False and includeSoldOutEvent == False:
+                                            filtered_events.append(event)
+                                        elif includeVisited == True and includeSoldOutEvent == False:
+                                            if event['my_visits'] > 0:
+                                                filtered_events.append(event)
+                                        elif includeVisited == False and includeSoldOutEvent == True:
+                                            if event['tickets_remaining'] == 0:
+                                                filtered_events.append(event)
+                                        else:
+                                            if event['my_visits'] > 0 and event['tickets_remaining'] == 0:
+                                                filtered_events.append(event)
+                            else:
+                                if event['end_date'] <= endDate and event['start_date'] >= startDate:
+                                    if event['total_visits'] >= minVisitsRange and event['total_visits'] <= maxVisitsRange:
+                                        if includeVisited == False and includeSoldOutEvent == False:
+                                            filtered_events.append(event)
+                                        elif includeVisited == True and includeSoldOutEvent == False:
+                                            if event['my_visits'] > 0:
+                                                filtered_events.append(event)
+                                        elif includeVisited == False and includeSoldOutEvent == True:
+                                            if event['tickets_remaining'] == 0:
+                                                filtered_events.append(event)
+                                        else:
+                                            if event['my_visits'] > 0 and event['tickets_remaining'] == 0:
+                                                filtered_events.append(event)
+                        else:
+                            if siteName.lower() in event['site_name'].lower():
+                                if startDate == None and endDate == None:
+                                    if event['total_visits'] >= minVisitsRange and event['total_visits'] <= maxVisitsRange:
+                                        if includeVisited == False and includeSoldOutEvent == False:
+                                            filtered_events.append(event)
+                                        elif includeVisited == True and includeSoldOutEvent == False:
+                                            if event['my_visits'] > 0:
+                                                filtered_events.append(event)
+                                        elif includeVisited == False and includeSoldOutEvent == True:
+                                            if event['tickets_remaining'] == 0:
+                                                filtered_events.append(event)
+                                        else:
+                                            if event['my_visits'] > 0 and event['tickets_remaining'] == 0:
+                                                filtered_events.append(event)
+                                    elif startDate != None and endDate == None:
+                                        if event['start_date'] >= startDate:
+                                            if event['total_visits'] >= minVisitsRange and event['total_visits'] <= maxVisitsRange:
+                                                if includeVisited == False and includeSoldOutEvent == False:
+                                                    filtered_events.append(event)
+                                                elif includeVisited == True and includeSoldOutEvent == False:
+                                                    if event['my_visits'] > 0:
+                                                        filtered_events.append(event)
+                                                elif includeVisited == False and includeSoldOutEvent == True:
+                                                    if event['tickets_remaining'] == 0:
+                                                        filtered_events.append(event)
+                                                else:
+                                                    if event['my_visits'] > 0 and event['tickets_remaining'] == 0:
+                                                        filtered_events.append(event)
+                                    elif startDate == None and endDate != None:
+                                        if event['end_date'] <= endDate:
+                                            if event['total_visits'] >= minVisitsRange and event['total_visits'] <= maxVisitsRange:
+                                                if includeVisited == False and includeSoldOutEvent == False:
+                                                    filtered_events.append(event)
+                                                elif includeVisited == True and includeSoldOutEvent == False:
+                                                    if event['my_visits'] > 0:
+                                                        filtered_events.append(event)
+                                                elif includeVisited == False and includeSoldOutEvent == True:
+                                                    if event['tickets_remaining'] == 0:
+                                                        filtered_events.append(event)
+                                                else:
+                                                    if event['my_visits'] > 0 and event['tickets_remaining'] == 0:
+                                                        filtered_events.append(event)
+                                    else:
+                                        if event['end_date'] <= endDate and event['start_date'] >= startDate:
+                                            if event['total_visits'] >= minVisitsRange and event['total_visits'] <= maxVisitsRange:
+                                                if includeVisited == False and includeSoldOutEvent == False:
+                                                    filtered_events.append(event)
+                                                elif includeVisited == True and includeSoldOutEvent == False:
+                                                    if event['my_visits'] > 0:
+                                                        filtered_events.append(event)
+                                                elif includeVisited == False and includeSoldOutEvent == True:
+                                                    if event['tickets_remaining'] == 0:
+                                                        filtered_events.append(event)
+                                                else:
+                                                    if event['my_visits'] > 0 and event['tickets_remaining'] == 0:
+                                                        filtered_events.append(event)
+            else:
+                if descriptionKeyword == "":
+                    if siteName == "all":
+                        if startDate == None and endDate == None:
+                            if event['total_visits'] >= minVisitsRange and event['total_visits'] <= maxVisitsRange:
+                                if includeVisited == False and includeSoldOutEvent == False:
+                                    filtered_events = all_events
+                                elif includeVisited == True and includeSoldOutEvent == False:
+                                    if event['my_visits'] > 0:
+                                        filtered_events.append(event)
+                                elif includeVisited == False and includeSoldOutEvent == True:
+                                    if event['tickets_remaining'] == 0:
+                                        filtered_events.append(event)
+                                else:
+                                    if event['my_visits'] > 0 and event['tickets_remaining'] == 0:
+                                        filtered_events.append(event)
+                        elif startDate != None and endDate == None:
+                            if event['start_date'] >= startDate:
+                                if event['total_visits'] >= minVisitsRange and event['total_visits'] <= maxVisitsRange:
+                                    if includeVisited == False and includeSoldOutEvent == False:
+                                        filtered_events.append(event)
+                                    elif includeVisited == True and includeSoldOutEvent == False:
+                                        if event['my_visits'] > 0:
+                                            filtered_events.append(event)
+                                    elif includeVisited == False and includeSoldOutEvent == True:
+                                        if event['tickets_remaining'] == 0:
+                                            filtered_events.append(event)
+                                    else:
+                                        if event['my_visits'] > 0 and event['tickets_remaining'] == 0:
+                                            filtered_events.append(event)
+                        elif startDate == None and endDate != None:
+                            if event['end_date'] <= endDate:
+                                if event['total_visits'] >= minVisitsRange and event['total_visits'] <= maxVisitsRange:
+                                    if includeVisited == False and includeSoldOutEvent == False:
+                                        filtered_events.append(event)
+                                    elif includeVisited == True and includeSoldOutEvent == False:
+                                        if event['my_visits'] > 0:
+                                            filtered_events.append(event)
+                                    elif includeVisited == False and includeSoldOutEvent == True:
+                                        if event['tickets_remaining'] == 0:
+                                            filtered_events.append(event)
+                                    else:
+                                        if event['my_visits'] > 0 and event['tickets_remaining'] == 0:
+                                            filtered_events.append(event)
+                        else:
+                            if event['end_date'] <= endDate and event['start_date'] >= startDate:
+                                if event['total_visits'] >= minVisitsRange and event['total_visits'] <= maxVisitsRange:
+                                    if includeVisited == False and includeSoldOutEvent == False:
+                                        filtered_events.append(event)
+                                    elif includeVisited == True and includeSoldOutEvent == False:
+                                        if event['my_visits'] > 0:
+                                            filtered_events.append(event)
+                                    elif includeVisited == False and includeSoldOutEvent == True:
+                                        if event['tickets_remaining'] == 0:
+                                            filtered_events.append(event)
+                                    else:
+                                        if event['my_visits'] > 0 and event['tickets_remaining'] == 0:
+                                            filtered_events.append(event)
+                    else:
+                        if siteName.lower() in event['site_name'].lower():
+                            if startDate == None and endDate == None:
+                                if event['total_visits'] >= minVisitsRange and event['total_visits'] <= maxVisitsRange:
+                                    if includeVisited == False and includeSoldOutEvent == False:
+                                        filtered_events.append(event)
+                                    elif includeVisited == True and includeSoldOutEvent == False:
+                                        if event['my_visits'] > 0:
+                                            filtered_events.append(event)
+                                    elif includeVisited == False and includeSoldOutEvent == True:
+                                        if event['tickets_remaining'] == 0:
+                                            filtered_events.append(event)
+                                    else:
+                                        if event['my_visits'] > 0 and event['tickets_remaining'] == 0:
+                                            filtered_events.append(event)
+                                elif startDate != None and endDate == None:
+                                    if event['start_date'] >= startDate:
+                                        if event['total_visits'] >= minVisitsRange and event['total_visits'] <= maxVisitsRange:
+                                            if includeVisited == False and includeSoldOutEvent == False:
+                                                filtered_events.append(event)
+                                            elif includeVisited == True and includeSoldOutEvent == False:
+                                                if event['my_visits'] > 0:
+                                                    filtered_events.append(event)
+                                            elif includeVisited == False and includeSoldOutEvent == True:
+                                                if event['tickets_remaining'] == 0:
+                                                    filtered_events.append(event)
+                                            else:
+                                                if event['my_visits'] > 0 and event['tickets_remaining'] == 0:
+                                                    filtered_events.append(event)
+                                elif startDate == None and endDate != None:
+                                    if event['end_date'] <= endDate:
+                                        if event['total_visits'] >= minVisitsRange and event['total_visits'] <= maxVisitsRange:
+                                            if includeVisited == False and includeSoldOutEvent == False:
+                                                filtered_events.append(event)
+                                            elif includeVisited == True and includeSoldOutEvent == False:
+                                                if event['my_visits'] > 0:
+                                                    filtered_events.append(event)
+                                            elif includeVisited == False and includeSoldOutEvent == True:
+                                                if event['tickets_remaining'] == 0:
+                                                    filtered_events.append(event)
+                                            else:
+                                                if event['my_visits'] > 0 and event['tickets_remaining'] == 0:
+                                                    filtered_events.append(event)
+                                else:
+                                    if event['end_date'] <= endDate and event['start_date'] >= startDate:
+                                        if event['total_visits'] >= minVisitsRange and event['total_visits'] <= maxVisitsRange:
+                                            if includeVisited == False and includeSoldOutEvent == False:
+                                                filtered_events.append(event)
+                                            elif includeVisited == True and includeSoldOutEvent == False:
+                                                if event['my_visits'] > 0:
+                                                    filtered_events.append(event)
+                                            elif includeVisited == False and includeSoldOutEvent == True:
+                                                if event['tickets_remaining'] == 0:
+                                                    filtered_events.append(event)
+                                            else:
+                                                if event['my_visits'] > 0 and event['tickets_remaining'] == 0:
+                                                    filtered_events.append(event)
+                else:
+                    if descriptionKeyword.lower() in event['description'].lower():
+                        if siteName == "all":
+                            if startDate == None and endDate == None:
+                                if event['total_visits'] >= minVisitsRange and event['total_visits'] <= maxVisitsRange:
+                                    if includeVisited == False and includeSoldOutEvent == False:
+                                        filtered_events = all_events
+                                    elif includeVisited == True and includeSoldOutEvent == False:
+                                        if event['my_visits'] > 0:
+                                            filtered_events.append(event)
+                                    elif includeVisited == False and includeSoldOutEvent == True:
+                                        if event['tickets_remaining'] == 0:
+                                            filtered_events.append(event)
+                                    else:
+                                        if event['my_visits'] > 0 and event['tickets_remaining'] == 0:
+                                            filtered_events.append(event)
+                            elif startDate != None and endDate == None:
+                                if event['start_date'] >= startDate:
+                                    if event['total_visits'] >= minVisitsRange and event['total_visits'] <= maxVisitsRange:
+                                        if includeVisited == False and includeSoldOutEvent == False:
+                                            filtered_events.append(event)
+                                        elif includeVisited == True and includeSoldOutEvent == False:
+                                            if event['my_visits'] > 0:
+                                                filtered_events.append(event)
+                                        elif includeVisited == False and includeSoldOutEvent == True:
+                                            if event['tickets_remaining'] == 0:
+                                                filtered_events.append(event)
+                                        else:
+                                            if event['my_visits'] > 0 and event['tickets_remaining'] == 0:
+                                                filtered_events.append(event)
+                            elif startDate == None and endDate != None:
+                                if event['end_date'] <= endDate:
+                                    if event['total_visits'] >= minVisitsRange and event['total_visits'] <= maxVisitsRange:
+                                        if includeVisited == False and includeSoldOutEvent == False:
+                                            filtered_events.append(event)
+                                        elif includeVisited == True and includeSoldOutEvent == False:
+                                            if event['my_visits'] > 0:
+                                                filtered_events.append(event)
+                                        elif includeVisited == False and includeSoldOutEvent == True:
+                                            if event['tickets_remaining'] == 0:
+                                                filtered_events.append(event)
+                                        else:
+                                            if event['my_visits'] > 0 and event['tickets_remaining'] == 0:
+                                                filtered_events.append(event)
+                            else:
+                                if event['end_date'] <= endDate and event['start_date'] >= startDate:
+                                    if event['total_visits'] >= minVisitsRange and event['total_visits'] <= maxVisitsRange:
+                                        if includeVisited == False and includeSoldOutEvent == False:
+                                            filtered_events.append(event)
+                                        elif includeVisited == True and includeSoldOutEvent == False:
+                                            if event['my_visits'] > 0:
+                                                filtered_events.append(event)
+                                        elif includeVisited == False and includeSoldOutEvent == True:
+                                            if event['tickets_remaining'] == 0:
+                                                filtered_events.append(event)
+                                        else:
+                                            if event['my_visits'] > 0 and event['tickets_remaining'] == 0:
+                                                filtered_events.append(event)
+                        else:
+                            if siteName.lower() in event['site_name'].lower():
+                                if startDate == None and endDate == None:
+                                    if event['total_visits'] >= minVisitsRange and event['total_visits'] <= maxVisitsRange:
+                                        if includeVisited == False and includeSoldOutEvent == False:
+                                            filtered_events.append(event)
+                                        elif includeVisited == True and includeSoldOutEvent == False:
+                                            if event['my_visits'] > 0:
+                                                filtered_events.append(event)
+                                        elif includeVisited == False and includeSoldOutEvent == True:
+                                            if event['tickets_remaining'] == 0:
+                                                filtered_events.append(event)
+                                        else:
+                                            if event['my_visits'] > 0 and event['tickets_remaining'] == 0:
+                                                filtered_events.append(event)
+                                    elif startDate != None and endDate == None:
+                                        if event['start_date'] >= startDate:
+                                            if event['total_visits'] >= minVisitsRange and event['total_visits'] <= maxVisitsRange:
+                                                if includeVisited == False and includeSoldOutEvent == False:
+                                                    filtered_events.append(event)
+                                                elif includeVisited == True and includeSoldOutEvent == False:
+                                                    if event['my_visits'] > 0:
+                                                        filtered_events.append(event)
+                                                elif includeVisited == False and includeSoldOutEvent == True:
+                                                    if event['tickets_remaining'] == 0:
+                                                        filtered_events.append(event)
+                                                else:
+                                                    if event['my_visits'] > 0 and event['tickets_remaining'] == 0:
+                                                        filtered_events.append(event)
+                                    elif startDate == None and endDate != None:
+                                        if event['end_date'] <= endDate:
+                                            if event['total_visits'] >= minVisitsRange and event['total_visits'] <= maxVisitsRange:
+                                                if includeVisited == False and includeSoldOutEvent == False:
+                                                    filtered_events.append(event)
+                                                elif includeVisited == True and includeSoldOutEvent == False:
+                                                    if event['my_visits'] > 0:
+                                                        filtered_events.append(event)
+                                                elif includeVisited == False and includeSoldOutEvent == True:
+                                                    if event['tickets_remaining'] == 0:
+                                                        filtered_events.append(event)
+                                                else:
+                                                    if event['my_visits'] > 0 and event['tickets_remaining'] == 0:
+                                                        filtered_events.append(event)
+                                    else:
+                                        if event['end_date'] <= endDate and event['start_date'] >= startDate:
+                                            if event['total_visits'] >= minVisitsRange and event['total_visits'] <= maxVisitsRange:
+                                                if includeVisited == False and includeSoldOutEvent == False:
+                                                    filtered_events.append(event)
+                                                elif includeVisited == True and includeSoldOutEvent == False:
+                                                    if event['my_visits'] > 0:
+                                                        filtered_events.append(event)
+                                                elif includeVisited == False and includeSoldOutEvent == True:
+                                                    if event['tickets_remaining'] == 0:
+                                                        filtered_events.append(event)
+                                                else:
+                                                    if event['my_visits'] > 0 and event['tickets_remaining'] == 0:
+                                                        filtered_events.append(event)                
+
+    return render_template("explore_event.html", sites=all_sites, events=filtered_events, title="Explore Event", legend="Explore Event", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
 
 ## SCREEN 34 
 @app.route('/visitor_event_detail', methods=["GET","POST"])

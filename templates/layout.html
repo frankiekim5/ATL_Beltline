@@ -56,9 +56,12 @@
                             <a class="nav-item nav-link" href="{{ url_for('explore_event', emails=emails, userType=userType, username=username) }}">Explore Event</a>
                             <a class="nav-item nav-link" href="{{ url_for('explore_site', emails=emails, userType=userType, username=username) }}">Explore Site</a>
                             <a class="nav-item nav-link" href="{{ url_for('visit_history', emails=emails, userType=userType, username=username) }}">Visit History</a>
+<<<<<<< HEAD
                             <a class="nav-item nav-link" href="{{ url_for('manage_event', emails=emails, userType=userType, username=username) }}">Events</a>
                             <a class="nav-item nav-link" href="{{ url_for('manage_staff', emails=emails, userType=userType, username=username) }}">Staff</a>
                             <a class="nav-item nav-link" href="{{ url_for('site_report', emails=emails, userType=userType, username=username) }}">Site Report</a>
+=======
+>>>>>>> ad7e57e3966f490246ef13cb1d47a4f7657a19c5
                         {% elif userType == 'Staff-Visitor' %}
                             <a class="nav-item nav-link" href="{{ url_for('take_transit', emails=emails, userType=userType, username=username) }}">Take Transit</a>
                             <a class="nav-item nav-link" href="{{ url_for('transit_history', emails=emails, userType=userType, username=username) }}">Transit History</a>

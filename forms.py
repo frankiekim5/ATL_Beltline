@@ -141,6 +141,16 @@ class ManageTransitForm(FlaskForm):
     filter = SubmitField('Filter')
     edit = SubmitField('Edit')
     delete = SubmitField('Delete')
+    routeUpSort = SubmitField('Up')
+    routeDownSort = SubmitField('Down')
+    typeUpSort = SubmitField('Up')
+    typeDownSort = SubmitField('Down')
+    priceUpSort = SubmitField('Up')
+    priceDownSort = SubmitField('Down')
+    connectUpSort = SubmitField('Up')
+    connectDownSort = SubmitField('Down')
+    transitUpSort = SubmitField('Up')
+    transitDownSort = SubmitField('Down')
 
 class ManageUser(FlaskForm): 
     username = StringField('Username')
@@ -149,6 +159,14 @@ class ManageUser(FlaskForm):
     filter = SubmitField('Filter')
     approve = SubmitField('Approve')
     decline = SubmitField('Decline')
+    usernameUpSort = SubmitField('Up')
+    usernameDownSort = SubmitField('Down')
+    emailUpSort = SubmitField('Up')
+    emailDownSort = SubmitField('Down')
+    typeUpSort = SubmitField('Up')
+    typeDownSort = SubmitField('Down')
+    statusUpSort = SubmitField('Up')
+    statusDownSort = SubmitField('Down')
 
 class ManageEvent(FlaskForm): 
     name = StringField('Name')
@@ -223,8 +241,6 @@ class ViewSchedule(FlaskForm):
 class ExploreEvent(FlaskForm): 
     eventName = StringField("Name")
     descriptionKeyword = StringField("Description Keyword")
-    siteName = SelectField('Site Name', 
-        choices = [("Inman Park","Inman Park")])
     startDate = DateField('Start Date')
     endDate = DateField('End Date')
     minVisitsRange = IntegerField('Min Visits')

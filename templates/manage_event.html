@@ -166,8 +166,8 @@
                                 <tr>
                                     <td>
                                         <input type="radio" name="event_name" value="{{event['event_name']}}">
-                                        <input type="hidden" name="start_date" value="{{event['start_date']}}">
-                                        <input type="hidden" name="site_name" value="{{event['site_name']}}">
+                                        <input type="hidden" name="start_date {{event['event_name']}}" value="{{event['start_date']}}">
+                                        <input type="hidden" name="site_name {{event['event_name']}}" value="{{event['site_name']}}">
                                         <label for="event_name">{{ event['event_name'] }}</label>
                                     </td>
                                     <td>
@@ -177,10 +177,10 @@
                                         <label for="duration">{{ event['duration'] }}</label>
                                     </td>
                                     <td>
-                                        <label for="total_visits">{{ event['event_name'] }}</label>
+                                        <label for="total_visits">{{ event['total_visits'] }}</label>
                                     </td>
                                     <td>
-                                        <label for="total_revenue">{{ event['event_name'] }}</label>
+                                        <label for="total_revenue">{{ event['total_revenue'] }}</label>
                                     </td>
                                 </tr>
                                 {% endfor %} 
