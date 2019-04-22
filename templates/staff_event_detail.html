@@ -5,31 +5,33 @@
     <div class="row">
         <div class="col-md-6">
             <label class="font-weight-bold">Event Name</label>
-            <p class="font-italic">{{ event["eventName"] }} </p>
+            <p class="font-italic">{{ event["event_name"] }} </p>
         </div>
         <div class="col-md-6">
             <label class="font-weight-bold">Site</label>
-            <p class="font-italic">{{ event["site"] }} </p>
+            <p class="font-italic">{{ event["site_name"] }} </p>
         </div>
     </div>
     <div class="row">
         <div class="col-md-4">
             <label class="font-weight-bold">Start Date</label>
-            <p class="font-italic">{{ event["startDate"] }} </p>
+            <p class="font-italic">{{ event["start_date"] }} </p>
         </div>
         <div class="col-md-4">
             <label class="font-weight-bold">End Date</label>
-            <p class="font-italic">{{ event["endDate"] }} </p>
+            <p class="font-italic">{{ event["end_date"] }} </p>
         </div>
         <div class="col-md-4">
             <label class="font-weight-bold">Duration Days</label>
-            <p class="font-italic">{{ event["durationDays"] }} </p>
+            <p class="font-italic">{{ event["duration"] }} </p>
         </div>
     </div>
     <div class="row">
         <div class="col-md-4">
             <label class="font-weight-bold">Staffs Assigned</label>
-            <p class="font-italic">{{ event["staffAssigned"] }} </p>
+            {% for staff in event['staffList'] %}
+                <p class="font-italic">{{ staff }} </p>
+            {% endfor %}
         </div>
         <div class="col-md-4">
             <label class="font-weight-bold">Capacity</label>
@@ -44,6 +46,6 @@
         <label class="font-weight-bold">Description</label>
         <p class="font-italic">{{ event["description"] }} </p>
     </div>
-    <a class="btn btn-info mb-3" href="{{ url_for('view_schedule') }}">Back</a>
+    <a class="btn btn-outline-info mb-3" href="{{ url_for('view_schedule', emails=emails, userType=userType, username=username) }}">Back</a>
 </div>
 {% endblock content %}

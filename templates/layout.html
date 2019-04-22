@@ -37,6 +37,7 @@
                         {% elif userType == 'Staff' %}
                             <a class="nav-item nav-link" href="{{ url_for('take_transit', emails=emails, userType=userType, username=username) }}">Take Transit</a>
                             <a class="nav-item nav-link" href="{{ url_for('transit_history', emails=emails, userType=userType, username=username) }}">Transit History</a>
+                            <a class="nav-item nav-link" href="{{ url_for('view_schedule', emails=emails, userType=userType, username=username) }}">View Schedule</a>
                         {% elif userType == 'Administrator' %}
                             <a class="nav-item nav-link" href="{{ url_for('take_transit', emails=emails, userType=userType, username=username) }}">Take Transit</a>
                             <a class="nav-item nav-link" href="{{ url_for('transit_history', emails=emails, userType=userType, username=username) }}">Transit History</a>
@@ -59,6 +60,7 @@
                         {% elif userType == 'Staff-Visitor' %}
                             <a class="nav-item nav-link" href="{{ url_for('take_transit', emails=emails, userType=userType, username=username) }}">Take Transit</a>
                             <a class="nav-item nav-link" href="{{ url_for('transit_history', emails=emails, userType=userType, username=username) }}">Transit History</a>
+                            <a class="nav-item nav-link" href="{{ url_for('view_schedule', emails=emails, userType=userType, username=username) }}">View Schedule</a>
                             <a class="nav-item nav-link" href="{{ url_for('explore_event', emails=emails, userType=userType, username=username) }}">Explore Event</a>
                             <a class="nav-item nav-link" href="{{ url_for('explore_site', emails=emails, userType=userType, username=username) }}">Explore Site</a>
                             <a class="nav-item nav-link" href="{{ url_for('visit_history', emails=emails, userType=userType, username=username) }}">Visit History</a>
