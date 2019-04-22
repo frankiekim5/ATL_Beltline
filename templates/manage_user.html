@@ -56,10 +56,30 @@
                             <table class="table table-bordered">
                                 <thead>
                                     <tr>
-                                    <th scope="col">Username</th>
-                                    <th scope="col">Email Count</th>
-                                    <th scope="col">User Type</th>
-                                    <th scope="col">Status</th>
+                                    <th scope="col">Username
+                                    <div class="input-group-append" style="float:right">
+                                        {{ form.usernameUpSort(class="btn btn-outline-info form-inline") }}              
+                                        {{ form.usernameDownSort(class="btn btn-outline-info form-inline") }}
+                                    </div>
+                                    </th>
+                                    <th scope="col">Email Count
+                                    <div class="input-group-append" style="float:right">
+                                        {{ form.emailUpSort(class="btn btn-outline-info form-inline") }}              
+                                        {{ form.emailDownSort(class="btn btn-outline-info form-inline") }}
+                                    </div>
+                                    </th>
+                                    <th scope="col">User Type
+                                    <div class="input-group-append" style="float:right">
+                                        {{ form.typeUpSort(class="btn btn-outline-info form-inline") }}              
+                                        {{ form.typeDownSort(class="btn btn-outline-info form-inline") }}
+                                    </div>
+                                    </th>
+                                    <th scope="col">Status
+                                    <div class="input-group-append" style="float:right">
+                                        {{ form.statusUpSort(class="btn btn-outline-info form-inline") }}              
+                                        {{ form.statusDownSort(class="btn btn-outline-info form-inline") }}
+                                    </div>
+                                    </th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -68,6 +88,7 @@
                                         <td>
                                             <input type="radio" name="user" value="{{user['username']}}">
                                             <label for="username">{{ user['username'] }}</label>
+                                            <input type="hidden" name="user_name" value="{{all_users}}">
                                         </td>
                                         <td>
                                             <label for="email_count">{{ user['email_count'] }}</label>
