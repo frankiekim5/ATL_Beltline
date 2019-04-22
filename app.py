@@ -11,7 +11,7 @@ app = Flask(__name__)
 # Config MySQL
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'Frankie1999!' ## Frankie1999! 
+app.config['MYSQL_PASSWORD'] = '@SanDiego26' ## Frankie1999! 
 app.config['MYSQL_DB'] = 'atlbeltline'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 # Init MySQL
@@ -2327,22 +2327,174 @@ def daily_detail():
 @app.route('/view_schedule', methods=["GET", "POST"])
 def view_schedule(): 
     form = ViewSchedule()
-    return render_template("view_schedule.html", title="View Schedule", legend="View Schedule", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+
+    username = request.args['username']
+
+    eventName = form.eventName.data 
+    descriptionKeyword = form.descriptionKeyword.data 
+    startDate = form.startDate.data 
+    endDate = form.endDate.data
+
+    results = []
+
+    if form.filter.data:
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT event_name, start_date, site_name FROM assign_to WHERE staff_username = %s", (username,))
+        worksOn = cur.fetchall()
+
+        eventsData = []
+        for event in worksOn: 
+            cur.execute("SELECT event_name, site_name, start_date, end_date, min_staff_req, description FROM event WHERE event_name = %s and start_date = %s and site_name = %s", (event['event_name'], event['start_date'], event['site_name']))
+            data = cur.fetchone()
+            eventsData.append(data)
+        # Commit to DB
+        mysql.connection.commit()
+
+        # Close connection
+        cur.close()
+
+        for event in eventsData: 
+            if eventName == '': 
+                if descriptionKeyword == '': 
+                    if startDate == None and endDate == None: ## EVERYTHING
+                        results.append(event)
+                    elif startDate != None and endDate != None: 
+                        if event['start_date'] >= startDate and event['end_date'] <= endDate: 
+                            results.append(event)
+                    elif startDate != None and endDate == None: 
+                        if event['start_date'] >= startDate: 
+                            results.append(event)
+                    elif startDate == None and endDate != None: 
+                        if event['end_date'] <= endDate: 
+                            results.append(event)
+                else: 
+                    if descriptionKeyword.lower() in event['description'].lower():
+                        if startDate == None and endDate == None: 
+                            results.append(event)
+                        elif startDate != None and endDate != None: 
+                            if event['start_date'] >= startDate and event['end_date'] <= endDate: 
+                                results.append(event)
+                        elif startDate != None and endDate == None: 
+                            if event['start_date'] >= startDate: 
+                                results.append(event)
+                        elif startDate == None and endDate != None: 
+                            if event['end_date'] <= endDate: 
+                                results.append(event)
+            else: # event_name is not empty 
+                if eventName.lower() in event['event_name'].lower(): 
+                    if descriptionKeyword == '': 
+                        if startDate == None and endDate == None:
+                            results.append(event)
+                        elif startDate != None and endDate != None: 
+                            if event['start_date'] >= startDate and event['end_date'] <= endDate: 
+                                results.append(event)
+                        elif startDate != None and endDate == None: 
+                            if event['start_date'] >= startDate: 
+                                results.append(event)
+                        elif startDate == None and endDate != None: 
+                            if event['end_date'] <= endDate: 
+                                results.append(event)
+                    elif descriptionKeyword.lower() in event['description'].lower():
+                        if startDate == None and endDate == None: 
+                            results.append(event)
+                        elif startDate != None and endDate != None: 
+                            if event['start_date'] >= startDate and event['end_date'] <= endDate: 
+                                results.append(event)
+                        elif startDate != None and endDate == None: 
+                            if event['start_date'] >= startDate: 
+                                results.append(event)
+                        elif startDate == None and endDate != None: 
+                            if event['end_date'] <= endDate: 
+                                results.append(event)
+                else: 
+                    if descriptionKeyword == '': 
+                        if startDate == None and endDate == None:
+                            results.append(event)
+                        elif startDate != None and endDate != None: 
+                            if event['start_date'] >= startDate and event['end_date'] <= endDate: 
+                                results.append(event)
+                        elif startDate != None and endDate == None: 
+                            if event['start_date'] >= startDate: 
+                                results.append(event)
+                        elif startDate == None and endDate != None: 
+                            if event['end_date'] <= endDate: 
+                                results.append(event)
+                    elif descriptionKeyword.lower() in event['description'].lower():
+                        if startDate == None and endDate == None: 
+                            results.append(event)
+                        elif startDate != None and endDate != None: 
+                            if event['start_date'] >= startDate and event['end_date'] <= endDate: 
+                                results.append(event)
+                        elif startDate != None and endDate == None: 
+                            if event['start_date'] >= startDate: 
+                                results.append(event)
+                        elif startDate == None and endDate != None: 
+                            if event['end_date'] <= endDate: 
+                                results.append(event)
+
+        form.eventName.data = eventName 
+        form.descriptionKeyword.data = descriptionKeyword
+        form.startDate.data = startDate
+        form.endDate.data = endDate
+
+        return render_template("view_schedule.html", title="View Schedule", legend="View Schedule", results=results, form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+    if form.viewEvent.data:
+        if 'event_name' not in request.form:
+            flash('Must select an event to view', 'danger')
+            form.eventName.data = eventName 
+            form.descriptionKeyword.data = descriptionKeyword
+            form.startDate.data = startDate
+            form.endDate.data = endDate
+            return render_template("view_schedule.html", title="View Schedule", legend="View Schedule", results=results, form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+        else: 
+            event_name = request.form['event_name']
+            query = "start_date " + event_name 
+            start_date = request.form[query]
+            query2 = "site_name " + event_name
+            site_name = request.form[query2]
+            return redirect(url_for('staff_event_detail', event_name=event_name, start_date=start_date, site_name=site_name, userType=request.args.get('userType'), username=request.args.get('username')))
+
+
+    return render_template("view_schedule.html", title="View Schedule", legend="View Schedule", results=results, form=form, userType=request.args.get('userType'), username=request.args.get('username'))
 
 ## SCREEN 32 
 @app.route('/staff_event_detail', methods=["GET", "POST"])
 def staff_event_detail(): 
-    event = {
-            "eventName": "Walking Tour",
-            "site": "Inman Park",
-            "startDate": "2019-02-02",
-            "endDate": "2019-02-02",
-            "durationDays":1, 
-            "staffAssigned": "Peter Han",
-            "capacity":20, 
-            "price":0,
-            "description":"walking tour with Peter Han - very dangerous"
-            }
+    
+
+    username = request.args['username']
+    event_name = request.args['event_name']
+    start_date = request.args['start_date']
+    site_name = request.args['site_name']
+
+   
+ 
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM event WHERE event_name = %s and start_date = %s and site_name = %s", (event_name, start_date, site_name))
+    event = cur.fetchone()
+    
+    cur.execute("SELECT CONCAT(firstname, ' ', lastname) as fullname FROM user WHERE username in (SELECT staff_username FROM assign_to WHERE event_name = %s and start_date = %s and site_name = %s) ORDER BY firstname ASC",(event_name, start_date, site_name))
+    staff = cur.fetchall()
+    staffList = [] 
+    for s in staff: 
+        staffList.append(s['fullname'])
+    event['staffList'] = staffList
+
+    event['duration'] = event['end_date'] - event['start_date']
+    
+    split = str(event['duration']).split()
+    if split[0] != '0:00:00':
+        duration = int(split[0]) + 1
+    else:
+        duration = 1
+    event['duration'] = duration
+
+    # Commit to DB  
+    mysql.connection.commit()
+
+    # Close connection
+    cur.close()
+
     return render_template("staff_event_detail.html", title="Event Detail", legend="Event Detail", event=event, userType=request.args.get('userType'), username=request.args.get('username'))
 
 # Helper method to calculate the total visits, tickets remaining, and my visits for the user
