@@ -2610,8 +2610,96 @@ def visitor_event_detail():
 @app.route('/explore_site', methods=["GET", "POST"])
 def explore_site(): 
     form = ExploreSite()
+
+    username = request.args['username']
+
     all_sites = get_all_sites()
     all_sites = site_derived(all_sites)
+
+    cur = mysql.connection.cursor()
+
+    for site in all_sites: 
+        cur.execute("SELECT open_everyday FROM site WHERE site_name = %s", (site['site_name'],))
+        open_everyday = cur.fetchone()
+        if open_everyday['open_everyday'] == 1: 
+            open_everyday = 'yes'
+        else: 
+            open_everyday = 'no'
+        site['open_everyday'] = open_everyday
+        cur.execute("SELECT count(*) as num FROM visit_site WHERE site_name = %s", (site['site_name'],))
+        total_visits = cur.fetchone()
+        site['total_visits'] = total_visits['num']
+        cur.execute("SELECT count(*) as num FROM visit_site WHERE site_name = %s and visitor_username = %s", (site['site_name'], username,))
+        my_visits = cur.fetchone()
+        site['my_visits'] = my_visits['num']
+        cur.execute("SELECT visit_start_date FROM visit_site WHERE site_name = %s", (site['site_name'],))
+        td = cur.fetchall()
+        total_dates = [] 
+        for date in td: 
+            total_dates.append(date['visit_start_date'])
+        site['total_dates'] = total_dates
+        cur.execute("SELECT visit_start_date FROM visit_site WHERE site_name = %s and visitor_username = %s", (site['site_name'], username,))
+        md = cur.fetchall()
+        my_dates = [] 
+        for date in md: 
+            my_dates.append(date['visit_start_date'])
+        site['my_dates'] = my_dates
+
+    # Commit to DB
+    mysql.connection.commit()
+    # Close connection
+    cur.close()
+
+    sites = []
+
+    openEveryDay = form.openEveryDay.data
+    startDate = form.startDate.data 
+    endDate = form.endDate.data 
+    minVisitsRange = form.minVisitsRange.data 
+    maxVisitsRange = form.maxVisitsRange.data 
+    minEventCount = form.minEventCount.data 
+    maxEventCount = form.maxEventCount.data 
+    includeVisited = form.includeVisited.data
+
+    if form.filter.data: 
+        site_name = request.form.get('sitesDrop')
+        for site in all_sites: 
+            if includeVisited == False:
+                if site['my_visits'] == 0: 
+                    if site_name == 'all': 
+                        if site['open_everyday'] == openEveryDay: 
+                            sites.append(site)
+                        elif openEveryDay == 'all': 
+                            sites.append(site)
+                    else: 
+                        if site['site_name'] == site_name: 
+                            if site['open_everyday'] == openEveryDay: 
+                                sites.append(site)
+                            elif openEveryDay == 'all':
+                                sites.append(site)
+            else: 
+                if site_name == 'all': 
+                    if site['open_everyday'] == openEveryDay: 
+                        sites.append(site)
+                    elif openEveryDay == 'all': 
+                        sites.append(site)
+                else: 
+                    if site['site_name'] == site_name: 
+                        if site['open_everyday'] == openEveryDay: 
+                            sites.append(site)
+                        elif openEveryDay == 'all':
+                            sites.append(site)
+                
+
+    form.openEveryDay.data = openEveryDay
+    form.startDate.data = startDate
+    form.endDate.data = endDate
+    form.minVisitsRange.data = minVisitsRange
+    form.maxVisitsRange.data = maxVisitsRange 
+    form.minEventCount.data = minEventCount 
+    form.maxEventCount.data = maxEventCount
+    form.includeVisited.data = includeVisited
+
     if form.siteDetail.data:
         if 'site_name' not in request.form:
             flash('Please select an site to view details', 'danger')
@@ -2624,7 +2712,7 @@ def explore_site():
         else:
             site_name = request.form['site_name']
             return redirect(url_for('transit_detail', site_name=site_name, userType=request.args.get('userType'), username=request.args.get('username')))
-    return render_template("explore_site.html", sites=all_sites, title="Explore Site", legend="Explore Site", form = form, userType=request.args.get('userType'), username=request.args.get('username'))
+    return render_template("explore_site.html", all_sites = all_sites, sites=sites, title="Explore Site", legend="Explore Site", form = form, userType=request.args.get('userType'), username=request.args.get('username'))
 
 # Helper method to retrieve transits for site
 def transits_for_site(site_name):
