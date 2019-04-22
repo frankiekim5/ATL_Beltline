@@ -33,17 +33,13 @@
                         {% endif %}
                     </div>
                     <div class="form-group col-md-4">
-                        {{ form.siteName.label(class="form-control-label") }}
-                        {% if form.siteName.errors %}
-                            {{ form.siteName(class="form-control form-control-lg is-invalid") }}
-                            <div style="color:red">
-                                {% for error in form.siteName.errors %}
-                                    <span style="font-size:13px">{{ error }}</span>
-                                {% endfor %}
-                            </div>
-                        {% else %}
-                            {{ form.siteName(class="form-control form-control-lg") }}
-                        {% endif %}
+                        <label for="sitesDrop" class="form-control-label">Site</label>
+                        <select name="sitesDrop" class="form-control form-control-lg" id="sitesDrop" required>
+                            <option value="all">--All--</option>
+                            {% for site in sites %}
+                                <option value="{{site['site']}}">{{ site }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                 </div>
                 <div class='row'>
