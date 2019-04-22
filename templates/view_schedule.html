@@ -70,35 +70,6 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    {% if form.eventList.errors %}
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Event Name</th>
-                                    <th scope="col">Site Name</th>
-                                    <th scope="col">Start Date</th>
-                                    <th scope="col">End Date</th>
-                                    <th scope="col">Staff Count)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for choice in form.eventList %}
-                                <tr>
-                                    <td>{{choice}}&nbsp;{{ choice.label }}</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                {% endfor %} 
-                            </tbody>
-                        </table>
-                        <div style="color:red">
-                            {% for error in form.eventList.errors %}
-                                 <span style="font-size:13px">{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
                     <table class="table table-bordered">
                         <thead>
                             <tr>
@@ -106,22 +77,26 @@
                             <th scope="col">Site Name</th>
                             <th scope="col">Start Date</th>
                             <th scope="col">End Date</th>
-                            <th scope="col">Staff Count)</th>
+                            <th scope="col">Staff Count</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for choice in form.eventList %}
+                            {% for result in results %}
                             <tr>
-                                <td>{{choice}}&nbsp;{{ choice.label }}</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                                <td>
+                                    <input type="radio" name="event_name" value="{{result['event_name']}}">
+                                    <input type="hidden" name="start_date {{result['event_name']}}" value="{{result['start_date']}}">
+                                    <input type="hidden" name="site_name {{result['event_name']}}" value="{{result['site_name']}}">
+                                    {{ result['event_name'] }}
+                                </td>
+                                <td>{{ result['site_name'] }}</td>
+                                <td>{{ result['start_date'] }}</td>
+                                <td>{{ result['end_date'] }}</td>
+                                <td>{{ result['min_staff_req'] }}</td>
                             </tr>
                             {% endfor %} 
                         </tbody>
                     </table>
-                    {% endif %}
                 </div>
             </fieldset>
         </form>
