@@ -7,17 +7,13 @@
                 <legend class="border-bottom mb-4" style="font-size:35px">{{legend}}</legend>
                 <div class="row">
                     <div class="form-group col-md-6">
-                        {{ form.siteName.label(class="form-control-label") }}
-                        {% if form.siteName.errors %}
-                            {{ form.siteName(class="form-control form-control-lg is-invalid") }}
-                            <div style="color:red">
-                                {% for error in form.siteName.errors %}
-                                    <span style="font-size:13px">{{ error }}</span>
-                                {% endfor %}
-                            </div>
-                        {% else %}
-                            {{ form.siteName(class="form-control form-control-lg") }}
-                        {% endif %}
+                        <label for="sitesDrop" class="form-control-label">Site</label>
+                        <select name="sitesDrop" class="form-control form-control-lg" id="sitesDrop" required>
+                            <option value="all">--All--</option>
+                            {% for site in all_sites %}
+                                <option value="{{ site['site_name'] }}">{{ site['site_name'] }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                     <div class="form-group col-md-6">
                         {{ form.openEveryDay.label(class="form-control-label") }}
@@ -146,8 +142,12 @@
                                 <td>
                                     <label for="event_count">{{ site['event_count'] }}</label>
                                 </td>
-                                <td></td>
-                                <td></td>
+                                <td>
+                                    <label for="event_count">{{ site['total_visits'] }}</label>
+                                </td>
+                                <td>
+                                    <label for="event_count">{{ site['my_visits'] }}</label>
+                                </td>
                             </tr>
                             {% endfor %} 
                         </tbody>

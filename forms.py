@@ -257,8 +257,6 @@ class VisitorEventDetail(FlaskForm):
     logVisit = SubmitField('Log Visit')
 
 class ExploreSite(FlaskForm): 
-    siteName = SelectField('Site Name', 
-        choices = [("all","--All--"),("Inman Park","Inman Park")])
     openEveryDay = SelectField('Open Everyday', choices = [('all','--All--'), ('yes', 'Yes'), ('no','No')])
     startDate = DateField('Start Date')
     endDate = DateField('End Date')
