@@ -74,7 +74,8 @@ class EmployeeVisitorRegistrationForm(FlaskForm): # inherits from FlaskForm
     submit = SubmitField('Register')
 
 class EmailRegistrationForm(FlaskForm):
-    email = StringField('Email', validators=[DataRequired(), Email()])
+    email = StringField('Email', validators=[Email()])
+    addEmail = SubmitField('Add Email')
 
 class EmployeeProfileForm(FlaskForm):
     firstName = StringField('First Name', validators=[DataRequired()])
@@ -112,7 +113,7 @@ class SiteForm(FlaskForm):
 
 class EventForm(FlaskForm): 
     name = StringField('Name', validators=[DataRequired()])
-    price = DecimalField('Price', validators=[NumberRange(min=0.00, max=None, message="Positive Price Only")])
+    price = DecimalField('Price')
     capacity = IntegerField('Capacity', validators=[DataRequired(), NumberRange(min=1, max=None, message="Positive Capacity Only")])
     minStaff = IntegerField('Minimum Staff Required', validators=[DataRequired(), NumberRange(min=1, max=None, message="Positive Number Only")])
     startDate = DateField('Start Date', validators=[DataRequired()])
@@ -175,6 +176,7 @@ class ManageEvent(FlaskForm):
     maxRevenueRange = IntegerField('Max Revenue')
     filter = SubmitField('Filter')
     viewEdit = SubmitField('View/Edit')
+    delete = SubmitField('Delete')
     nameUpSort = SubmitField('Up')
     nameDownSort = SubmitField('Down')
     staffUpSort = SubmitField('Up')

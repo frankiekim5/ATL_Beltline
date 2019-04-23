@@ -71,7 +71,6 @@
             <div class="form-group">
                 {{ form.filter(class="btn btn-outline-info") }}
             </div>
-        </form>
         <hr>
         <table class="table table-bordered">
             <thead>
@@ -95,12 +94,16 @@
             <tbody>
                 {% for staff in all_staff %}
                 <tr>
-                    <td>{{staff['name']}}</td>
+                    <td>
+                        {{staff['name']}}
+                        <input type="hidden" name="staff_name" value="{{all_staff}}">
+                    </td>
                     <td>{{staff['event_count']}}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
+    </form>
         <a class="btn btn-outline-info mb-3" href="{{ url_for('main', emails=emails, userType=userType, username=username) }}">Back</a>
     </div>
 {% endblock content %}
