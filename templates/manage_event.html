@@ -145,7 +145,7 @@
                 </div>
                 <div class="form-group">
                     {{ form.filter(class="btn btn-outline-info") }}
-                    <a class="btn btn-outline-info float-right" href="">Delete</a>
+                    {{ form.delete(class="btn btn-outline-info float-right mr-3") }}
                     {{ form.viewEdit(class="btn btn-outline-info float-right mr-3") }}
                     <a class="btn btn-outline-info float-right mr-3" href="{{ url_for('create_event', userType=userType, username=username) }}">Create</a>
                 </div>
@@ -195,9 +195,8 @@
                                 {% for event in events %}
                                 <tr>
                                     <td>
-                                        <input type="radio" name="event_name" value="{{event['event_name']}}">
-                                        <input type="hidden" name="start_date {{event['event_name']}}" value="{{event['start_date']}}">
-                                        <input type="hidden" name="site_name {{event['event_name']}}" value="{{event['site_name']}}">
+                                        <input type="radio" name="event_name" value="{{event['event_name']}},{{event['start_date']}},{{event['site_name']}}">
+                                        <input type="hidden" name="events" value="{{events}}">
                                         <label for="event_name">{{ event['event_name'] }}</label>
                                     </td>
                                     <td>
