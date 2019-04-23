@@ -112,7 +112,7 @@ class SiteForm(FlaskForm):
 
 class EventForm(FlaskForm): 
     name = StringField('Name', validators=[DataRequired()])
-    price = DecimalField('Price', validators=[DataRequired(), NumberRange(min=0.01, max=None, message="Positive Price Only")])
+    price = DecimalField('Price', validators=[NumberRange(min=0.00, max=None, message="Positive Price Only")])
     capacity = IntegerField('Capacity', validators=[DataRequired(), NumberRange(min=1, max=None, message="Positive Capacity Only")])
     minStaff = IntegerField('Minimum Staff Required', validators=[DataRequired(), NumberRange(min=1, max=None, message="Positive Number Only")])
     startDate = DateField('Start Date', validators=[DataRequired()])

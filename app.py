@@ -61,6 +61,24 @@ def registerUser():
         # Create cursor
         cur = mysql.connection.cursor()
 
+        cur.execute("SELECT username FROM user")
+        data = cur.fetchall()
+        usernames = []
+        for user in data: 
+            usernames.append(user['username'])
+        if username in usernames: 
+            flash("Username already taken. Please give another username.", 'danger')
+            return render_template('register_user.html', title='Register User', form=form)
+
+        cur.execute("SELECT email FROM user_email")
+        data = cur.fetchall()
+        emails = []
+        for e in data: 
+            emails.append(e['email'])
+        if email in emails: 
+            flash("Email already taken. Please give another email.", 'danger')
+            return render_template('register_user.html', title='Register User', form=form)
+
         # Execute query
         cur.execute("INSERT INTO user(username, firstname, lastname, status, password) VALUES(%s, %s, %s, %s, %s)", (username, firstname, lastname, status, password))
         cur.execute("INSERT INTO user_email(username, email) VALUES(%s, %s)", (username, email))
@@ -1580,8 +1598,11 @@ def edit_site(site_name):
                 new_manager = manager_username
             else:
                 new_manager = manager_username['username']
-        
-        cur.execute("UPDATE site SET site_name=%s, manager_username=%s, zipcode=%s, address=%s, open_everyday=%s WHERE site_name=%s", (siteName, new_manager, zipcode, address, openEveryday, site_name))
+
+        if manager_username != manager_username: 
+            cur.execute("UPDATE site SET manager_username=%s, zipcode=%s, address=%s, open_everyday=%s WHERE site_name=%s", (new_manager, zipcode, address, openEveryday, site_name))
+        else: 
+            cur.execute("UPDATE site SET zipcode=%s, address=%s, open_everyday=%s WHERE site_name=%s", (zipcode, address, openEveryday, site_name))
         # Commit to DB
         mysql.connection.commit()
 
@@ -2412,13 +2433,12 @@ def manage_staff():
         lastname = name['lastname']
         fullName = firstname + " " + lastname
         staff_names.add(fullName)
-    
     # Find the number of events the staff member is assigned to
     all_staff = []
     for staff in staff_names:
         member = {}
         staff_name = staff.split()
-        cur.execute("SELECT username FROM user WHERE firstname=%s and lastname=%s", (staff_name[0], staff_name[1]))
+        cur.execute("SELECT username FROM user WHERE firstname=%s and lastname=%s", (staff_name[0].strip(), staff_name[1].strip()))
         username = cur.fetchone()['username']
         cur.execute("SELECT COUNT(*) FROM assign_to WHERE staff_username=%s", (username,))
         event_count = cur.fetchone()['COUNT(*)']
@@ -2716,31 +2736,7 @@ def view_schedule():
                         elif startDate == None and endDate != None: 
                             if event['end_date'] <= endDate: 
                                 results.append(event)
-                else: 
-                    if descriptionKeyword == '': 
-                        if startDate == None and endDate == None:
-                            results.append(event)
-                        elif startDate != None and endDate != None: 
-                            if event['start_date'] >= startDate and event['end_date'] <= endDate: 
-                                results.append(event)
-                        elif startDate != None and endDate == None: 
-                            if event['start_date'] >= startDate: 
-                                results.append(event)
-                        elif startDate == None and endDate != None: 
-                            if event['end_date'] <= endDate: 
-                                results.append(event)
-                    elif descriptionKeyword.lower() in event['description'].lower():
-                        if startDate == None and endDate == None: 
-                            results.append(event)
-                        elif startDate != None and endDate != None: 
-                            if event['start_date'] >= startDate and event['end_date'] <= endDate: 
-                                results.append(event)
-                        elif startDate != None and endDate == None: 
-                            if event['start_date'] >= startDate: 
-                                results.append(event)
-                        elif startDate == None and endDate != None: 
-                            if event['end_date'] <= endDate: 
-                                results.append(event)
+               
 
         form.eventName.data = eventName 
         form.descriptionKeyword.data = descriptionKeyword
