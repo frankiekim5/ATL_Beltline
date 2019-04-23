@@ -2788,7 +2788,10 @@ def manage_event():
     cur = mysql.connection.cursor()
 
     # Get the manager's site
-    cur.execute("SELECT site_name FROM site WHERE manager_username=%s", (username,))
+    result = cur.execute("SELECT site_name FROM site WHERE manager_username=%s", (username,))
+    if result == 0:
+        flash('Manager is not assigned to a site', 'danger')
+        return redirect(url_for('manage_profile', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username')))
     site_name = cur.fetchone()['site_name']
 
     # Commit to DB
@@ -3841,11 +3844,17 @@ def manage_staff():
     cur = mysql.connection.cursor()
 
     # Find the site for the manager
-    cur.execute("SELECT site_name FROM site WHERE manager_username=%s", (username,))
+    result = cur.execute("SELECT site_name FROM site WHERE manager_username=%s", (username,))
+    if result == 0:
+        flash('Manager is not assigned to a site', 'danger')
+        return redirect(url_for('manage_profile', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username')))
     site_name = cur.fetchone()['site_name']
 
     # Find the staff assigned to this site
-    cur.execute("SELECT DISTINCT staff_username FROM assign_to WHERE site_name=%s", (site_name,))
+    result = cur.execute("SELECT DISTINCT staff_username FROM assign_to WHERE site_name=%s", (site_name,))
+    if result == 0:
+        flash('Manager is not assigned to a site', 'danger')
+        return redirect(url_for('manage_profile', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username')))
     staff_usernames = cur.fetchall()
     
 
@@ -3957,7 +3966,10 @@ def site_report():
     # Create cursor
     cur = mysql.connection.cursor()
 
-    cur.execute("SELECT site_name from site WHERE manager_username=%s", (username,))
+    result = cur.execute("SELECT site_name from site WHERE manager_username=%s", (username,))
+    if result == 0:
+        flash('Manager is not assigned to a site', 'danger')
+        return redirect(url_for('manage_profile', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username')))
     site_name = cur.fetchone()['site_name']
 
     # Commit to DB
