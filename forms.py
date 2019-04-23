@@ -141,16 +141,10 @@ class ManageTransitForm(FlaskForm):
     filter = SubmitField('Filter')
     edit = SubmitField('Edit')
     delete = SubmitField('Delete')
-    routeUpSort = SubmitField('Up')
-    routeDownSort = SubmitField('Down')
     typeUpSort = SubmitField('Up')
     typeDownSort = SubmitField('Down')
     priceUpSort = SubmitField('Up')
     priceDownSort = SubmitField('Down')
-    connectUpSort = SubmitField('Up')
-    connectDownSort = SubmitField('Down')
-    transitUpSort = SubmitField('Up')
-    transitDownSort = SubmitField('Down')
 
 class ManageUser(FlaskForm): 
     username = StringField('Username')
@@ -181,6 +175,16 @@ class ManageEvent(FlaskForm):
     maxRevenueRange = IntegerField('Max Revenue')
     filter = SubmitField('Filter')
     viewEdit = SubmitField('View/Edit')
+    nameUpSort = SubmitField('Up')
+    nameDownSort = SubmitField('Down')
+    staffUpSort = SubmitField('Up')
+    staffDownSort = SubmitField('Down')
+    durationUpSort = SubmitField('Up')
+    durationDownSort = SubmitField('Down')
+    visitUpSort = SubmitField('Up')
+    visitDownSort = SubmitField('Down')
+    revenueUpSort = SubmitField('Up')
+    revenueDownSort = SubmitField('Down')
 
 class EditEvent(FlaskForm): 
     staffAssigned = SelectMultipleField('Staff Assigned', 
@@ -192,6 +196,12 @@ class EditEvent(FlaskForm):
     maxRevenueRange = IntegerField('Max Daily Revenue')
     filter = SubmitField('Filter')
     update = SubmitField('Update')
+    dateUpSort = SubmitField('Up')
+    dateDownSort = SubmitField('Down')
+    visitUpSort = SubmitField('Up')
+    visitDownSort = SubmitField('Down')
+    revenueUpSort = SubmitField('Up')
+    revenueDownSort = SubmitField('Down')
 
 class UserTakeTransit(FlaskForm): 
     transportType = SelectField('Transport', choices = [('all','--All--'),('MARTA','MARTA'), ('Bus','Bus'),('Bike','Bike')],validators=[DataRequired()])
@@ -199,6 +209,12 @@ class UserTakeTransit(FlaskForm):
     maxPrice = DecimalField('Max Price')
     transitDate = DateField('Transit Date')
     logTransit = SubmitField('Log Transit')
+    transportUpSort = SubmitField('Up')
+    transportDownSort = SubmitField('Down')
+    priceUpSort = SubmitField('Up')
+    priceDownSort = SubmitField('Down')
+    numConnectedUpSort = SubmitField('Up')
+    numConnectedDownSort = SubmitField('Down')
     filter = SubmitField('Filter')
 
 class TransitHistory(FlaskForm): 
@@ -207,6 +223,15 @@ class TransitHistory(FlaskForm):
     startDate = DateField('Start Date')
     endDate = DateField('End Date')
     filter = SubmitField('Filter')
+    dateUpSort = SubmitField('Up')
+    dateDownSort = SubmitField('Down')
+    routeUpSort = SubmitField('Up')
+    routeDownSort = SubmitField('Down')
+    transportUpSort = SubmitField('Up')
+    transportDownSort = SubmitField('Down')
+    priceUpSort = SubmitField('Up')
+    priceDownSort = SubmitField('Down')
+
 
 class ManageStaff(FlaskForm): 
     firstName = StringField('First Name')
@@ -214,6 +239,10 @@ class ManageStaff(FlaskForm):
     startDate = DateField('Start Date')
     endDate = DateField('End Date')
     filter = SubmitField('Filter')
+    staffUpSort = SubmitField('Up')
+    staffDownSort = SubmitField('Down')
+    shiftUpSort = SubmitField('Up')
+    shiftDownSort = SubmitField('Down')
 
 class SiteReport(FlaskForm): 
     startDate = DateField('Start Date', validators=[DataRequired()])
@@ -228,6 +257,17 @@ class SiteReport(FlaskForm):
     maxRevenueRange = IntegerField('Max Revenue')
     filter = SubmitField("Filter")
     dailyDetail = SubmitField("Daily Detail")
+    dateUpSort = SubmitField('Up')
+    dateDownSort = SubmitField('Down')
+    eventUpSort = SubmitField('Up')
+    eventDownSort = SubmitField('Down')
+    staffUpSort = SubmitField('Up')
+    staffDownSort = SubmitField('Down')
+    visitUpSort = SubmitField('Up')
+    visitDownSort = SubmitField('Down')
+    revenueUpSort = SubmitField('Up')
+    revenueDownSort = SubmitField('Down')
+
 
 class ViewSchedule(FlaskForm): 
     eventName = StringField("Event Name")
@@ -237,6 +277,17 @@ class ViewSchedule(FlaskForm):
     eventList = RadioField('Events', choices = [('Eastside Trail','Eastside Trail'),('Westside Trail','Westside Trail')])
     filter = SubmitField("Filter")
     viewEvent = SubmitField("View Event")
+    eventUpSort = SubmitField('Up')
+    eventDownSort = SubmitField('Down')
+    startDateUpSort = SubmitField('Up')
+    startDateDownSort = SubmitField('Down')
+    endDateUpSort = SubmitField('Up')
+    endDateDownSort = SubmitField('Down')
+    siteUpSort = SubmitField('Up')
+    siteDownSort = SubmitField('Down')
+    staffUpSort = SubmitField('Up')
+    staffDownSort = SubmitField('Down')
+
 
 class ExploreEvent(FlaskForm): 
     eventName = StringField("Name")
@@ -251,6 +302,19 @@ class ExploreEvent(FlaskForm):
     includeSoldOutEvent = BooleanField('Include Sold Out Evet')
     filter = SubmitField('Filter')
     eventDetail = SubmitField('Event Detail')
+
+    eventUpSort = SubmitField('Up')
+    eventDownSort = SubmitField('Down')
+    siteUpSort = SubmitField('Up')
+    siteDownSort = SubmitField('Down')
+    priceUpSort = SubmitField('Up')
+    priceDownSort = SubmitField('Down')
+    ticketUpSort = SubmitField('Up')
+    ticketDownSort = SubmitField('Down')
+    totalUpSort = SubmitField('Up')
+    totalDownSort = SubmitField('Down')
+    myVisitUpSort = SubmitField('Up')
+    myVisitDownSort = SubmitField('Down')
 
 class VisitorEventDetail(FlaskForm): 
     visitDate = DateField('Visit Date', validators=[DataRequired()])
@@ -268,13 +332,29 @@ class ExploreSite(FlaskForm):
     filter = SubmitField('Filter')
     siteDetail = SubmitField('Site Detail')
     transitDetail = SubmitField('Transit Detail')
-    
+    siteUpSort = SubmitField('Up')
+    siteDownSort = SubmitField('Down')
+    eventUpSort = SubmitField('Up')
+    eventDownSort = SubmitField('Down')
+    totalUpSort = SubmitField('Up')
+    totalDownSort = SubmitField('Down')
+    myVisitUpSort = SubmitField('Up')
+    myVisitDownSort = SubmitField('Down')
+
 class TransitDetail(FlaskForm): 
     transportType = SelectField('Transport', choices = [('all','--All--'),('MARTA','MARTA'), ('Bus','Bus'),('Bike','Bike')],validators=[DataRequired()])
     routeList = RadioField('Routes', choices = [('816','816'),('102','102')], validators=[DataRequired()])
     transitDate = DateField('Transit Date')
     logTransit = SubmitField('Log Transit')
     filter = SubmitField('Filter')
+
+    transportUpSort = SubmitField('Up')
+    transportDownSort = SubmitField('Down')
+    priceUpSort = SubmitField('Up')
+    priceDownSort = SubmitField('Down')
+    connectedSitesUpSort = SubmitField('Up')
+    connectedSitesDownSort = SubmitField('Down')
+    
 
 class SiteDetail(FlaskForm): 
     visitDate = DateField('Visit Date', validators=[DataRequired()])
@@ -285,3 +365,23 @@ class VisitHistory(FlaskForm):
     startDate = DateField('Start Date')
     endDate = DateField('End Date')
     filter = SubmitField('Filter')
+
+    dateUpSort = SubmitField('Up')
+    dateDownSort = SubmitField('Down')
+    eventUpSort = SubmitField('Up')
+    eventDownSort = SubmitField('Down')
+    siteUpSort = SubmitField('Up')
+    siteDownSort = SubmitField('Down')
+    priceUpSort = SubmitField('Up')
+    priceDownSort = SubmitField('Down')
+    
+
+class DailyDetail(FlaskForm): 
+    eventUpSort = SubmitField('Up')
+    eventDownSort = SubmitField('Down')
+    staffUpSort = SubmitField('Up')
+    staffDownSort = SubmitField('Down')
+    visitUpSort = SubmitField('Up')
+    visitDownSort = SubmitField('Down')
+    revenueUpSort = SubmitField('Up')
+    revenueDownSort = SubmitField('Down')

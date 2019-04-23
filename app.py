@@ -1,6 +1,6 @@
 from flask import Flask, render_template, url_for, flash, redirect, session, request, jsonify
 from flask_mysqldb import MySQL
-from forms import UserRegistrationForm, LoginForm, VisitorRegistrationForm, EmployeeRegistrationForm, EmployeeVisitorRegistrationForm, TransitForm, EmailRegistrationForm, TransitForm, SiteForm, EventForm, ManageSiteForm, ManageTransitForm, ManageUser, ManageEvent, EditEvent, UserTakeTransit, TransitHistory, EmployeeProfileForm, ManageStaff, SiteReport, ViewSchedule, ExploreEvent, VisitorEventDetail, ExploreSite, TransitDetail, SiteDetail, VisitHistory
+from forms import UserRegistrationForm, LoginForm, VisitorRegistrationForm, EmployeeRegistrationForm, EmployeeVisitorRegistrationForm, TransitForm, EmailRegistrationForm, TransitForm, SiteForm, EventForm, ManageSiteForm, ManageTransitForm, ManageUser, ManageEvent, EditEvent, UserTakeTransit, TransitHistory, EmployeeProfileForm, ManageStaff, SiteReport, ViewSchedule, ExploreEvent, VisitorEventDetail, ExploreSite, TransitDetail, SiteDetail, VisitHistory, DailyDetail
 from passlib.hash import sha256_crypt
 from random import randint
 from datetime import datetime
@@ -2608,6 +2608,7 @@ def site_report():
 ## SCREEN 30 
 @app.route('/daily_detail', methods=["GET", "POST"])
 def daily_detail(): 
+    form = DailyDetail()
     username = request.args['username']
     date = request.args['date']
     increment_date = datetime.strptime(date, '%Y-%m-%d')
@@ -2651,7 +2652,7 @@ def daily_detail():
     # Close connection
     cur.close()
 
-    return render_template("daily_detail.html", title="Daily Detail", legend="Daily Detail", events=dailyDetail, userType=request.args.get('userType'), username=request.args.get('username'))
+    return render_template("daily_detail.html", title="Daily Detail", legend="Daily Detail",form=form, events=dailyDetail, userType=request.args.get('userType'), username=request.args.get('username'))
 
 ## SCREEN 31
 @app.route('/view_schedule', methods=["GET", "POST"])

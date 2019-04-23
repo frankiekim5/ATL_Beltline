@@ -126,10 +126,34 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                            <th scope="col">Site Name</th>
-                            <th scope="col">Event Count</th>
-                            <th scope="col">Total Visits</th>
-                            <th scope="col">My Visits</th>
+                            <th scope="col">
+                                Site Name
+                                <div class="btn-group float-right">
+                                    {{ form.siteUpSort(class="btn btn-outline-info form-inline float-right") }}
+                                    {{ form.siteDownSort(class="btn btn-outline-info form-inline float-right") }}
+                                </div>
+                            </th>
+                            <th scope="col">
+                                Event Count
+                                <div class="btn-group float-right">
+                                    {{ form.eventUpSort(class="btn btn-outline-info form-inline float-right") }}
+                                    {{ form.eventDownSort(class="btn btn-outline-info form-inline float-right") }}
+                                </div>
+                            </th>
+                            <th scope="col">
+                                Total Visits
+                                <div class="btn-group float-right">
+                                    {{ form.totalUpSort(class="btn btn-outline-info form-inline float-right") }}
+                                    {{ form.totalDownSort(class="btn btn-outline-info form-inline float-right") }}
+                                </div>
+                            </th>
+                            <th scope="col">
+                                My Visits
+                                <div class="btn-group float-right">
+                                    {{ form.myVisitUpSort(class="btn btn-outline-info form-inline float-right") }}
+                                    {{ form.myVisitDownSort(class="btn btn-outline-info form-inline float-right") }}
+                                </div>
+                            </th>
                             </tr>
                         </thead>
                         <tbody>

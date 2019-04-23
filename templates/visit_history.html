@@ -65,10 +65,34 @@
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
-                                <th scope="col">Date</th>
-                                <th scope="col">Event</th>
-                                <th scope="col">Site</th>
-                                <th scope="col">Price</th>
+                                <th scope="col">
+                                    Date
+                                    <div class="btn-group float-right">
+                                        {{ form.dateUpSort(class="btn btn-outline-info") }}
+                                        {{ form.dateDownSort(class="btn btn-outline-info") }}
+                                    </div>
+                                </th>
+                                <th scope="col">
+                                    Event
+                                    <div class="btn-group float-right">
+                                        {{ form.eventUpSort(class="btn btn-outline-info") }}
+                                        {{ form.eventDownSort(class="btn btn-outline-info") }}
+                                    </div>
+                                </th>
+                                <th scope="col">
+                                    Site
+                                    <div class="btn-group float-right">
+                                        {{ form.siteUpSort(class="btn btn-outline-info") }}
+                                        {{ form.siteDownSort(class="btn btn-outline-info") }}
+                                    </div>
+                                </th>
+                                <th scope="col">
+                                    Price
+                                    <div class="btn-group float-right">
+                                        {{ form.priceUpSort(class="btn btn-outline-info") }}
+                                        {{ form.priceDownSort(class="btn btn-outline-info") }}
+                                    </div>
+                                </th>
                                 </tr>
                             </thead>
                             {% for event in events %}

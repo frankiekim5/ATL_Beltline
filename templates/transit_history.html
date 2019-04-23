@@ -78,10 +78,26 @@
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
-                                <th scope="col">Date</th>
-                                <th scope="col">Route</th>
-                                <th scope="col">Transport Type</th>
-                                <th scope="col">Price</th>
+                                <th scope="col">
+                                    Date
+                                    {{ form.dateDownSort(class="btn btn-outline-info form-inline float-right") }}
+                                    {{ form.dateUpSort(class="btn btn-outline-info form-inline float-right") }}
+                                </th>
+                                <th scope="col">
+                                    Route
+                                    {{ form.routeDownSort(class="btn btn-outline-info form-inline float-right") }}
+                                    {{ form.routeUpSort(class="btn btn-outline-info form-inline float-right") }}
+                                </th>
+                                <th scope="col">
+                                    Transport Type
+                                    {{ form.transportDownSort(class="btn btn-outline-info form-inline float-right") }}
+                                    {{ form.transportUpSort(class="btn btn-outline-info form-inline float-right") }}
+                                </th>
+                                <th scope="col">
+                                    Price
+                                    {{ form.priceDownSort(class="btn btn-outline-info form-inline float-right") }}
+                                    {{ form.priceUpSort(class="btn btn-outline-info form-inline float-right") }}
+                                </th>
                                 </tr>
                             </thead>
                             <tbody>

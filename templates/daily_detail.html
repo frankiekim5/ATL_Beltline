@@ -5,10 +5,34 @@
     <table class="table table-bordered">
         <thead>
             <tr>
-            <th scope="col">Event Name</th>
-            <th scope="col">Staff Name</th>
-            <th scope="col">Visits</th>
-            <th scope="col">Revenues ($)</th>
+            <th scope="col">
+                Event Name
+                <div class="btn-group float-right">
+                    {{ form.eventUpSort(class="btn btn-outline-info") }}
+                    {{ form.eventDownSort(class="btn btn-outline-info") }}
+                </div>
+            </th>
+            <th scope="col">
+                Staff Name
+                <div class="btn-group float-right">
+                    {{ form.staffUpSort(class="btn btn-outline-info") }}
+                    {{ form.staffDownSort(class="btn btn-outline-info") }}
+                </div>
+            </th>
+            <th scope="col">
+                Visits
+                <div class="btn-group float-right">
+                    {{ form.visitUpSort(class="btn btn-outline-info") }}
+                    {{ form.visitDownSort(class="btn btn-outline-info") }}
+                </div>
+            </th>
+            <th scope="col">
+                Revenues ($)
+                <div class="btn-group float-right">
+                    {{ form.revenueUpSort(class="btn btn-outline-info") }}
+                    {{ form.revenueDownSort(class="btn btn-outline-info") }}
+                </div>
+            </th>
             </tr>
         </thead>
         <tbody>

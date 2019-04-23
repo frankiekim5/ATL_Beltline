@@ -142,12 +142,48 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                            <th scope="col">Event Name</th>
-                            <th scope="col">Site Name</th>
-                            <th scope="col">Ticket Price</th>
-                            <th scope="col">Tickets Remaining</th>
-                            <th scope="col">Total Visits</th>
-                            <th scope="col">My Visits</th>
+                            <th scope="col">
+                                Event Name
+                                <div class="btn-group mt-1">
+                                    {{ form.eventUpSort(class="btn btn-outline-info form-inline float-right") }}
+                                    {{ form.eventDownSort(class="btn btn-outline-info form-inline float-right") }}
+                                </div>
+                            </th>
+                            <th scope="col">
+                                Site Name
+                                <div class="btn-group mt-1">
+                                    {{ form.siteUpSort(class="btn btn-outline-info form-inline float-right") }}
+                                    {{ form.siteDownSort(class="btn btn-outline-info form-inline float-right") }}
+                                </div>
+                            </th>
+                            <th scope="col">
+                                Ticket Price
+                                <div class="btn-group mt-1">
+                                    {{ form.priceUpSort(class="btn btn-outline-info form-inline float-right") }}
+                                    {{ form.priceDownSort(class="btn btn-outline-info form-inline float-right") }}
+                                </div>
+                            </th>
+                            <th scope="col">
+                                Tickets Remaining
+                                <div class="btn-group mt-1">
+                                    {{ form.ticketUpSort(class="btn btn-outline-info form-inline float-right") }}
+                                    {{ form.ticketDownSort(class="btn btn-outline-info form-inline float-right") }}
+                                </div>
+                            </th>
+                            <th scope="col">
+                                Total Visits
+                                <div class="btn-group mt-1">
+                                    {{ form.totalUpSort(class="btn btn-outline-info form-inline float-right") }}
+                                    {{ form.totalDownSort(class="btn btn-outline-info form-inline float-right") }}
+                                </div>
+                            </th>
+                            <th scope="col">
+                                My Visits
+                                <div class="btn-group mt-1">
+                                    {{ form.myVisitUpSort(class="btn btn-outline-info form-inline float-right") }}
+                                    {{ form.myVisitDownSort(class="btn btn-outline-info form-inline float-right") }}
+                                </div>
+                            </th>
                             </tr>
                         </thead>
                         <tbody>
