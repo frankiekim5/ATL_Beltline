@@ -199,6 +199,12 @@ class UserTakeTransit(FlaskForm):
     maxPrice = DecimalField('Max Price')
     transitDate = DateField('Transit Date')
     logTransit = SubmitField('Log Transit')
+    transportUpSort = SubmitField('Up')
+    transportDownSort = SubmitField('Down')
+    priceUpSort = SubmitField('Up')
+    priceDownSort = SubmitField('Down')
+    numConnectedUpSort = SubmitField('Up')
+    numConnectedDownSort = SubmitField('Down')
     filter = SubmitField('Filter')
 
 class TransitHistory(FlaskForm): 
