@@ -107,6 +107,24 @@ def registerVisitor():
         # Create cursor
         cur = mysql.connection.cursor()
 
+        cur.execute("SELECT username FROM user")
+        data = cur.fetchall()
+        usernames = []
+        for user in data: 
+            usernames.append(user['username'])
+        if username in usernames: 
+            flash("Username already taken. Please give another username.", 'danger')
+            return render_template('register_visitor.html', title='Register Visitor', form=form)
+
+        cur.execute("SELECT email FROM user_email")
+        data = cur.fetchall()
+        emails = []
+        for e in data: 
+            emails.append(e['email'])
+        if email in emails: 
+            flash("Email already taken. Please give another email.", 'danger')
+            return render_template('register_visitor.html', title='Register Visitor', form=form)
+
         # Execute query
         cur.execute("INSERT INTO user(username, firstname, lastname, status, password) VALUES(%s, %s, %s, %s, %s)", (username, firstname, lastname, status, password))
         cur.execute("INSERT INTO visitor(username) VALUES(%s)", (username,))
@@ -140,6 +158,24 @@ def registerEmployee():
 
         # Create cursor
         cur = mysql.connection.cursor()
+
+        cur.execute("SELECT username FROM user")
+        data = cur.fetchall()
+        usernames = []
+        for user in data: 
+            usernames.append(user['username'])
+        if username in usernames: 
+            flash("Username already taken. Please give another username.", 'danger')
+            return render_template('register_employee.html', title='Register Employee', form=form)
+
+        cur.execute("SELECT email FROM user_email")
+        data = cur.fetchall()
+        emails = []
+        for e in data: 
+            emails.append(e['email'])
+        if email in emails: 
+            flash("Email already taken. Please give another email.", 'danger')
+            return render_template('register_employee.html', title='Register Employee', form=form)
 
         # Execute query
         cur.execute("INSERT INTO user(username, firstname, lastname, status, password) VALUES(%s, %s, %s, %s, %s)", (username, firstname, lastname, status, password))
@@ -178,6 +214,25 @@ def registerEmployeeVisitor():
 
         # Create cursor
         cur = mysql.connection.cursor()
+
+        cur.execute("SELECT username FROM user")
+        data = cur.fetchall()
+        usernames = []
+        for user in data: 
+            usernames.append(user['username'])
+        if username in usernames: 
+            flash("Username already taken. Please give another username.", 'danger')
+            return render_template('register_employee_visitor.html', title='Register Employee', form=form)
+
+        cur.execute("SELECT email FROM user_email")
+        data = cur.fetchall()
+        emails = []
+        for e in data: 
+            emails.append(e['email'])
+        if email in emails: 
+            flash("Email already taken. Please give another email.", 'danger')
+            return render_template('register_employee_visitor.html', title='Register Employee', form=form)
+
 
         # Execute query
         cur.execute("INSERT INTO user(username, firstname, lastname, status, password) VALUES(%s, %s, %s, %s, %s)", (username, firstname, lastname, status, password))
