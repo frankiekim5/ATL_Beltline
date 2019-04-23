@@ -105,7 +105,7 @@
                                         <td>
                                             <input type="radio" name="transit" value="{{transit['transit_route'] + ' ' + transit['transit_type']}}">
                                             <label for="transit_route">{{ transit['transit_route'] }}</label>
-                                            <input type="hidden" name="transit_name" value="{{transits}}">
+                                            <input type="hidden" name="transits" value="{{transits}}">
                                         </td>
                                         <td>
                                             <label for="transport_type">{{ transit['transit_type'] }}</label>
@@ -117,7 +117,7 @@
                                             <label for="connected_sites">{{ transit['connected_sites'] }}</label>
                                         </td>
                                         <td>
-                                            <label for="transits_logged">{{ transit['connected_sites'] }}</label>
+                                            <label for="transits_logged">{{ transit['transits_logged'] }}</label>
                                         </td>
                                     </tr>
                                     {% endfor %}

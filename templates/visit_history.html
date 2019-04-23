@@ -98,6 +98,7 @@
                             {% for event in events %}
                             <tbody>
                                 <tr>
+                                    <input type="hidden" name="events" value="{{events}}">
                                     <td>{{event['visit_event_date']}}</td>
                                     <td>{{event['event_name']}}</td>
                                     <td>{{event['site_name']}}</td>

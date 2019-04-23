@@ -494,6 +494,181 @@ def take_transit():
     filtered_transits = []
     username = request.args['username']
 
+        ## SORTING ## 
+    if form.transportUpSort.data:
+        transitList = request.form['transits']
+        transitList = transitList.replace('Decimal', '')
+        transitList = ast.literal_eval(transitList)
+        
+        temp_transit = []
+        for transit in transitList:
+            t = {}
+            t['transit_route'] = transit['transit_route']
+            t['transit_type'] = transit['transit_type']
+            temp_transit.append(t)
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a1.transit_route, a1.transit_type, a1.transit_price, a2.connected_sites FROM transit as a1 JOIN (SELECT transit_type, transit_route, COUNT(*) as connected_sites FROM connect GROUP BY transit_type, transit_route) as a2 ON a1.transit_route = a2.transit_route AND a1.transit_type = a2.transit_type order by transit_type asc")
+        results = cur.fetchall()
+        
+        for transit in results:
+            for t in temp_transit:
+                if transit['transit_route'] == t['transit_route'] and transit['transit_type'] == t['transit_type']:
+                    filtered_transits.append(transit)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template('take_transit.html', sites=all_sites, transits=filtered_transits, title="Take Transit",legend="Take Transit",form=form, userType=request.args.get('userType'), username=username)
+    if form.transportDownSort.data:
+        transitList = request.form['transits']
+        transitList = transitList.replace('Decimal', '')
+        transitList = ast.literal_eval(transitList)
+        
+        temp_transit = []
+        for transit in transitList:
+            t = {}
+            t['transit_route'] = transit['transit_route']
+            t['transit_type'] = transit['transit_type']
+            temp_transit.append(t)
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a1.transit_route, a1.transit_type, a1.transit_price, a2.connected_sites FROM transit as a1 JOIN (SELECT transit_type, transit_route, COUNT(*) as connected_sites FROM connect GROUP BY transit_type, transit_route) as a2 ON a1.transit_route = a2.transit_route AND a1.transit_type = a2.transit_type order by transit_type desc")
+        results = cur.fetchall()
+        
+        for transit in results:
+            for t in temp_transit:
+                if transit['transit_route'] == t['transit_route'] and transit['transit_type'] == t['transit_type']:
+                    filtered_transits.append(transit)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template('take_transit.html', sites=all_sites, transits=filtered_transits, title="Take Transit",legend="Take Transit",form=form, userType=request.args.get('userType'), username=username)
+    if form.priceUpSort.data:
+        transitList = request.form['transits']
+        transitList = transitList.replace('Decimal', '')
+        transitList = ast.literal_eval(transitList)
+        
+        temp_transit = []
+        for transit in transitList:
+            t = {}
+            t['transit_route'] = transit['transit_route']
+            t['transit_type'] = transit['transit_type']
+            temp_transit.append(t)
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a1.transit_route, a1.transit_type, a1.transit_price, a2.connected_sites FROM transit as a1 JOIN (SELECT transit_type, transit_route, COUNT(*) as connected_sites FROM connect GROUP BY transit_type, transit_route) as a2 ON a1.transit_route = a2.transit_route AND a1.transit_type = a2.transit_type order by transit_price asc")
+        results = cur.fetchall()
+        
+        for transit in results:
+            for t in temp_transit:
+                if transit['transit_route'] == t['transit_route'] and transit['transit_type'] == t['transit_type']:
+                    filtered_transits.append(transit)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template('take_transit.html', sites=all_sites, transits=filtered_transits, title="Take Transit",legend="Take Transit",form=form, userType=request.args.get('userType'), username=username)
+    if form.priceDownSort.data:
+        transitList = request.form['transits']
+        transitList = transitList.replace('Decimal', '')
+        transitList = ast.literal_eval(transitList)
+        
+        temp_transit = []
+        for transit in transitList:
+            t = {}
+            t['transit_route'] = transit['transit_route']
+            t['transit_type'] = transit['transit_type']
+            temp_transit.append(t)
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a1.transit_route, a1.transit_type, a1.transit_price, a2.connected_sites FROM transit as a1 JOIN (SELECT transit_type, transit_route, COUNT(*) as connected_sites FROM connect GROUP BY transit_type, transit_route) as a2 ON a1.transit_route = a2.transit_route AND a1.transit_type = a2.transit_type order by transit_price desc")
+        results = cur.fetchall()
+        
+        for transit in results:
+            for t in temp_transit:
+                if transit['transit_route'] == t['transit_route'] and transit['transit_type'] == t['transit_type']:
+                    filtered_transits.append(transit)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template('take_transit.html', sites=all_sites, transits=filtered_transits, title="Take Transit",legend="Take Transit",form=form, userType=request.args.get('userType'), username=username)
+    if form.numConnectedUpSort.data:
+        transitList = request.form['transits']
+        transitList = transitList.replace('Decimal', '')
+        transitList = ast.literal_eval(transitList)
+        
+        temp_transit = []
+        for transit in transitList:
+            t = {}
+            t['transit_route'] = transit['transit_route']
+            t['transit_type'] = transit['transit_type']
+            temp_transit.append(t)
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a1.transit_route, a1.transit_type, a1.transit_price, a2.connected_sites FROM transit as a1 JOIN (SELECT transit_type, transit_route, COUNT(*) as connected_sites FROM connect GROUP BY transit_type, transit_route) as a2 ON a1.transit_route = a2.transit_route AND a1.transit_type = a2.transit_type order by connected_sites asc")
+        results = cur.fetchall()
+        
+        for transit in results:
+            for t in temp_transit:
+                if transit['transit_route'] == t['transit_route'] and transit['transit_type'] == t['transit_type']:
+                    filtered_transits.append(transit)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template('take_transit.html', sites=all_sites, transits=filtered_transits, title="Take Transit",legend="Take Transit",form=form, userType=request.args.get('userType'), username=username)
+    if form.numConnectedDownSort.data:
+        transitList = request.form['transits']
+        transitList = transitList.replace('Decimal', '')
+        transitList = ast.literal_eval(transitList)
+        
+        temp_transit = []
+        for transit in transitList:
+            t = {}
+            t['transit_route'] = transit['transit_route']
+            t['transit_type'] = transit['transit_type']
+            temp_transit.append(t)
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a1.transit_route, a1.transit_type, a1.transit_price, a2.connected_sites FROM transit as a1 JOIN (SELECT transit_type, transit_route, COUNT(*) as connected_sites FROM connect GROUP BY transit_type, transit_route) as a2 ON a1.transit_route = a2.transit_route AND a1.transit_type = a2.transit_type order by connected_sites desc")
+        results = cur.fetchall()
+        
+        for transit in results:
+            for t in temp_transit:
+                if transit['transit_route'] == t['transit_route'] and transit['transit_type'] == t['transit_type']:
+                    filtered_transits.append(transit)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template('take_transit.html', sites=all_sites, transits=filtered_transits, title="Take Transit",legend="Take Transit",form=form, userType=request.args.get('userType'), username=username)
     if form.logTransit.data:
         if 'transit' not in request.form:
             flash('Please select a transit to take', 'danger')
@@ -633,14 +808,303 @@ def transit_history():
     username = request.args['username']
     transit_history = get_transit_history(username)
     all_sites = get_all_sites()
+    filtered_transits = []
 
+    ## SORTING ##
+
+    if form.dateUpSort.data:
+        transitList = request.form['transits']
+        transitList = transitList.replace('Decimal', '')
+        transitList = transitList.replace('datetime.date', '')
+        transitList = ast.literal_eval(transitList)
+        
+        temp_transit = []
+        for transit in transitList:
+            transit['transit_date'] = str(transit['transit_date']).replace('(', '')
+            transit_date = str(transit['transit_date']).replace(')', '')
+            transit_date = datetime.strptime(transit_date, '%Y, %m, %d')
+            transit_date = transit_date.date()
+            t = {}
+            t['transit_route'] = transit['transit_route']
+            t['transit_type'] = transit['transit_type']
+            t['transit_date'] = transit_date
+            temp_transit.append(t)
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a1.transit_date, a1.transit_route, a1.transit_type, a2.transit_price FROM take_transit as a1 JOIN (SELECT transit_type, transit_route, transit_price FROM transit) as a2 ON a1.transit_route = a2.transit_route AND a1.transit_type = a2.transit_type order by transit_date asc")
+        results = cur.fetchall()
+        
+        for transit in results:
+            for t in temp_transit:
+                if transit['transit_route'] == t['transit_route'] and transit['transit_type'] == t['transit_type'] and transit['transit_date'] == t['transit_date']:
+                    filtered_transits.append(transit)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template('transit_history.html', form=form, sites=all_sites, transits=filtered_transits, title='Transit History', legend='Transit History', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))    
+
+    if form.dateDownSort.data:
+        transitList = request.form['transits']
+        transitList = transitList.replace('Decimal', '')
+        transitList = transitList.replace('datetime.date', '')
+        transitList = ast.literal_eval(transitList)
+        
+        temp_transit = []
+        for transit in transitList:
+            transit['transit_date'] = str(transit['transit_date']).replace('(', '')
+            transit_date = str(transit['transit_date']).replace(')', '')
+            transit_date = datetime.strptime(transit_date, '%Y, %m, %d')
+            transit_date = transit_date.date()
+            t = {}
+            t['transit_route'] = transit['transit_route']
+            t['transit_type'] = transit['transit_type']
+            t['transit_date'] = transit_date
+            temp_transit.append(t)
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a1.transit_date, a1.transit_route, a1.transit_type, a2.transit_price FROM take_transit as a1 JOIN (SELECT transit_type, transit_route, transit_price FROM transit) as a2 ON a1.transit_route = a2.transit_route AND a1.transit_type = a2.transit_type order by transit_date desc")
+        results = cur.fetchall()
+        
+        for transit in results:
+            for t in temp_transit:
+                if transit['transit_route'] == t['transit_route'] and transit['transit_type'] == t['transit_type'] and transit['transit_date'] == t['transit_date']:
+                    filtered_transits.append(transit)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template('transit_history.html', form=form, sites=all_sites, transits=filtered_transits, title='Transit History', legend='Transit History', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))    
+
+    if form.routeUpSort.data:
+        transitList = request.form['transits']
+        transitList = transitList.replace('Decimal', '')
+        transitList = transitList.replace('datetime.date', '')
+        transitList = ast.literal_eval(transitList)
+        
+        temp_transit = []
+        for transit in transitList:
+            transit['transit_date'] = str(transit['transit_date']).replace('(', '')
+            transit_date = str(transit['transit_date']).replace(')', '')
+            transit_date = datetime.strptime(transit_date, '%Y, %m, %d')
+            transit_date = transit_date.date()
+            t = {}
+            t['transit_route'] = transit['transit_route']
+            t['transit_type'] = transit['transit_type']
+            t['transit_date'] = transit_date
+            temp_transit.append(t)
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a1.transit_date, a1.transit_route, a1.transit_type, a2.transit_price FROM take_transit as a1 JOIN (SELECT transit_type, transit_route, transit_price FROM transit) as a2 ON a1.transit_route = a2.transit_route AND a1.transit_type = a2.transit_type order by transit_route asc")
+        results = cur.fetchall()
+        
+        for transit in results:
+            for t in temp_transit:
+                if transit['transit_route'] == t['transit_route'] and transit['transit_type'] == t['transit_type'] and transit['transit_date'] == t['transit_date']:
+                    filtered_transits.append(transit)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template('transit_history.html', form=form, sites=all_sites, transits=filtered_transits, title='Transit History', legend='Transit History', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))    
+
+    if form.routeDownSort.data:
+        transitList = request.form['transits']
+        transitList = transitList.replace('Decimal', '')
+        transitList = transitList.replace('datetime.date', '')
+        transitList = ast.literal_eval(transitList)
+        
+        temp_transit = []
+        for transit in transitList:
+            transit['transit_date'] = str(transit['transit_date']).replace('(', '')
+            transit_date = str(transit['transit_date']).replace(')', '')
+            transit_date = datetime.strptime(transit_date, '%Y, %m, %d')
+            transit_date = transit_date.date()
+            t = {}
+            t['transit_route'] = transit['transit_route']
+            t['transit_type'] = transit['transit_type']
+            t['transit_date'] = transit_date
+            temp_transit.append(t)
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a1.transit_date, a1.transit_route, a1.transit_type, a2.transit_price FROM take_transit as a1 JOIN (SELECT transit_type, transit_route, transit_price FROM transit) as a2 ON a1.transit_route = a2.transit_route AND a1.transit_type = a2.transit_type order by transit_route desc")
+        results = cur.fetchall()
+        
+        for transit in results:
+            for t in temp_transit:
+                if transit['transit_route'] == t['transit_route'] and transit['transit_type'] == t['transit_type'] and transit['transit_date'] == t['transit_date']:
+                    filtered_transits.append(transit)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template('transit_history.html', form=form, sites=all_sites, transits=filtered_transits, title='Transit History', legend='Transit History', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))    
+
+    if form.transportUpSort.data:
+        transitList = request.form['transits']
+        transitList = transitList.replace('Decimal', '')
+        transitList = transitList.replace('datetime.date', '')
+        transitList = ast.literal_eval(transitList)
+        
+        temp_transit = []
+        for transit in transitList:
+            transit['transit_date'] = str(transit['transit_date']).replace('(', '')
+            transit_date = str(transit['transit_date']).replace(')', '')
+            transit_date = datetime.strptime(transit_date, '%Y, %m, %d')
+            transit_date = transit_date.date()
+            t = {}
+            t['transit_route'] = transit['transit_route']
+            t['transit_type'] = transit['transit_type']
+            t['transit_date'] = transit_date
+            temp_transit.append(t)
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a1.transit_date, a1.transit_route, a1.transit_type, a2.transit_price FROM take_transit as a1 JOIN (SELECT transit_type, transit_route, transit_price FROM transit) as a2 ON a1.transit_route = a2.transit_route AND a1.transit_type = a2.transit_type order by transit_type asc")
+        results = cur.fetchall()
+        
+        for transit in results:
+            for t in temp_transit:
+                if transit['transit_route'] == t['transit_route'] and transit['transit_type'] == t['transit_type'] and transit['transit_date'] == t['transit_date']:
+                    filtered_transits.append(transit)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template('transit_history.html', form=form, sites=all_sites, transits=filtered_transits, title='Transit History', legend='Transit History', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+    if form.transportDownSort.data:
+        transitList = request.form['transits']
+        transitList = transitList.replace('Decimal', '')
+        transitList = transitList.replace('datetime.date', '')
+        transitList = ast.literal_eval(transitList)
+        
+        temp_transit = []
+        for transit in transitList:
+            transit['transit_date'] = str(transit['transit_date']).replace('(', '')
+            transit_date = str(transit['transit_date']).replace(')', '')
+            transit_date = datetime.strptime(transit_date, '%Y, %m, %d')
+            transit_date = transit_date.date()
+            t = {}
+            t['transit_route'] = transit['transit_route']
+            t['transit_type'] = transit['transit_type']
+            t['transit_date'] = transit_date
+            temp_transit.append(t)
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a1.transit_date, a1.transit_route, a1.transit_type, a2.transit_price FROM take_transit as a1 JOIN (SELECT transit_type, transit_route, transit_price FROM transit) as a2 ON a1.transit_route = a2.transit_route AND a1.transit_type = a2.transit_type order by transit_type desc")
+        results = cur.fetchall()
+        
+        for transit in results:
+            for t in temp_transit:
+                if transit['transit_route'] == t['transit_route'] and transit['transit_type'] == t['transit_type'] and transit['transit_date'] == t['transit_date']:
+                    filtered_transits.append(transit)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template('transit_history.html', form=form, sites=all_sites, transits=filtered_transits, title='Transit History', legend='Transit History', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))    
+    if form.priceUpSort.data:
+        transitList = request.form['transits']
+        transitList = transitList.replace('Decimal', '')
+        transitList = transitList.replace('datetime.date', '')
+        transitList = ast.literal_eval(transitList)
+        
+        temp_transit = []
+        for transit in transitList:
+            transit['transit_date'] = str(transit['transit_date']).replace('(', '')
+            transit_date = str(transit['transit_date']).replace(')', '')
+            transit_date = datetime.strptime(transit_date, '%Y, %m, %d')
+            transit_date = transit_date.date()
+            t = {}
+            t['transit_route'] = transit['transit_route']
+            t['transit_type'] = transit['transit_type']
+            t['transit_date'] = transit_date
+            temp_transit.append(t)
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a1.transit_date, a1.transit_route, a1.transit_type, a2.transit_price FROM take_transit as a1 JOIN (SELECT transit_type, transit_route, transit_price FROM transit) as a2 ON a1.transit_route = a2.transit_route AND a1.transit_type = a2.transit_type order by transit_price asc")
+        results = cur.fetchall()
+        
+        for transit in results:
+            for t in temp_transit:
+                if transit['transit_route'] == t['transit_route'] and transit['transit_type'] == t['transit_type'] and transit['transit_date'] == t['transit_date']:
+                    filtered_transits.append(transit)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template('transit_history.html', form=form, sites=all_sites, transits=filtered_transits, title='Transit History', legend='Transit History', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))    
+    if form.priceDownSort.data:
+        transitList = request.form['transits']
+        transitList = transitList.replace('Decimal', '')
+        transitList = transitList.replace('datetime.date', '')
+        transitList = ast.literal_eval(transitList)
+        
+        temp_transit = []
+        for transit in transitList:
+            transit['transit_date'] = str(transit['transit_date']).replace('(', '')
+            transit_date = str(transit['transit_date']).replace(')', '')
+            transit_date = datetime.strptime(transit_date, '%Y, %m, %d')
+            transit_date = transit_date.date()
+            t = {}
+            t['transit_route'] = transit['transit_route']
+            t['transit_type'] = transit['transit_type']
+            t['transit_date'] = transit_date
+            temp_transit.append(t)
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a1.transit_date, a1.transit_route, a1.transit_type, a2.transit_price FROM take_transit as a1 JOIN (SELECT transit_type, transit_route, transit_price FROM transit) as a2 ON a1.transit_route = a2.transit_route AND a1.transit_type = a2.transit_type order by transit_price desc")
+        results = cur.fetchall()
+        
+        for transit in results:
+            for t in temp_transit:
+                if transit['transit_route'] == t['transit_route'] and transit['transit_type'] == t['transit_type'] and transit['transit_date'] == t['transit_date']:
+                    filtered_transits.append(transit)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template('transit_history.html', form=form, sites=all_sites, transits=filtered_transits, title='Transit History', legend='Transit History', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))    
+
+
+    
     if form.filter.data:
         transportType = form.transportType.data
         route = form.route.data
         startDate = form.startDate.data
         endDate = form.endDate.data
         
-        filtered_transits = []
         containSite = request.form.get('contain_site')
         if containSite == 'all' and transportType == 'all':
             if route == "":
@@ -929,6 +1393,14 @@ def manage_user():
     form = ManageUser()
     all_users = view_all_users()
 
+    # Condense users with username and usertype
+    user_usertype = []
+    for user in all_users:
+        u = {}
+        u['username'] = user['username']
+        u['user_type'] = user['user_type']
+        user_usertype.append(u)
+
     filtered_users = []
     ## SORTING ## 
     if form.usernameUpSort.data:
@@ -950,6 +1422,18 @@ def manage_user():
             result['email_count'] = email_count['COUNT(*)']
             if result['username'] in temp_users:
                 filtered_users.append(result)
+        
+        for user in filtered_users:
+            for user2 in all_users:
+                if user['username'] == user2['username']:
+                    if user2['user_type'] == 'Manager-Visitor':
+                        user['user_type'] = 'Manager'
+                    elif user2['user_type'] == 'Staff-Visitor':
+                        user['user_type'] = 'Staff'
+                    elif user2['user_type'] == 'Administrator-Visitor':
+                        user['user_type'] = 'Administrator'
+                    else:
+                        user['user_type'] = user2['user_type']
         
 
         # Commit to DB
@@ -978,6 +1462,18 @@ def manage_user():
             if result['username'] in temp_users:
                 filtered_users.append(result)
         
+        for user in filtered_users:
+            for user2 in all_users:
+                if user['username'] == user2['username']:
+                    if user2['user_type'] == 'Manager-Visitor':
+                        user['user_type'] = 'Manager'
+                    elif user2['user_type'] == 'Staff-Visitor':
+                        user['user_type'] = 'Staff'
+                    elif user2['user_type'] == 'Administrator-Visitor':
+                        user['user_type'] = 'Administrator'
+                    else:
+                        user['user_type'] = user2['user_type']
+        
 
         # Commit to DB
         mysql.connection.commit()
@@ -995,17 +1491,57 @@ def manage_user():
         # Create cursor
         cur = mysql.connection.cursor()
 
-        # cur.execute("SELECT username, status, user_type FROM user ORDER BY username")
-        cur.execute("SELECT username, status, user_type FROM user ORDER BY username")
+        cur.execute("SELECT a1.username, a1.status, a2.email_count, a1.user_type FROM user as a1 JOIN(SELECT username, count(distinct email) as email_count FROM user_email group by username) as a2 on a1.username = a2.username order by email_count asc")
         results = cur.fetchall()
         for result in results:
-
-            cur.execute("SELECT COUNT(*) FROM user_email WHERE username=%s", (result['username'],))
-            email_count = cur.fetchone()
-            result['email_count'] = email_count['COUNT(*)']
             if result['username'] in temp_users:
                 filtered_users.append(result)
         
+        for user in filtered_users:
+            for user2 in all_users:
+                if user['username'] == user2['username']:
+                    if user2['user_type'] == 'Manager-Visitor':
+                        user['user_type'] = 'Manager'
+                    elif user2['user_type'] == 'Staff-Visitor':
+                        user['user_type'] = 'Staff'
+                    elif user2['user_type'] == 'Administrator-Visitor':
+                        user['user_type'] = 'Administrator'
+                    else:
+                        user['user_type'] = user2['user_type']
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template('manage_user.html', all_users=filtered_users, title="Manage User", legend="Manage User", form=form, emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+    if form.emailDownSort.data:
+        userList = request.form['user_name']
+        userList = ast.literal_eval(userList)
+        temp_users = []
+        for user in userList:
+            temp_users.append(user['username'])
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a1.username, a1.status, a2.email_count, a1.user_type FROM user as a1 JOIN(SELECT username, count(distinct email) as email_count FROM user_email group by username) as a2 on a1.username = a2.username order by email_count desc")
+        results = cur.fetchall()
+        for result in results:
+            if result['username'] in temp_users:
+                filtered_users.append(result)
+        
+        for user in filtered_users:
+            for user2 in all_users:
+                if user['username'] == user2['username']:
+                    if user2['user_type'] == 'Manager-Visitor':
+                        user['user_type'] = 'Manager'
+                    elif user2['user_type'] == 'Staff-Visitor':
+                        user['user_type'] = 'Staff'
+                    elif user2['user_type'] == 'Administrator-Visitor':
+                        user['user_type'] = 'Administrator'
+                    else:
+                        user['user_type'] = user2['user_type']
 
         # Commit to DB
         mysql.connection.commit()
@@ -1024,15 +1560,23 @@ def manage_user():
         cur = mysql.connection.cursor()
 
         # cur.execute("SELECT username, status, user_type FROM user ORDER BY username")
-        cur.execute("SELECT username, status, user_type FROM user ORDER BY user_type")
+        cur.execute("SELECT a1.username, a1.status, a2.email_count, a1.user_type FROM user as a1 JOIN(SELECT username, count(distinct email) as email_count FROM user_email group by username) as a2 on a1.username = a2.username order by email_count asc")
         results = cur.fetchall()
         for result in results:
-
-            cur.execute("SELECT COUNT(*) FROM user_email WHERE username=%s", (result['username'],))
-            email_count = cur.fetchone()
-            result['email_count'] = email_count['COUNT(*)']
             if result['username'] in temp_users:
                 filtered_users.append(result)
+        
+        for user in filtered_users:
+            for user2 in all_users:
+                if user['username'] == user2['username']:
+                    if user2['user_type'] == 'Manager-Visitor':
+                        user['user_type'] = 'Manager'
+                    elif user2['user_type'] == 'Staff-Visitor':
+                        user['user_type'] = 'Staff'
+                    elif user2['user_type'] == 'Administrator-Visitor':
+                        user['user_type'] = 'Administrator'
+                    else:
+                        user['user_type'] = user2['user_type']
         
 
         # Commit to DB
@@ -1051,15 +1595,23 @@ def manage_user():
         # Create cursor
         cur = mysql.connection.cursor()
 
-        cur.execute("SELECT username, status, user_type FROM user ORDER BY user_type DESC")
+        cur.execute("SELECT a1.username, a1.status, a2.email_count, a1.user_type FROM user as a1 JOIN(SELECT username, count(distinct email) as email_count FROM user_email group by username) as a2 on a1.username = a2.username order by email_count desc")
         results = cur.fetchall()
         for result in results:
-
-            cur.execute("SELECT COUNT(*) FROM user_email WHERE username=%s", (result['username'],))
-            email_count = cur.fetchone()['COUNT(*)']
-            result['email_count'] = email_count
             if result['username'] in temp_users:
                 filtered_users.append(result)
+        
+        for user in filtered_users:
+            for user2 in all_users:
+                if user['username'] == user2['username']:
+                    if user2['user_type'] == 'Manager-Visitor':
+                        user['user_type'] = 'Manager'
+                    elif user2['user_type'] == 'Staff-Visitor':
+                        user['user_type'] = 'Staff'
+                    elif user2['user_type'] == 'Administrator-Visitor':
+                        user['user_type'] = 'Administrator'
+                    else:
+                        user['user_type'] = user2['user_type']
         
 
         # Commit to DB
@@ -1079,15 +1631,23 @@ def manage_user():
         cur = mysql.connection.cursor()
 
         # cur.execute("SELECT username, status, user_type FROM user ORDER BY username")
-        cur.execute("SELECT username, status, user_type FROM user ORDER BY status")
+        cur.execute("SELECT a1.username, a1.status, a2.email_count, a1.user_type FROM user as a1 JOIN(SELECT username, count(distinct email) as email_count FROM user_email group by username) as a2 on a1.username = a2.username order by status asc")
         results = cur.fetchall()
         for result in results:
-
-            cur.execute("SELECT COUNT(*) FROM user_email WHERE username=%s", (result['username'],))
-            email_count = cur.fetchone()
-            result['email_count'] = email_count['COUNT(*)']
             if result['username'] in temp_users:
                 filtered_users.append(result)
+        
+        for user in filtered_users:
+            for user2 in all_users:
+                if user['username'] == user2['username']:
+                    if user2['user_type'] == 'Manager-Visitor':
+                        user['user_type'] = 'Manager'
+                    elif user2['user_type'] == 'Staff-Visitor':
+                        user['user_type'] = 'Staff'
+                    elif user2['user_type'] == 'Administrator-Visitor':
+                        user['user_type'] = 'Administrator'
+                    else:
+                        user['user_type'] = user2['user_type']
         
 
         # Commit to DB
@@ -1106,15 +1666,23 @@ def manage_user():
         # Create cursor
         cur = mysql.connection.cursor()
 
-        cur.execute("SELECT username, status, user_type FROM user ORDER BY status DESC")
+        cur.execute("SELECT a1.username, a1.status, a2.email_count, a1.user_type FROM user as a1 JOIN(SELECT username, count(distinct email) as email_count FROM user_email group by username) as a2 on a1.username = a2.username order by status desc")
         results = cur.fetchall()
         for result in results:
-
-            cur.execute("SELECT COUNT(*) FROM user_email WHERE username=%s", (result['username'],))
-            email_count = cur.fetchone()['COUNT(*)']
-            result['email_count'] = email_count
             if result['username'] in temp_users:
                 filtered_users.append(result)
+        
+        for user in filtered_users:
+            for user2 in all_users:
+                if user['username'] == user2['username']:
+                    if user2['user_type'] == 'Manager-Visitor':
+                        user['user_type'] = 'Manager'
+                    elif user2['user_type'] == 'Staff-Visitor':
+                        user['user_type'] = 'Staff'
+                    elif user2['user_type'] == 'Administrator-Visitor':
+                        user['user_type'] = 'Administrator'
+                    else:
+                        user['user_type'] = user2['user_type']
         
 
         # Commit to DB
@@ -1764,7 +2332,155 @@ def manage_transit():
     form = ManageTransitForm()
     all_transits = get_all_transits()
     all_sites = get_all_sites()
+    filtered_transits = []
+
+    # Find number of transits logged
+    # Create cursor
+    cur = mysql.connection.cursor()
+
+    for transit in all_transits:
+        cur.execute("SELECT COUNT(*) FROM take_transit WHERE transit_type=%s and transit_route=%s", (transit['transit_type'], transit['transit_route']))
+        transits_logged = cur.fetchone()['COUNT(*)']
+        transit['transits_logged'] = transits_logged
+
+    # Commit to DB
+    mysql.connection.commit()
+
+    # Close connection
+    cur.close()
+
+    ## SORTING ##
+    if form.typeUpSort.data:
+        transitList = request.form['transits']
+        transitList = transitList.replace('Decimal', '')
+        transitList = ast.literal_eval(transitList)
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a3.transit_route, a3.transit_type, a3.transit_price, a3.connected_sites, a4.transits_logged FROM (SELECT a1.transit_route, a1.transit_type, a1.transit_price, a2.connected_sites FROM transit as a1 JOIN (SELECT transit_type, transit_route, COUNT(*) as connected_sites FROM connect GROUP BY transit_type, transit_route) as a2 ON a1.transit_route = a2.transit_route AND a1.transit_type = a2.transit_type) as a3 LEFT JOIN(SELECT transit_type, transit_route, COUNT(*) as transits_logged FROM take_transit GROUP BY transit_type, transit_route) as a4 ON a3.transit_route = a4.transit_route AND a3.transit_type = a4.transit_type order by transit_type asc")
+        results = cur.fetchall()
+        for result in results:
+            if result['transits_logged'] == None:
+                result['transits_logged'] = 0
+        
+        for transit in results:
+            for t in transitList:
+                if transit['transit_route'] == t['transit_route'] and transit['transit_type'] == t['transit_type']:
+                    filtered_transits.append(transit)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template('manage_transit.html', form=form, sites=all_sites, transits=filtered_transits, title='Manage Transit', legend='Manage Transit', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
  
+    if form.typeDownSort.data:
+        transitList = request.form['transits']
+        transitList = transitList.replace('Decimal', '')
+        transitList = ast.literal_eval(transitList)
+        
+        # temp_transit = []
+        # for transit in transitList:
+        #     t = {}
+        #     t['transit_route'] = transit['transit_route']
+        #     t['transit_type'] = transit['transit_type']
+        #     t['transits_logged'] = transit['transits_logged']
+        #     temp_transit.append(t)
+        # return str(temp_transit)
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a3.transit_route, a3.transit_type, a3.transit_price, a3.connected_sites, a4.transits_logged FROM (SELECT a1.transit_route, a1.transit_type, a1.transit_price, a2.connected_sites FROM transit as a1 JOIN (SELECT transit_type, transit_route, COUNT(*) as connected_sites FROM connect GROUP BY transit_type, transit_route) as a2 ON a1.transit_route = a2.transit_route AND a1.transit_type = a2.transit_type) as a3 LEFT JOIN(SELECT transit_type, transit_route, COUNT(*) as transits_logged FROM take_transit GROUP BY transit_type, transit_route) as a4 ON a3.transit_route = a4.transit_route AND a3.transit_type = a4.transit_type order by transit_type desc")
+        results = cur.fetchall()
+        for result in results:
+            if result['transits_logged'] == None:
+                result['transits_logged'] = 0
+        
+        for transit in results:
+            for t in transitList:
+                if transit['transit_route'] == t['transit_route'] and transit['transit_type'] == t['transit_type']:
+                    filtered_transits.append(transit)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template('manage_transit.html', form=form, sites=all_sites, transits=filtered_transits, title='Manage Transit', legend='Manage Transit', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+ 
+    if form.priceUpSort.data:
+        transitList = request.form['transits']
+        transitList = transitList.replace('Decimal', '')
+        transitList = ast.literal_eval(transitList)
+        
+        # temp_transit = []
+        # for transit in transitList:
+        #     t = {}
+        #     t['transit_route'] = transit['transit_route']
+        #     t['transit_type'] = transit['transit_type']
+        #     t['transits_logged'] = transit['transits_logged']
+        #     temp_transit.append(t)
+        # return str(temp_transit)
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a3.transit_route, a3.transit_type, a3.transit_price, a3.connected_sites, a4.transits_logged FROM (SELECT a1.transit_route, a1.transit_type, a1.transit_price, a2.connected_sites FROM transit as a1 JOIN (SELECT transit_type, transit_route, COUNT(*) as connected_sites FROM connect GROUP BY transit_type, transit_route) as a2 ON a1.transit_route = a2.transit_route AND a1.transit_type = a2.transit_type) as a3 LEFT JOIN(SELECT transit_type, transit_route, COUNT(*) as transits_logged FROM take_transit GROUP BY transit_type, transit_route) as a4 ON a3.transit_route = a4.transit_route AND a3.transit_type = a4.transit_type order by transit_price asc")
+        results = cur.fetchall()
+        for result in results:
+            if result['transits_logged'] == None:
+                result['transits_logged'] = 0
+        
+        for transit in results:
+            for t in transitList:
+                if transit['transit_route'] == t['transit_route'] and transit['transit_type'] == t['transit_type']:
+                    filtered_transits.append(transit)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template('manage_transit.html', form=form, sites=all_sites, transits=filtered_transits, title='Manage Transit', legend='Manage Transit', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+    if form.priceDownSort.data:
+        transitList = request.form['transits']
+        transitList = transitList.replace('Decimal', '')
+        transitList = ast.literal_eval(transitList)
+        
+        # temp_transit = []
+        # for transit in transitList:
+        #     t = {}
+        #     t['transit_route'] = transit['transit_route']
+        #     t['transit_type'] = transit['transit_type']
+        #     t['transits_logged'] = transit['transits_logged']
+        #     temp_transit.append(t)
+        # return str(temp_transit)
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a3.transit_route, a3.transit_type, a3.transit_price, a3.connected_sites, a4.transits_logged FROM (SELECT a1.transit_route, a1.transit_type, a1.transit_price, a2.connected_sites FROM transit as a1 JOIN (SELECT transit_type, transit_route, COUNT(*) as connected_sites FROM connect GROUP BY transit_type, transit_route) as a2 ON a1.transit_route = a2.transit_route AND a1.transit_type = a2.transit_type) as a3 LEFT JOIN(SELECT transit_type, transit_route, COUNT(*) as transits_logged FROM take_transit GROUP BY transit_type, transit_route) as a4 ON a3.transit_route = a4.transit_route AND a3.transit_type = a4.transit_type order by transit_price desc")
+        results = cur.fetchall()
+        for result in results:
+            if result['transits_logged'] == None:
+                result['transits_logged'] = 0
+        
+        for transit in results:
+            for t in transitList:
+                if transit['transit_route'] == t['transit_route'] and transit['transit_type'] == t['transit_type']:
+                    filtered_transits.append(transit)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template('manage_transit.html', form=form, sites=all_sites, transits=filtered_transits, title='Manage Transit', legend='Manage Transit', emails=request.args.get('emails'), userType=request.args.get('userType'), username=request.args.get('username'))
+
+
     if form.edit.data:
         if 'transit' not in request.form:
             flash('Please select a transit to edit', 'danger')
@@ -1806,7 +2522,6 @@ def manage_transit():
         if maxPrice == None:
             maxPrice = 100000000
         
-        filtered_transits = []
         containSite = request.form.get('contain_site')
         if containSite == 'all' and transportType == 'all':
             if route == "":
@@ -2069,9 +2784,430 @@ def manage_event():
     all_events = event_visits_revenue(all_events)
     filtered_events = []
 
+    # Create cursor
+    cur = mysql.connection.cursor()
+
+    # Get the manager's site
+    cur.execute("SELECT site_name FROM site WHERE manager_username=%s", (username,))
+    site_name = cur.fetchone()['site_name']
+
+    # Commit to DB
+    mysql.connection.commit()
+    # Close connection
+    cur.close()
+
+    ## SORTING ##
     if form.nameUpSort.data:
-        events_list = request.form['events']
-        return str(events_list)
+        eventList = request.form['events']
+        eventList = eventList.replace('Decimal', '')
+        eventList = eventList.replace('datetime.date', '')
+        eventList = ast.literal_eval(eventList)
+        
+        temp_events = []
+        for event in eventList:
+            e = {}
+            event['start_date'] = str(event['start_date']).replace('(', '')
+            start_date = str(event['start_date']).replace(')', '')
+            start_date = datetime.strptime(start_date, '%Y, %m, %d')
+            start_date = start_date.date()
+            e['event_name'] = event['event_name']
+            e['start_date'] = start_date
+            e['site_name'] = event['site_name']
+            temp_events.append(e)
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a3.site_name, a3.event_name, a3.start_date, a3.duration, a3.staff_count, a4.total_visits, a3.price*a4.total_visits as total_revenue FROM (SELECT a1.event_name,a1.start_date, a1.site_name, a1.price, datediff(a1.end_date, a1.start_date)+1 as duration, a2.staff_count FROM event as a1 JOIN(SELECT event_name, start_date, site_name, COUNT(*) as staff_count FROM assign_to GROUP BY event_name, start_date, site_name) as a2 ON a1.event_name = a2.event_name AND a1.start_date = a2.start_date AND a1.site_name = a2.site_name) as a3 LEFT JOIN (SELECT event_name, start_date, site_name, COUNT(*) as total_visits FROM visit_event GROUP BY event_name, start_date, site_name) as a4 ON a3.event_name = a4.event_name AND a3.start_date = a4.start_date AND a3.site_name = a4.site_name order by event_name asc")
+        results = cur.fetchall()
+        for result in results:
+            if result['total_visits'] == None:
+                result['total_visits'] = 0
+            if result['total_revenue'] == None:
+                result['total_revenue'] = 0.00
+        
+        for event in results:
+            for e in temp_events:
+                if event['event_name'] == e['event_name'] and event['start_date'] == e['start_date'] and event['site_name'] == e['site_name']:
+                    filtered_events.append(event)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template('manage_event.html', events=filtered_events, title="Manage Event", legend="Manage Event", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+    if form.nameDownSort.data:
+        eventList = request.form['events']
+        eventList = eventList.replace('Decimal', '')
+        eventList = eventList.replace('datetime.date', '')
+        eventList = ast.literal_eval(eventList)
+        
+        temp_events = []
+        for event in eventList:
+            e = {}
+            event['start_date'] = str(event['start_date']).replace('(', '')
+            start_date = str(event['start_date']).replace(')', '')
+            start_date = datetime.strptime(start_date, '%Y, %m, %d')
+            start_date = start_date.date()
+            e['event_name'] = event['event_name']
+            e['start_date'] = start_date
+            e['site_name'] = event['site_name']
+            temp_events.append(e)
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a3.site_name, a3.event_name, a3.start_date, a3.duration, a3.staff_count, a4.total_visits, a3.price*a4.total_visits as total_revenue FROM (SELECT a1.event_name,a1.start_date, a1.site_name, a1.price, datediff(a1.end_date, a1.start_date)+1 as duration, a2.staff_count FROM event as a1 JOIN(SELECT event_name, start_date, site_name, COUNT(*) as staff_count FROM assign_to GROUP BY event_name, start_date, site_name) as a2 ON a1.event_name = a2.event_name AND a1.start_date = a2.start_date AND a1.site_name = a2.site_name) as a3 LEFT JOIN (SELECT event_name, start_date, site_name, COUNT(*) as total_visits FROM visit_event GROUP BY event_name, start_date, site_name) as a4 ON a3.event_name = a4.event_name AND a3.start_date = a4.start_date AND a3.site_name = a4.site_name order by event_name desc")
+        results = cur.fetchall()
+
+        for result in results:
+            if result['total_visits'] == None:
+                result['total_visits'] = 0
+            if result['total_revenue'] == None:
+                result['total_revenue'] = 0.00
+        
+        for event in results:
+            for e in temp_events:
+                if event['event_name'] == e['event_name'] and event['start_date'] == e['start_date'] and event['site_name'] == e['site_name']:
+                    filtered_events.append(event)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template('manage_event.html', events=filtered_events, title="Manage Event", legend="Manage Event", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+    if form.staffUpSort.data:
+        eventList = request.form['events']
+        eventList = eventList.replace('Decimal', '')
+        eventList = eventList.replace('datetime.date', '')
+        eventList = ast.literal_eval(eventList)
+        
+        temp_events = []
+        for event in eventList:
+            e = {}
+            event['start_date'] = str(event['start_date']).replace('(', '')
+            start_date = str(event['start_date']).replace(')', '')
+            start_date = datetime.strptime(start_date, '%Y, %m, %d')
+            start_date = start_date.date()
+            e['event_name'] = event['event_name']
+            e['start_date'] = start_date
+            e['site_name'] = event['site_name']
+            temp_events.append(e)
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a3.site_name, a3.event_name, a3.start_date, a3.duration, a3.staff_count, a4.total_visits, a3.price*a4.total_visits as total_revenue FROM (SELECT a1.event_name,a1.start_date, a1.site_name, a1.price, datediff(a1.end_date, a1.start_date)+1 as duration, a2.staff_count FROM event as a1 JOIN(SELECT event_name, start_date, site_name, COUNT(*) as staff_count FROM assign_to GROUP BY event_name, start_date, site_name) as a2 ON a1.event_name = a2.event_name AND a1.start_date = a2.start_date AND a1.site_name = a2.site_name) as a3 LEFT JOIN (SELECT event_name, start_date, site_name, COUNT(*) as total_visits FROM visit_event GROUP BY event_name, start_date, site_name) as a4 ON a3.event_name = a4.event_name AND a3.start_date = a4.start_date AND a3.site_name = a4.site_name order by staff_count asc")
+        results = cur.fetchall()
+
+        for result in results:
+            if result['total_visits'] == None:
+                result['total_visits'] = 0
+            if result['total_revenue'] == None:
+                result['total_revenue'] = 0.00
+        
+        for event in results:
+            for e in temp_events:
+                if event['event_name'] == e['event_name'] and event['start_date'] == e['start_date'] and event['site_name'] == e['site_name']:
+                    filtered_events.append(event)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template('manage_event.html', events=filtered_events, title="Manage Event", legend="Manage Event", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+    if form.staffDownSort.data:
+        eventList = request.form['events']
+        eventList = eventList.replace('Decimal', '')
+        eventList = eventList.replace('datetime.date', '')
+        eventList = ast.literal_eval(eventList)
+        
+        temp_events = []
+        for event in eventList:
+            e = {}
+            event['start_date'] = str(event['start_date']).replace('(', '')
+            start_date = str(event['start_date']).replace(')', '')
+            start_date = datetime.strptime(start_date, '%Y, %m, %d')
+            start_date = start_date.date()
+            e['event_name'] = event['event_name']
+            e['start_date'] = start_date
+            e['site_name'] = event['site_name']
+            temp_events.append(e)
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a3.site_name, a3.event_name, a3.start_date, a3.duration, a3.staff_count, a4.total_visits, a3.price*a4.total_visits as total_revenue FROM (SELECT a1.event_name,a1.start_date, a1.site_name, a1.price, datediff(a1.end_date, a1.start_date)+1 as duration, a2.staff_count FROM event as a1 JOIN(SELECT event_name, start_date, site_name, COUNT(*) as staff_count FROM assign_to GROUP BY event_name, start_date, site_name) as a2 ON a1.event_name = a2.event_name AND a1.start_date = a2.start_date AND a1.site_name = a2.site_name) as a3 LEFT JOIN (SELECT event_name, start_date, site_name, COUNT(*) as total_visits FROM visit_event GROUP BY event_name, start_date, site_name) as a4 ON a3.event_name = a4.event_name AND a3.start_date = a4.start_date AND a3.site_name = a4.site_name order by staff_count desc")
+        results = cur.fetchall()
+
+        for result in results:
+            if result['total_visits'] == None:
+                result['total_visits'] = 0
+            if result['total_revenue'] == None:
+                result['total_revenue'] = 0.00
+        
+        for event in results:
+            for e in temp_events:
+                if event['event_name'] == e['event_name'] and event['start_date'] == e['start_date'] and event['site_name'] == e['site_name']:
+                    filtered_events.append(event)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template('manage_event.html', events=filtered_events, title="Manage Event", legend="Manage Event", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+    if form.durationUpSort.data:
+        eventList = request.form['events']
+        eventList = eventList.replace('Decimal', '')
+        eventList = eventList.replace('datetime.date', '')
+        eventList = ast.literal_eval(eventList)
+        
+        temp_events = []
+        for event in eventList:
+            e = {}
+            event['start_date'] = str(event['start_date']).replace('(', '')
+            start_date = str(event['start_date']).replace(')', '')
+            start_date = datetime.strptime(start_date, '%Y, %m, %d')
+            start_date = start_date.date()
+            e['event_name'] = event['event_name']
+            e['start_date'] = start_date
+            e['site_name'] = event['site_name']
+            temp_events.append(e)
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a3.site_name, a3.event_name, a3.start_date, a3.duration, a3.staff_count, a4.total_visits, a3.price*a4.total_visits as total_revenue FROM (SELECT a1.event_name,a1.start_date, a1.site_name, a1.price, datediff(a1.end_date, a1.start_date)+1 as duration, a2.staff_count FROM event as a1 JOIN(SELECT event_name, start_date, site_name, COUNT(*) as staff_count FROM assign_to GROUP BY event_name, start_date, site_name) as a2 ON a1.event_name = a2.event_name AND a1.start_date = a2.start_date AND a1.site_name = a2.site_name) as a3 LEFT JOIN (SELECT event_name, start_date, site_name, COUNT(*) as total_visits FROM visit_event GROUP BY event_name, start_date, site_name) as a4 ON a3.event_name = a4.event_name AND a3.start_date = a4.start_date AND a3.site_name = a4.site_name order by duration asc")
+        results = cur.fetchall()
+
+        for result in results:
+            if result['total_visits'] == None:
+                result['total_visits'] = 0
+            if result['total_revenue'] == None:
+                result['total_revenue'] = 0.00
+        
+        for event in results:
+            for e in temp_events:
+                if event['event_name'] == e['event_name'] and event['start_date'] == e['start_date'] and event['site_name'] == e['site_name']:
+                    filtered_events.append(event)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template('manage_event.html', events=filtered_events, title="Manage Event", legend="Manage Event", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+    if form.durationDownSort.data:
+        eventList = request.form['events']
+        eventList = eventList.replace('Decimal', '')
+        eventList = eventList.replace('datetime.date', '')
+        eventList = ast.literal_eval(eventList)
+        
+        temp_events = []
+        for event in eventList:
+            e = {}
+            event['start_date'] = str(event['start_date']).replace('(', '')
+            start_date = str(event['start_date']).replace(')', '')
+            start_date = datetime.strptime(start_date, '%Y, %m, %d')
+            start_date = start_date.date()
+            e['event_name'] = event['event_name']
+            e['start_date'] = start_date
+            e['site_name'] = event['site_name']
+            temp_events.append(e)
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a3.site_name, a3.event_name, a3.start_date, a3.duration, a3.staff_count, a4.total_visits, a3.price*a4.total_visits as total_revenue FROM (SELECT a1.event_name,a1.start_date, a1.site_name, a1.price, datediff(a1.end_date, a1.start_date)+1 as duration, a2.staff_count FROM event as a1 JOIN(SELECT event_name, start_date, site_name, COUNT(*) as staff_count FROM assign_to GROUP BY event_name, start_date, site_name) as a2 ON a1.event_name = a2.event_name AND a1.start_date = a2.start_date AND a1.site_name = a2.site_name) as a3 LEFT JOIN (SELECT event_name, start_date, site_name, COUNT(*) as total_visits FROM visit_event GROUP BY event_name, start_date, site_name) as a4 ON a3.event_name = a4.event_name AND a3.start_date = a4.start_date AND a3.site_name = a4.site_name order by duration desc")
+        results = cur.fetchall()
+
+        for result in results:
+            if result['total_visits'] == None:
+                result['total_visits'] = 0
+            if result['total_revenue'] == None:
+                result['total_revenue'] = 0.00
+        
+        for event in results:
+            for e in temp_events:
+                if event['event_name'] == e['event_name'] and event['start_date'] == e['start_date'] and event['site_name'] == e['site_name']:
+                    filtered_events.append(event)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template('manage_event.html', events=filtered_events, title="Manage Event", legend="Manage Event", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+    if form.visitUpSort.data:
+        eventList = request.form['events']
+        eventList = eventList.replace('Decimal', '')
+        eventList = eventList.replace('datetime.date', '')
+        eventList = ast.literal_eval(eventList)
+        
+        temp_events = []
+        for event in eventList:
+            e = {}
+            event['start_date'] = str(event['start_date']).replace('(', '')
+            start_date = str(event['start_date']).replace(')', '')
+            start_date = datetime.strptime(start_date, '%Y, %m, %d')
+            start_date = start_date.date()
+            e['event_name'] = event['event_name']
+            e['start_date'] = start_date
+            e['site_name'] = event['site_name']
+            temp_events.append(e)
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a3.site_name, a3.event_name, a3.start_date, a3.duration, a3.staff_count, a4.total_visits, a3.price*a4.total_visits as total_revenue FROM (SELECT a1.event_name,a1.start_date, a1.site_name, a1.price, datediff(a1.end_date, a1.start_date)+1 as duration, a2.staff_count FROM event as a1 JOIN(SELECT event_name, start_date, site_name, COUNT(*) as staff_count FROM assign_to GROUP BY event_name, start_date, site_name) as a2 ON a1.event_name = a2.event_name AND a1.start_date = a2.start_date AND a1.site_name = a2.site_name) as a3 LEFT JOIN (SELECT event_name, start_date, site_name, COUNT(*) as total_visits FROM visit_event GROUP BY event_name, start_date, site_name) as a4 ON a3.event_name = a4.event_name AND a3.start_date = a4.start_date AND a3.site_name = a4.site_name order by total_visits asc")
+        results = cur.fetchall()
+
+        for result in results:
+            if result['total_visits'] == None:
+                result['total_visits'] = 0
+            if result['total_revenue'] == None:
+                result['total_revenue'] = 0.00
+        
+        for event in results:
+            for e in temp_events:
+                if event['event_name'] == e['event_name'] and event['start_date'] == e['start_date'] and event['site_name'] == e['site_name']:
+                    filtered_events.append(event)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template('manage_event.html', events=filtered_events, title="Manage Event", legend="Manage Event", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+    if form.visitDownSort.data:
+        eventList = request.form['events']
+        eventList = eventList.replace('Decimal', '')
+        eventList = eventList.replace('datetime.date', '')
+        eventList = ast.literal_eval(eventList)
+        
+        temp_events = []
+        for event in eventList:
+            e = {}
+            event['start_date'] = str(event['start_date']).replace('(', '')
+            start_date = str(event['start_date']).replace(')', '')
+            start_date = datetime.strptime(start_date, '%Y, %m, %d')
+            start_date = start_date.date()
+            e['event_name'] = event['event_name']
+            e['start_date'] = start_date
+            e['site_name'] = event['site_name']
+            temp_events.append(e)
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a3.site_name, a3.event_name, a3.start_date, a3.duration, a3.staff_count, a4.total_visits, a3.price*a4.total_visits as total_revenue FROM (SELECT a1.event_name,a1.start_date, a1.site_name, a1.price, datediff(a1.end_date, a1.start_date)+1 as duration, a2.staff_count FROM event as a1 JOIN(SELECT event_name, start_date, site_name, COUNT(*) as staff_count FROM assign_to GROUP BY event_name, start_date, site_name) as a2 ON a1.event_name = a2.event_name AND a1.start_date = a2.start_date AND a1.site_name = a2.site_name) as a3 LEFT JOIN (SELECT event_name, start_date, site_name, COUNT(*) as total_visits FROM visit_event GROUP BY event_name, start_date, site_name) as a4 ON a3.event_name = a4.event_name AND a3.start_date = a4.start_date AND a3.site_name = a4.site_name order by total_visits desc")
+        results = cur.fetchall()
+
+        for result in results:
+            if result['total_visits'] == None:
+                result['total_visits'] = 0
+            if result['total_revenue'] == None:
+                result['total_revenue'] = 0.00
+        
+        for event in results:
+            for e in temp_events:
+                if event['event_name'] == e['event_name'] and event['start_date'] == e['start_date'] and event['site_name'] == e['site_name']:
+                    filtered_events.append(event)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template('manage_event.html', events=filtered_events, title="Manage Event", legend="Manage Event", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+    if form.revenueUpSort.data:
+        eventList = request.form['events']
+        eventList = eventList.replace('Decimal', '')
+        eventList = eventList.replace('datetime.date', '')
+        eventList = ast.literal_eval(eventList)
+        
+        temp_events = []
+        for event in eventList:
+            e = {}
+            event['start_date'] = str(event['start_date']).replace('(', '')
+            start_date = str(event['start_date']).replace(')', '')
+            start_date = datetime.strptime(start_date, '%Y, %m, %d')
+            start_date = start_date.date()
+            e['event_name'] = event['event_name']
+            e['start_date'] = start_date
+            e['site_name'] = event['site_name']
+            temp_events.append(e)
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a3.site_name, a3.event_name, a3.start_date, a3.duration, a3.staff_count, a4.total_visits, a3.price*a4.total_visits as total_revenue FROM (SELECT a1.event_name,a1.start_date, a1.site_name, a1.price, datediff(a1.end_date, a1.start_date)+1 as duration, a2.staff_count FROM event as a1 JOIN(SELECT event_name, start_date, site_name, COUNT(*) as staff_count FROM assign_to GROUP BY event_name, start_date, site_name) as a2 ON a1.event_name = a2.event_name AND a1.start_date = a2.start_date AND a1.site_name = a2.site_name) as a3 LEFT JOIN (SELECT event_name, start_date, site_name, COUNT(*) as total_visits FROM visit_event GROUP BY event_name, start_date, site_name) as a4 ON a3.event_name = a4.event_name AND a3.start_date = a4.start_date AND a3.site_name = a4.site_name order by total_revenue asc")
+        results = cur.fetchall()
+
+        for result in results:
+            if result['total_visits'] == None:
+                result['total_visits'] = 0
+            if result['total_revenue'] == None:
+                result['total_revenue'] = 0.00
+        
+        for event in results:
+            for e in temp_events:
+                if event['event_name'] == e['event_name'] and event['start_date'] == e['start_date'] and event['site_name'] == e['site_name']:
+                    filtered_events.append(event)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template('manage_event.html', events=filtered_events, title="Manage Event", legend="Manage Event", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+    if form.revenueDownSort.data:
+        eventList = request.form['events']
+        eventList = eventList.replace('Decimal', '')
+        eventList = eventList.replace('datetime.date', '')
+        eventList = ast.literal_eval(eventList)
+        
+        temp_events = []
+        for event in eventList:
+            e = {}
+            event['start_date'] = str(event['start_date']).replace('(', '')
+            start_date = str(event['start_date']).replace(')', '')
+            start_date = datetime.strptime(start_date, '%Y, %m, %d')
+            start_date = start_date.date()
+            e['event_name'] = event['event_name']
+            e['start_date'] = start_date
+            e['site_name'] = event['site_name']
+            temp_events.append(e)
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a3.site_name, a3.event_name, a3.start_date, a3.duration, a3.staff_count, a4.total_visits, a3.price*a4.total_visits as total_revenue FROM (SELECT a1.event_name,a1.start_date, a1.site_name, a1.price, datediff(a1.end_date, a1.start_date)+1 as duration, a2.staff_count FROM event as a1 JOIN(SELECT event_name, start_date, site_name, COUNT(*) as staff_count FROM assign_to GROUP BY event_name, start_date, site_name) as a2 ON a1.event_name = a2.event_name AND a1.start_date = a2.start_date AND a1.site_name = a2.site_name) as a3 LEFT JOIN (SELECT event_name, start_date, site_name, COUNT(*) as total_visits FROM visit_event GROUP BY event_name, start_date, site_name) as a4 ON a3.event_name = a4.event_name AND a3.start_date = a4.start_date AND a3.site_name = a4.site_name order by total_revenue desc")
+        results = cur.fetchall()
+
+        for result in results:
+            if result['total_visits'] == None:
+                result['total_visits'] = 0
+            if result['total_revenue'] == None:
+                result['total_revenue'] = 0.00
+        
+        for event in results:
+            for e in temp_events:
+                if event['event_name'] == e['event_name'] and event['start_date'] == e['start_date'] and event['site_name'] == e['site_name']:
+                    filtered_events.append(event)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template('manage_event.html', events=filtered_events, title="Manage Event", legend="Manage Event", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+
+
 
     if form.viewEdit.data:
         if 'event_name' not in request.form:
@@ -2292,6 +3428,150 @@ def edit_event():
 
     # Close connection
     cur.close()
+
+
+    ## SORTING ##
+    if form.dateUpSort.data:
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a1.event_name, a1.start_date, a1.site_name, a1.visit_event_date, a1.visits, a1.visits*a2.price as price FROM (SELECT event_name, start_date, site_name, visit_event_date, COUNT(*) as visits FROM visit_event GROUP BY event_name, site_name, visit_event_date, start_date) as a1 JOIN (SELECT event_name, start_date, site_name, price FROM event) as a2 ON a1.event_name = a2.event_name AND a1.start_date = a2.start_date AND a1.site_name = a2.site_name order by visit_event_date asc")        
+        results = cur.fetchall()
+        # return str(results)
+
+        start_date = datetime.strptime(start_date, '%Y-%m-%d')
+        start_date = start_date.date()
+        
+        dailyResults = []
+        for result in results:
+            if result['event_name'] == event_name and result['start_date'] == start_date and result['site_name'] == site_name:
+                dailyResults.append(result)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template("edit_event.html", results = dailyResults, event=event, staff_list=staff_list, assigned_staff=selected_staff, title="Edit Event", legend ="Edit Event", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+    if form.dateDownSort.data:
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a1.event_name, a1.start_date, a1.site_name, a1.visit_event_date, a1.visits, a1.visits*a2.price as price FROM (SELECT event_name, start_date, site_name, visit_event_date, COUNT(*) as visits FROM visit_event GROUP BY event_name, site_name, visit_event_date, start_date) as a1 JOIN (SELECT event_name, start_date, site_name, price FROM event) as a2 ON a1.event_name = a2.event_name AND a1.start_date = a2.start_date AND a1.site_name = a2.site_name order by visit_event_date desc")        
+        results = cur.fetchall()
+        # return str(results)
+
+        start_date = datetime.strptime(start_date, '%Y-%m-%d')
+        start_date = start_date.date()
+        
+        dailyResults = []
+        for result in results:
+            if result['event_name'] == event_name and result['start_date'] == start_date and result['site_name'] == site_name:
+                dailyResults.append(result)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template("edit_event.html", results = dailyResults, event=event, staff_list=staff_list, assigned_staff=selected_staff, title="Edit Event", legend ="Edit Event", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+    if form.visitUpSort.data:
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a1.event_name, a1.start_date, a1.site_name, a1.visit_event_date, a1.visits, a1.visits*a2.price as price FROM (SELECT event_name, start_date, site_name, visit_event_date, COUNT(*) as visits FROM visit_event GROUP BY event_name, site_name, visit_event_date, start_date) as a1 JOIN (SELECT event_name, start_date, site_name, price FROM event) as a2 ON a1.event_name = a2.event_name AND a1.start_date = a2.start_date AND a1.site_name = a2.site_name order by visits asc")        
+        results = cur.fetchall()
+        # return str(results)
+
+        start_date = datetime.strptime(start_date, '%Y-%m-%d')
+        start_date = start_date.date()
+        
+        dailyResults = []
+        for result in results:
+            if result['event_name'] == event_name and result['start_date'] == start_date and result['site_name'] == site_name:
+                dailyResults.append(result)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template("edit_event.html", results = dailyResults, event=event, staff_list=staff_list, assigned_staff=selected_staff, title="Edit Event", legend ="Edit Event", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+    if form.visitDownSort.data:
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a1.event_name, a1.start_date, a1.site_name, a1.visit_event_date, a1.visits, a1.visits*a2.price as price FROM (SELECT event_name, start_date, site_name, visit_event_date, COUNT(*) as visits FROM visit_event GROUP BY event_name, site_name, visit_event_date, start_date) as a1 JOIN (SELECT event_name, start_date, site_name, price FROM event) as a2 ON a1.event_name = a2.event_name AND a1.start_date = a2.start_date AND a1.site_name = a2.site_name order by visits desc")
+        results = cur.fetchall()
+        # return str(results)
+
+        start_date = datetime.strptime(start_date, '%Y-%m-%d')
+        start_date = start_date.date()
+        
+        dailyResults = []
+        for result in results:
+            if result['event_name'] == event_name and result['start_date'] == start_date and result['site_name'] == site_name:
+                dailyResults.append(result)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template("edit_event.html", results = dailyResults, event=event, staff_list=staff_list, assigned_staff=selected_staff, title="Edit Event", legend ="Edit Event", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+    if form.revenueUpSort.data:
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a1.event_name, a1.start_date, a1.site_name, a1.visit_event_date, a1.visits, a1.visits*a2.price as price FROM (SELECT event_name, start_date, site_name, visit_event_date, COUNT(*) as visits FROM visit_event GROUP BY event_name, site_name, visit_event_date, start_date) as a1 JOIN (SELECT event_name, start_date, site_name, price FROM event) as a2 ON a1.event_name = a2.event_name AND a1.start_date = a2.start_date AND a1.site_name = a2.site_name order by price asc")        
+        results = cur.fetchall()
+        # return str(results)
+
+        start_date = datetime.strptime(start_date, '%Y-%m-%d')
+        start_date = start_date.date()
+        
+        dailyResults = []
+        for result in results:
+            if result['event_name'] == event_name and result['start_date'] == start_date and result['site_name'] == site_name:
+                dailyResults.append(result)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template("edit_event.html", results = dailyResults, event=event, staff_list=staff_list, assigned_staff=selected_staff, title="Edit Event", legend ="Edit Event", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+    if form.revenueDownSort.data:
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a1.event_name, a1.start_date, a1.site_name, a1.visit_event_date, a1.visits, a1.visits*a2.price as price FROM (SELECT event_name, start_date, site_name, visit_event_date, COUNT(*) as visits FROM visit_event GROUP BY event_name, site_name, visit_event_date, start_date) as a1 JOIN (SELECT event_name, start_date, site_name, price FROM event) as a2 ON a1.event_name = a2.event_name AND a1.start_date = a2.start_date AND a1.site_name = a2.site_name order by price defsc")        
+        results = cur.fetchall()
+        # return str(results)
+
+        start_date = datetime.strptime(start_date, '%Y-%m-%d')
+        start_date = start_date.date()
+        
+        dailyResults = []
+        for result in results:
+            if result['event_name'] == event_name and result['start_date'] == start_date and result['site_name'] == site_name:
+                dailyResults.append(result)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template("edit_event.html", results = dailyResults, event=event, staff_list=staff_list, assigned_staff=selected_staff, title="Edit Event", legend ="Edit Event", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+
+
+
 
     if form.update.data:
         description = form.description.data
@@ -2590,6 +3870,34 @@ def manage_staff():
         member['event_count'] = event_count
         all_staff.append(member)
 
+
+    ## SORTING ##
+    if form.staffUpSort.data:
+
+        staff = request.form['staff_name']
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a1.username, concat(a1.firstname, " ", a1.lastname) as name, a2.event_count FROM user as a1 JOIN (SELECT staff_username, COUNT(*) as event_count FROM assign_to GROUP BY staff_username) as a2 ON a1.username = a2.staff_username order by name asc")
+        results = cur.fetchall()
+        return str(results)
+        
+        for result in results:
+            if result['event_name'] == event_name and result['start_date'] == start_date and result['site_name'] == site_name:
+                dailyResults.append(result)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template("manage_staff.html", all_staff=filtered_staff, site_name=site_name, title="Manage Staff", legend="Manage Staff", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+
+
+
+    
+
     if form.filter.data:
         firstName = form.firstName.data
         lastName = form.lastName.data
@@ -2832,6 +4140,383 @@ def view_schedule():
     endDate = form.endDate.data
 
     results = []
+
+    ## SORTING ##
+    if form.eventUpSort.data:
+
+        eventList = request.form['events']
+        eventList = eventList.replace('Decimal', '')
+        eventList = eventList.replace('datetime.date', '')
+        eventList = ast.literal_eval(eventList)
+        
+        temp_events = []
+        for event in eventList:
+            e = {}
+            event['start_date'] = str(event['start_date']).replace('(', '')
+            start_date = str(event['start_date']).replace(')', '')
+            start_date = datetime.strptime(start_date, '%Y, %m, %d')
+            start_date = start_date.date()
+            e['event_name'] = event['event_name']
+            e['start_date'] = start_date
+            e['site_name'] = event['site_name']
+            temp_events.append(e)
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a1.event_name, a1.site_name, a1.start_date, a1.end_date, a2.min_staff_req FROM event as a1 JOIN (SELECT event_name, site_name, start_date, COUNT(*) as min_staff_req FROM assign_to GROUP BY event_name, site_name, start_date) as a2 ON a1.event_name = a2.event_name AND a1.start_date = a2.start_date AND a1.site_name = a2.site_name order by event_name asc")
+        queries = cur.fetchall()
+        # return str(results)
+        
+        for result in queries:
+            for event in temp_events:
+                if result['event_name'] == event['event_name'] and result['start_date'] == event['start_date'] and result['site_name'] == event['site_name']:
+                    results.append(result)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template("view_schedule.html", title="View Schedule", legend="View Schedule", results=results, form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+    if form.eventDownSort.data:
+
+        eventList = request.form['events']
+        eventList = eventList.replace('Decimal', '')
+        eventList = eventList.replace('datetime.date', '')
+        eventList = ast.literal_eval(eventList)
+        
+        temp_events = []
+        for event in eventList:
+            e = {}
+            event['start_date'] = str(event['start_date']).replace('(', '')
+            start_date = str(event['start_date']).replace(')', '')
+            start_date = datetime.strptime(start_date, '%Y, %m, %d')
+            start_date = start_date.date()
+            e['event_name'] = event['event_name']
+            e['start_date'] = start_date
+            e['site_name'] = event['site_name']
+            temp_events.append(e)
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a1.event_name, a1.site_name, a1.start_date, a1.end_date, a2.min_staff_req FROM event as a1 JOIN (SELECT event_name, site_name, start_date, COUNT(*) as min_staff_req FROM assign_to GROUP BY event_name, site_name, start_date) as a2 ON a1.event_name = a2.event_name AND a1.start_date = a2.start_date AND a1.site_name = a2.site_name order by event_name desc")
+        queries = cur.fetchall()
+        # return str(results)
+        
+        for result in queries:
+            for event in temp_events:
+                if result['event_name'] == event['event_name'] and result['start_date'] == event['start_date'] and result['site_name'] == event['site_name']:
+                    results.append(result)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template("view_schedule.html", title="View Schedule", legend="View Schedule", results=results, form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+    if form.startDateUpSort.data:
+
+        eventList = request.form['events']
+        eventList = eventList.replace('Decimal', '')
+        eventList = eventList.replace('datetime.date', '')
+        eventList = ast.literal_eval(eventList)
+        
+        temp_events = []
+        for event in eventList:
+            e = {}
+            event['start_date'] = str(event['start_date']).replace('(', '')
+            start_date = str(event['start_date']).replace(')', '')
+            start_date = datetime.strptime(start_date, '%Y, %m, %d')
+            start_date = start_date.date()
+            e['event_name'] = event['event_name']
+            e['start_date'] = start_date
+            e['site_name'] = event['site_name']
+            temp_events.append(e)
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a1.event_name, a1.site_name, a1.start_date, a1.end_date, a2.min_staff_req FROM event as a1 JOIN (SELECT event_name, site_name, start_date, COUNT(*) as min_staff_req FROM assign_to GROUP BY event_name, site_name, start_date) as a2 ON a1.event_name = a2.event_name AND a1.start_date = a2.start_date AND a1.site_name = a2.site_name order by start_date asc")
+        queries = cur.fetchall()
+        # return str(results)
+        
+        for result in queries:
+            for event in temp_events:
+                if result['event_name'] == event['event_name'] and result['start_date'] == event['start_date'] and result['site_name'] == event['site_name']:
+                    results.append(result)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template("view_schedule.html", title="View Schedule", legend="View Schedule", results=results, form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+    if form.startDateDownSort.data:
+
+        eventList = request.form['events']
+        eventList = eventList.replace('Decimal', '')
+        eventList = eventList.replace('datetime.date', '')
+        eventList = ast.literal_eval(eventList)
+        
+        temp_events = []
+        for event in eventList:
+            e = {}
+            event['start_date'] = str(event['start_date']).replace('(', '')
+            start_date = str(event['start_date']).replace(')', '')
+            start_date = datetime.strptime(start_date, '%Y, %m, %d')
+            start_date = start_date.date()
+            e['event_name'] = event['event_name']
+            e['start_date'] = start_date
+            e['site_name'] = event['site_name']
+            temp_events.append(e)
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a1.event_name, a1.site_name, a1.start_date, a1.end_date, a2.min_staff_req FROM event as a1 JOIN (SELECT event_name, site_name, start_date, COUNT(*) as min_staff_req FROM assign_to GROUP BY event_name, site_name, start_date) as a2 ON a1.event_name = a2.event_name AND a1.start_date = a2.start_date AND a1.site_name = a2.site_name order by start_date desc")
+        queries = cur.fetchall()
+        # return str(results)
+        
+        for result in queries:
+            for event in temp_events:
+                if result['event_name'] == event['event_name'] and result['start_date'] == event['start_date'] and result['site_name'] == event['site_name']:
+                    results.append(result)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template("view_schedule.html", title="View Schedule", legend="View Schedule", results=results, form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+    if form.endDateUpSort.data:
+
+        eventList = request.form['events']
+        eventList = eventList.replace('Decimal', '')
+        eventList = eventList.replace('datetime.date', '')
+        eventList = ast.literal_eval(eventList)
+        
+        temp_events = []
+        for event in eventList:
+            e = {}
+            event['start_date'] = str(event['start_date']).replace('(', '')
+            start_date = str(event['start_date']).replace(')', '')
+            start_date = datetime.strptime(start_date, '%Y, %m, %d')
+            start_date = start_date.date()
+            e['event_name'] = event['event_name']
+            e['start_date'] = start_date
+            e['site_name'] = event['site_name']
+            temp_events.append(e)
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a1.event_name, a1.site_name, a1.start_date, a1.end_date, a2.min_staff_req FROM event as a1 JOIN (SELECT event_name, site_name, start_date, COUNT(*) as min_staff_req FROM assign_to GROUP BY event_name, site_name, start_date) as a2 ON a1.event_name = a2.event_name AND a1.start_date = a2.start_date AND a1.site_name = a2.site_name order by end_date asc")
+        queries = cur.fetchall()
+        # return str(results)
+        
+        for result in queries:
+            for event in temp_events:
+                if result['event_name'] == event['event_name'] and result['start_date'] == event['start_date'] and result['site_name'] == event['site_name']:
+                    results.append(result)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template("view_schedule.html", title="View Schedule", legend="View Schedule", results=results, form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+    if form.endDateDownSort.data:
+
+        eventList = request.form['events']
+        eventList = eventList.replace('Decimal', '')
+        eventList = eventList.replace('datetime.date', '')
+        eventList = ast.literal_eval(eventList)
+        
+        temp_events = []
+        for event in eventList:
+            e = {}
+            event['start_date'] = str(event['start_date']).replace('(', '')
+            start_date = str(event['start_date']).replace(')', '')
+            start_date = datetime.strptime(start_date, '%Y, %m, %d')
+            start_date = start_date.date()
+            e['event_name'] = event['event_name']
+            e['start_date'] = start_date
+            e['site_name'] = event['site_name']
+            temp_events.append(e)
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a1.event_name, a1.site_name, a1.start_date, a1.end_date, a2.min_staff_req FROM event as a1 JOIN (SELECT event_name, site_name, start_date, COUNT(*) as min_staff_req FROM assign_to GROUP BY event_name, site_name, start_date) as a2 ON a1.event_name = a2.event_name AND a1.start_date = a2.start_date AND a1.site_name = a2.site_name order by end_date desc")
+        queries = cur.fetchall()
+        # return str(results)
+        
+        for result in queries:
+            for event in temp_events:
+                if result['event_name'] == event['event_name'] and result['start_date'] == event['start_date'] and result['site_name'] == event['site_name']:
+                    results.append(result)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template("view_schedule.html", title="View Schedule", legend="View Schedule", results=results, form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+    if form.siteUpSort.data:
+
+        eventList = request.form['events']
+        eventList = eventList.replace('Decimal', '')
+        eventList = eventList.replace('datetime.date', '')
+        eventList = ast.literal_eval(eventList)
+        
+        temp_events = []
+        for event in eventList:
+            e = {}
+            event['start_date'] = str(event['start_date']).replace('(', '')
+            start_date = str(event['start_date']).replace(')', '')
+            start_date = datetime.strptime(start_date, '%Y, %m, %d')
+            start_date = start_date.date()
+            e['event_name'] = event['event_name']
+            e['start_date'] = start_date
+            e['site_name'] = event['site_name']
+            temp_events.append(e)
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a1.event_name, a1.site_name, a1.start_date, a1.end_date, a2.min_staff_req FROM event as a1 JOIN (SELECT event_name, site_name, start_date, COUNT(*) as min_staff_req FROM assign_to GROUP BY event_name, site_name, start_date) as a2 ON a1.event_name = a2.event_name AND a1.start_date = a2.start_date AND a1.site_name = a2.site_name order by site_name asc")
+        queries = cur.fetchall()
+        # return str(results)
+        
+        for result in queries:
+            for event in temp_events:
+                if result['event_name'] == event['event_name'] and result['start_date'] == event['start_date'] and result['site_name'] == event['site_name']:
+                    results.append(result)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template("view_schedule.html", title="View Schedule", legend="View Schedule", results=results, form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+    if form.siteDownSort.data:
+
+        eventList = request.form['events']
+        eventList = eventList.replace('Decimal', '')
+        eventList = eventList.replace('datetime.date', '')
+        eventList = ast.literal_eval(eventList)
+        
+        temp_events = []
+        for event in eventList:
+            e = {}
+            event['start_date'] = str(event['start_date']).replace('(', '')
+            start_date = str(event['start_date']).replace(')', '')
+            start_date = datetime.strptime(start_date, '%Y, %m, %d')
+            start_date = start_date.date()
+            e['event_name'] = event['event_name']
+            e['start_date'] = start_date
+            e['site_name'] = event['site_name']
+            temp_events.append(e)
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a1.event_name, a1.site_name, a1.start_date, a1.end_date, a2.min_staff_req FROM event as a1 JOIN (SELECT event_name, site_name, start_date, COUNT(*) as min_staff_req FROM assign_to GROUP BY event_name, site_name, start_date) as a2 ON a1.event_name = a2.event_name AND a1.start_date = a2.start_date AND a1.site_name = a2.site_name order by site_name desc")
+        queries = cur.fetchall()
+        # return str(results)
+        
+        for result in queries:
+            for event in temp_events:
+                if result['event_name'] == event['event_name'] and result['start_date'] == event['start_date'] and result['site_name'] == event['site_name']:
+                    results.append(result)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template("view_schedule.html", title="View Schedule", legend="View Schedule", results=results, form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+    if form.staffUpSort.data:
+
+        eventList = request.form['events']
+        eventList = eventList.replace('Decimal', '')
+        eventList = eventList.replace('datetime.date', '')
+        eventList = ast.literal_eval(eventList)
+        
+        temp_events = []
+        for event in eventList:
+            e = {}
+            event['start_date'] = str(event['start_date']).replace('(', '')
+            start_date = str(event['start_date']).replace(')', '')
+            start_date = datetime.strptime(start_date, '%Y, %m, %d')
+            start_date = start_date.date()
+            e['event_name'] = event['event_name']
+            e['start_date'] = start_date
+            e['site_name'] = event['site_name']
+            temp_events.append(e)
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a1.event_name, a1.site_name, a1.start_date, a1.end_date, a2.min_staff_req FROM event as a1 JOIN (SELECT event_name, site_name, start_date, COUNT(*) as min_staff_req FROM assign_to GROUP BY event_name, site_name, start_date) as a2 ON a1.event_name = a2.event_name AND a1.start_date = a2.start_date AND a1.site_name = a2.site_name order by min_staff_req asc")
+        queries = cur.fetchall()
+        # return str(results)
+        
+        for result in queries:
+            for event in temp_events:
+                if result['event_name'] == event['event_name'] and result['start_date'] == event['start_date'] and result['site_name'] == event['site_name']:
+                    results.append(result)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template("view_schedule.html", title="View Schedule", legend="View Schedule", results=results, form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+    if form.staffDownSort.data:
+
+        eventList = request.form['events']
+        eventList = eventList.replace('Decimal', '')
+        eventList = eventList.replace('datetime.date', '')
+        eventList = ast.literal_eval(eventList)
+        
+        temp_events = []
+        for event in eventList:
+            e = {}
+            event['start_date'] = str(event['start_date']).replace('(', '')
+            start_date = str(event['start_date']).replace(')', '')
+            start_date = datetime.strptime(start_date, '%Y, %m, %d')
+            start_date = start_date.date()
+            e['event_name'] = event['event_name']
+            e['start_date'] = start_date
+            e['site_name'] = event['site_name']
+            temp_events.append(e)
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a1.event_name, a1.site_name, a1.start_date, a1.end_date, a2.min_staff_req FROM event as a1 JOIN (SELECT event_name, site_name, start_date, COUNT(*) as min_staff_req FROM assign_to GROUP BY event_name, site_name, start_date) as a2 ON a1.event_name = a2.event_name AND a1.start_date = a2.start_date AND a1.site_name = a2.site_name order by min_staff_req desc")
+        queries = cur.fetchall()
+        # return str(results)
+        
+        for result in queries:
+            for event in temp_events:
+                if result['event_name'] == event['event_name'] and result['start_date'] == event['start_date'] and result['site_name'] == event['site_name']:
+                    results.append(result)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template("view_schedule.html", title="View Schedule", legend="View Schedule", results=results, form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+
+
+
+
+
 
     if form.filter.data:
         cur = mysql.connection.cursor()
@@ -3956,6 +5641,180 @@ def visit_history():
 
     filtered_events = []
     filtered_sites = []
+
+    ## SORTING ##
+    if form.dateUpSort.data:
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a3.visitor_username, a3.visit_event_date, a3.event_name, a3.site_name,  a3.price FROM (SELECT a1.visitor_username, a1.visit_event_date, a1.event_name, a1.site_name, a1.start_date,  a2.price FROM visit_event as a1 JOIN (SELECT event_name, site_name, start_date, price FROM event)  as a2 ON a1.event_name = a2.event_name AND a1.start_date = a2.start_date AND a1.site_name = a2.site_name) as a3 UNION (SELECT visitor_username, visit_start_date, null as event_name, site_name, 0 as price  FROM visit_site) order by visit_event_date asc")
+        results = cur.fetchall()
+        for result in results:
+            if result['event_name'] == None:
+                result['event_name'] = ""
+
+        for result in results:
+            if result['visitor_username'] == username:
+                filtered_events.append(result)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template("visit_history.html", sites=all_sites, events=filtered_events, sitesList=filtered_sites, title="Visit History", legend="Visit History", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+    if form.dateDownSort.data:
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a3.visitor_username, a3.visit_event_date, a3.event_name, a3.site_name,  a3.price FROM (SELECT a1.visitor_username, a1.visit_event_date, a1.event_name, a1.site_name, a1.start_date,  a2.price FROM visit_event as a1 JOIN (SELECT event_name, site_name, start_date, price FROM event)  as a2 ON a1.event_name = a2.event_name AND a1.start_date = a2.start_date AND a1.site_name = a2.site_name) as a3 UNION (SELECT visitor_username, visit_start_date, null as event_name, site_name, 0 as price  FROM visit_site) order by visit_event_date desc")
+        results = cur.fetchall()
+        for result in results:
+            if result['event_name'] == None:
+                result['event_name'] = ""
+
+        for result in results:
+            if result['visitor_username'] == username:
+                filtered_events.append(result)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template("visit_history.html", sites=all_sites, events=filtered_events, sitesList=filtered_sites, title="Visit History", legend="Visit History", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+    if form.eventUpSort.data:
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a3.visitor_username, a3.visit_event_date, a3.event_name, a3.site_name,  a3.price FROM (SELECT a1.visitor_username, a1.visit_event_date, a1.event_name, a1.site_name, a1.start_date,  a2.price FROM visit_event as a1 JOIN (SELECT event_name, site_name, start_date, price FROM event)  as a2 ON a1.event_name = a2.event_name AND a1.start_date = a2.start_date AND a1.site_name = a2.site_name) as a3 UNION (SELECT visitor_username, visit_start_date, null as event_name, site_name, 0 as price  FROM visit_site) order by event_name asc")
+        results = cur.fetchall()
+        for result in results:
+            if result['event_name'] == None:
+                result['event_name'] = ""
+
+        for result in results:
+            if result['visitor_username'] == username:
+                filtered_events.append(result)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template("visit_history.html", sites=all_sites, events=filtered_events, sitesList=filtered_sites, title="Visit History", legend="Visit History", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+    if form.eventDownSort.data:
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a3.visitor_username, a3.visit_event_date, a3.event_name, a3.site_name,  a3.price FROM (SELECT a1.visitor_username, a1.visit_event_date, a1.event_name, a1.site_name, a1.start_date,  a2.price FROM visit_event as a1 JOIN (SELECT event_name, site_name, start_date, price FROM event)  as a2 ON a1.event_name = a2.event_name AND a1.start_date = a2.start_date AND a1.site_name = a2.site_name) as a3 UNION (SELECT visitor_username, visit_start_date, null as event_name, site_name, 0 as price  FROM visit_site) order by event_name desc")
+        results = cur.fetchall()
+        for result in results:
+            if result['event_name'] == None:
+                result['event_name'] = ""
+
+        for result in results:
+            if result['visitor_username'] == username:
+                filtered_events.append(result)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template("visit_history.html", sites=all_sites, events=filtered_events, sitesList=filtered_sites, title="Visit History", legend="Visit History", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+    if form.siteUpSort.data:
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a3.visitor_username, a3.visit_event_date, a3.event_name, a3.site_name,  a3.price FROM (SELECT a1.visitor_username, a1.visit_event_date, a1.event_name, a1.site_name, a1.start_date,  a2.price FROM visit_event as a1 JOIN (SELECT event_name, site_name, start_date, price FROM event)  as a2 ON a1.event_name = a2.event_name AND a1.start_date = a2.start_date AND a1.site_name = a2.site_name) as a3 UNION (SELECT visitor_username, visit_start_date, null as event_name, site_name, 0 as price  FROM visit_site) order by site_name asc")
+        results = cur.fetchall()
+        for result in results:
+            if result['event_name'] == None:
+                result['event_name'] = ""
+
+        for result in results:
+            if result['visitor_username'] == username:
+                filtered_events.append(result)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template("visit_history.html", sites=all_sites, events=filtered_events, sitesList=filtered_sites, title="Visit History", legend="Visit History", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+    if form.siteDownSort.data:
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a3.visitor_username, a3.visit_event_date, a3.event_name, a3.site_name,  a3.price FROM (SELECT a1.visitor_username, a1.visit_event_date, a1.event_name, a1.site_name, a1.start_date,  a2.price FROM visit_event as a1 JOIN (SELECT event_name, site_name, start_date, price FROM event)  as a2 ON a1.event_name = a2.event_name AND a1.start_date = a2.start_date AND a1.site_name = a2.site_name) as a3 UNION (SELECT visitor_username, visit_start_date, null as event_name, site_name, 0 as price  FROM visit_site) order by site_name desc")
+        results = cur.fetchall()
+        for result in results:
+            if result['event_name'] == None:
+                result['event_name'] = ""
+
+        for result in results:
+            if result['visitor_username'] == username:
+                filtered_events.append(result)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template("visit_history.html", sites=all_sites, events=filtered_events, sitesList=filtered_sites, title="Visit History", legend="Visit History", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+    if form.priceUpSort.data:
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a3.visitor_username, a3.visit_event_date, a3.event_name, a3.site_name,  a3.price FROM (SELECT a1.visitor_username, a1.visit_event_date, a1.event_name, a1.site_name, a1.start_date,  a2.price FROM visit_event as a1 JOIN (SELECT event_name, site_name, start_date, price FROM event)  as a2 ON a1.event_name = a2.event_name AND a1.start_date = a2.start_date AND a1.site_name = a2.site_name) as a3 UNION (SELECT visitor_username, visit_start_date, null as event_name, site_name, 0 as price  FROM visit_site) order by price asc")
+        results = cur.fetchall()
+        for result in results:
+            if result['event_name'] == None:
+                result['event_name'] = ""
+
+        for result in results:
+            if result['visitor_username'] == username:
+                filtered_events.append(result)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template("visit_history.html", sites=all_sites, events=filtered_events, sitesList=filtered_sites, title="Visit History", legend="Visit History", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+    if form.priceDownSort.data:
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT a3.visitor_username, a3.visit_event_date, a3.event_name, a3.site_name,  a3.price FROM (SELECT a1.visitor_username, a1.visit_event_date, a1.event_name, a1.site_name, a1.start_date,  a2.price FROM visit_event as a1 JOIN (SELECT event_name, site_name, start_date, price FROM event)  as a2 ON a1.event_name = a2.event_name AND a1.start_date = a2.start_date AND a1.site_name = a2.site_name) as a3 UNION (SELECT visitor_username, visit_start_date, null as event_name, site_name, 0 as price  FROM visit_site) order by price desc")
+        results = cur.fetchall()
+        for result in results:
+            if result['event_name'] == None:
+                result['event_name'] = ""
+
+        for result in results:
+            if result['visitor_username'] == username:
+                filtered_events.append(result)
+
+        # Commit to DB
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        
+        return render_template("visit_history.html", sites=all_sites, events=filtered_events, sitesList=filtered_sites, title="Visit History", legend="Visit History", form=form, userType=request.args.get('userType'), username=request.args.get('username'))
+
+
+
+
     if form.filter.data:
         event_name = form.event.data
         startDate = form.startDate.data
