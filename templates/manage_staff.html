@@ -76,8 +76,20 @@
         <table class="table table-bordered">
             <thead>
                 <tr>
-                <th scope="col">Staff Name</th>
-                <th scope="col"># Event Shifts</th>
+                <th scope="col">
+                    Staff Name
+                    <div class="btn-group float-right">
+                        {{ form.staffUpSort(class="btn btn-outline-info") }}
+                        {{ form.staffDownSort(class="btn btn-outline-info") }}
+                    </div>
+                </th>
+                <th scope="col">
+                    # Event Shifts
+                    <div class="btn-group float-right">
+                        {{ form.shiftUpSort(class="btn btn-outline-info") }}
+                        {{ form.shiftDownSort(class="btn btn-outline-info") }}
+                    </div>
+                </th>
                 </tr>
             </thead>
             <tbody>

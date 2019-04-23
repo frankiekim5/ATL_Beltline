@@ -73,11 +73,41 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                            <th scope="col">Event Name</th>
-                            <th scope="col">Site Name</th>
-                            <th scope="col">Start Date</th>
-                            <th scope="col">End Date</th>
-                            <th scope="col">Staff Count</th>
+                            <th scope="col">
+                                Event Name
+                                <div class="btn-group-vertical float-right">
+                                    {{ form.eventUpSort(class="btn btn-outline-info form-inline float-right") }}
+                                    {{ form.eventDownSort(class="btn btn-outline-info form-inline float-right") }}
+                                </div>
+                            </th>
+                            <th scope="col">
+                                Site Name
+                                <div class="btn-group-vertical float-right">
+                                    {{ form.siteUpSort(class="btn btn-outline-info form-inline float-right") }}
+                                    {{ form.siteDownSort(class="btn btn-outline-info form-inline float-right") }}
+                                </div>
+                            </th>
+                            <th scope="col">
+                                Start Date
+                                <div class="btn-group-vertical float-right">
+                                    {{ form.startDateUpSort(class="btn btn-outline-info form-inline float-right") }}
+                                    {{ form.startDateDownSort(class="btn btn-outline-info form-inline float-right") }}
+                                </div>
+                            </th>
+                            <th scope="col">
+                                End Date
+                                <div class="btn-group-vertical float-right">
+                                    {{ form.endDateUpSort(class="btn btn-outline-info form-inline float-right") }}
+                                    {{ form.endDateDownSort(class="btn btn-outline-info form-inline float-right") }}
+                                </div>
+                            </th>
+                            <th scope="col">
+                                Staff Count
+                                <div class="btn-group-vertical float-right">
+                                    {{ form.staffUpSort(class="btn btn-outline-info form-inline float-right") }}
+                                    {{ form.staffDownSort(class="btn btn-outline-info form-inline float-right") }}
+                                </div>
+                            </th>
                             </tr>
                         </thead>
                         <tbody>

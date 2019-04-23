@@ -154,11 +154,41 @@
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
-                                <th scope="col">Name</th>
-                                <th scope="col">Staff Count</th>
-                                <th scope="col">Duration (days)</th>
-                                <th scope="col">Total Vists</th>
-                                <th scope="col">Total Revenue ($)</th>
+                                <th scope="col">
+                                    Name
+                                    <div class="btn-group-vertical float-right">
+                                            {{ form.nameUpSort(class="btn btn-outline-info form-inline float-right") }}
+                                            {{ form.nameDownSort(class="btn btn-outline-info form-inline float-right") }}
+                                    </div>
+                                </th>
+                                <th scope="col">
+                                    Staff Count
+                                    <div class="btn-group-vertical float-right">
+                                            {{ form.staffUpSort(class="btn btn-outline-info form-inline float-right") }}
+                                            {{ form.staffDownSort(class="btn btn-outline-info form-inline float-right") }}
+                                    </div>
+                                </th>
+                                <th scope="col">
+                                    Duration (days)
+                                    <div class="btn-group-vertical float-right">
+                                            {{ form.durationUpSort(class="btn btn-outline-info form-inline float-right") }}
+                                            {{ form.durationDownSort(class="btn btn-outline-info form-inline float-right") }}
+                                    </div>
+                                </th>
+                                <th scope="col">
+                                    Total Vists
+                                    <div class="btn-group-vertical float-right">
+                                            {{ form.visitUpSort(class="btn btn-outline-info form-inline float-right") }}
+                                            {{ form.visitDownSort(class="btn btn-outline-info form-inline float-right") }}
+                                    </div>
+                                </th>
+                                <th scope="col">
+                                    Total Revenue ($)
+                                    <div class="btn-group-vertical float-right">
+                                            {{ form.revenueUpSort(class="btn btn-outline-info form-inline float-right") }}
+                                            {{ form.revenueDownSort(class="btn btn-outline-info form-inline float-right") }}
+                                    </div>
+                                </th>
                                 </tr>
                             </thead>
                             <tbody>

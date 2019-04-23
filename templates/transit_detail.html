@@ -33,10 +33,32 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                            <th scope="col">Route</th>
-                            <th scope="col">Transport Type</th>
-                            <th scope="col">Price</th>
-                            <th scope="col"># Connected Sites</th>
+                            <th scope="col">
+                                <div class="mb-3">
+                                    Route
+                                </div>
+                            </th>
+                            <th scope="col">
+                                Transport Type
+                                <div class="btn-group float-right">
+                                    {{ form.transportUpSort(class="btn btn-outline-info") }}
+                                    {{ form.transportDownSort(class="btn btn-outline-info") }}
+                                </div>
+                            </th>
+                            <th scope="col">
+                                Price
+                                <div class="btn-group float-right">
+                                    {{ form.priceUpSort(class="btn btn-outline-info") }}
+                                    {{ form.priceDownSort(class="btn btn-outline-info") }}
+                                </div>
+                            </th>
+                            <th scope="col">
+                                # Connected Sites
+                                <div class="btn-group float-right">
+                                    {{ form.connectedSitesUpSort(class="btn btn-outline-info") }}
+                                    {{ form.connectedSitesDownSort(class="btn btn-outline-info") }}
+                                </div>
+                            </th>
                             </tr>
                         </thead>
                         <tbody>

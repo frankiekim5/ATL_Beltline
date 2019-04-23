@@ -125,9 +125,27 @@
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                    <th scope="col">Date</th>
-                    <th scope="col">Daily Visits</th>
-                    <th scope="col">Daily Revenue($)</th>
+                    <th scope="col">
+                        Date
+                        <div class="btn-group float-right">
+                            {{ form.dateUpSort(class="btn btn-outline-info form-inline") }}
+                            {{ form.dateDownSort(class="btn btn-outline-info form-inline") }}
+                        </div>
+                    </th>
+                    <th scope="col">
+                        Daily Visits
+                        <div class="btn-group float-right">
+                            {{ form.visitUpSort(class="btn btn-outline-info form-inline") }}
+                            {{ form.visitDownSort(class="btn btn-outline-info form-inline") }}
+                        </div>
+                    </th>
+                    <th scope="col">
+                        Daily Revenue($)
+                        <div class="btn-group float-right">
+                            {{ form.revenueUpSort(class="btn btn-outline-info form-inline") }}
+                            {{ form.revenueDownSort(class="btn btn-outline-info form-inline") }}
+                        </div>
+                    </th>
                     </tr>
                 </thead>
                 <tbody>
